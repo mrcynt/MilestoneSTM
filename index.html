@@ -366,9 +366,6 @@
         linkAppleIcon.rel = 'apple-touch-icon';
         linkAppleIcon.href = pwaManifest.icons[0].src;
         document.head.appendChild(linkAppleIcon);
-
-        // Catatan: Injeksi Service Worker via Blob dihapus karena pembatasan keamanan di environment Sandbox/Iframe.
-        // Pengaturan Manifest dan Meta Tags di atas sudah cukup untuk mengaktifkan fitur "Add to Home Screen" seperti aplikasi biasa.
     </script>
 
     <script type="module">
@@ -387,9 +384,6 @@
         // =========================================================================
         // KONFIGURASI FIREBASE VERCEL (WAJIB DIISI AGAR SINKRON KE HP)
         // =========================================================================
-        // Hapus tanda /* dan */ di bawah ini, lalu ganti isinya dengan konfigurasi 
-        // milikmu dari Firebase Console (Langkah 3)
-        
         const myFirebaseConfig = {
             apiKey: "AIzaSyD_r1cVxGygRJgYFp3rYLlGwUngN_AsnkU",
             authDomain: "milestone-app-7dc3e.firebaseapp.com",
@@ -402,8 +396,6 @@
 
         let firebaseConfig = null;
         
-        // Logika pintar: Jika kamu sudah mengisi myFirebaseConfig di atas, sistem akan menggunakannya.
-        // Jika belum, sistem akan mencoba menggunakan konfigurasi sandbox (hanya jalan di AI Canvas).
         if (typeof myFirebaseConfig !== 'undefined') {
             firebaseConfig = myFirebaseConfig;
         } else if (typeof __firebase_config !== 'undefined') {
@@ -420,7 +412,7 @@
                     auth = getAuth(app);
                     db = getFirestore(app);
 
-                    // Login (Menggunakan custom token di Canvas, atau Anonymous di Vercel)
+                    // Login tetap dibutuhkan untuk membaca database (sekalipun publik)
                     const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
                     if (token && typeof myFirebaseConfig === 'undefined') {
                         await signInWithCustomToken(auth, token);
@@ -428,38 +420,38 @@
                         await signInAnonymously(auth);
                     }
 
-                    userId = auth.currentUser?.uid;
-                    if (userId) {
-                        usingFirebase = true;
-                        document.getElementById('cloud-indicator').style.display = 'flex';
-                        
-                        // Menentukan jalur database
-                        milestonesRef = collection(db, 'artifacts', appId, 'users', userId, 'milestones');
-                        
-                        onSnapshot(milestonesRef, (snapshot) => {
-                            milestones = [];
-                            snapshot.forEach(docSnap => {
-                                milestones.push(docSnap.data());
-                            });
-                            renderMilestones();
-                            updateStats();
-                        }, (error) => {
-                            console.error("Firestore error:", error);
-                            // Jika error permissions (belum set test mode), fallback ke lokal
-                            if (error.code === 'permission-denied') {
-                                console.log("Izin ditolak, beralih ke penyimpanan lokal...");
-                                fallbackToLocal();
-                            } else {
-                                customMessage("Error Koneksi", "Gagal mengambil data dari server cloud.");
-                            }
+                    // KUNCI SINKRONISASI: Kita memindahkan jalur database menjadi "Global/Public"
+                    // Bukan lagi "users/userId". Sehingga HP dan Laptop mengakses laci data yang SAMA.
+                    usingFirebase = true;
+                    document.getElementById('cloud-indicator').style.display = 'flex';
+                    
+                    milestonesRef = collection(db, 'artifacts', appId, 'public', 'data', 'milestones');
+                    
+                    onSnapshot(milestonesRef, (snapshot) => {
+                        milestones = [];
+                        snapshot.forEach(docSnap => {
+                            milestones.push(docSnap.data());
                         });
-                    }
+                        renderMilestones();
+                        updateStats();
+                    }, (error) => {
+                        console.error("Firestore error:", error);
+                        if (error.code === 'permission-denied') {
+                            customMessage("Akses Ditolak", "Database belum dalam mode Test/Publik. Buka aturan (Rules) di Firebase dan atur ke 'true'.");
+                        } else {
+                            customMessage("Gagal Sinkronisasi", "Terjadi kesalahan saat memuat data cloud.");
+                        }
+                        fallbackToLocal();
+                    });
+                    
                 } catch (e) {
                     console.error("Firebase init failed:", e);
+                    if (e.code === 'auth/operation-not-allowed') {
+                        customMessage("Login Diblokir", "Mohon aktifkan 'Anonymous Sign-In' di Firebase Authentication!");
+                    }
                     fallbackToLocal();
                 }
             } else {
-                console.log("Firebase config tidak ditemukan, menggunakan LocalStorage.");
                 fallbackToLocal();
             }
         }
@@ -478,7 +470,7 @@
         }
 
         async function saveToDB(milestoneData) {
-            if (usingFirebase && userId) {
+            if (usingFirebase) {
                 await setDoc(doc(milestonesRef, milestoneData.id), milestoneData);
             } else {
                 saveMilestonesLocal();
@@ -486,7 +478,7 @@
         }
 
         async function deleteFromDB(id) {
-            if (usingFirebase && userId) {
+            if (usingFirebase) {
                 await deleteDoc(doc(milestonesRef, id));
             } else {
                 saveMilestonesLocal();
