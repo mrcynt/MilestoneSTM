@@ -382,10 +382,31 @@
         let currentFilter = 'all';
         let currentSearch = '';
 
-        // Konfigurasi Cloud Firebase
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'milestone-stm-app';
+
+        // =========================================================================
+        // KONFIGURASI FIREBASE VERCEL (WAJIB DIISI AGAR SINKRON KE HP)
+        // =========================================================================
+        // Hapus tanda /* dan */ di bawah ini, lalu ganti isinya dengan konfigurasi 
+        // milikmu dari Firebase Console (Langkah 3)
+        
+        const myFirebaseConfig = {
+            apiKey: "AIzaSyD_r1cVxGygRJgYFp3rYLlGwUngN_AsnkU",
+            authDomain: "milestone-app-7dc3e.firebaseapp.com",
+            projectId: "milestone-app-7dc3e",
+            storageBucket: "milestone-app-7dc3e.firebasestorage.app",
+            messagingSenderId: "535579558143",
+            appId: "1:535579558143:web:7f961ff8bbe981b4384cca"
+        };
+        // =========================================================================
+
         let firebaseConfig = null;
-        if (typeof __firebase_config !== 'undefined') {
+        
+        // Logika pintar: Jika kamu sudah mengisi myFirebaseConfig di atas, sistem akan menggunakannya.
+        // Jika belum, sistem akan mencoba menggunakan konfigurasi sandbox (hanya jalan di AI Canvas).
+        if (typeof myFirebaseConfig !== 'undefined') {
+            firebaseConfig = myFirebaseConfig;
+        } else if (typeof __firebase_config !== 'undefined') {
             firebaseConfig = JSON.parse(__firebase_config);
         }
 
@@ -399,8 +420,9 @@
                     auth = getAuth(app);
                     db = getFirestore(app);
 
+                    // Login (Menggunakan custom token di Canvas, atau Anonymous di Vercel)
                     const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-                    if (token) {
+                    if (token && typeof myFirebaseConfig === 'undefined') {
                         await signInWithCustomToken(auth, token);
                     } else {
                         await signInAnonymously(auth);
@@ -410,6 +432,8 @@
                     if (userId) {
                         usingFirebase = true;
                         document.getElementById('cloud-indicator').style.display = 'flex';
+                        
+                        // Menentukan jalur database
                         milestonesRef = collection(db, 'artifacts', appId, 'users', userId, 'milestones');
                         
                         onSnapshot(milestonesRef, (snapshot) => {
@@ -421,7 +445,13 @@
                             updateStats();
                         }, (error) => {
                             console.error("Firestore error:", error);
-                            customMessage("Error Koneksi", "Gagal mengambil data dari server.");
+                            // Jika error permissions (belum set test mode), fallback ke lokal
+                            if (error.code === 'permission-denied') {
+                                console.log("Izin ditolak, beralih ke penyimpanan lokal...");
+                                fallbackToLocal();
+                            } else {
+                                customMessage("Error Koneksi", "Gagal mengambil data dari server cloud.");
+                            }
                         });
                     }
                 } catch (e) {
@@ -429,6 +459,7 @@
                     fallbackToLocal();
                 }
             } else {
+                console.log("Firebase config tidak ditemukan, menggunakan LocalStorage.");
                 fallbackToLocal();
             }
         }
