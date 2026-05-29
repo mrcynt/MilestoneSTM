@@ -778,9 +778,15 @@
             renderMilestones();
         });
 
+        // Variabel penampung file akumulatif untuk form Tambah
+        let pendingAddPhotos = [];
+        let pendingAddDocs = [];
+
         // Handler Add Modal
         window.openAddModal = () => {
             document.getElementById('add-form').reset();
+            pendingAddPhotos = []; // Bersihkan keranjang saat form dibuka
+            pendingAddDocs = [];
             document.getElementById('photo-badge-counter').classList.replace('flex', 'hidden');
             document.getElementById('doc-badge-counter').classList.replace('flex', 'hidden');
             
@@ -795,31 +801,76 @@
             setTimeout(() => modal.classList.add('hidden'), 300);
         };
 
-        // Handler Upload Bages
+        // Handler Upload Bages (Akumulatif)
         document.getElementById('photos').addEventListener('change', (e) => {
-            const count = e.target.files.length;
+            if (e.target.files.length > 0) {
+                pendingAddPhotos.push(...Array.from(e.target.files)); // Tambahkan ke keranjang
+            }
+            const count = pendingAddPhotos.length;
             const badge = document.getElementById('photo-badge-counter');
             if (count > 0) { badge.textContent = count; badge.classList.replace('hidden', 'flex'); }
             else { badge.classList.replace('flex', 'hidden'); }
+            e.target.value = ''; // Reset input asli agar bisa diklik lagi
         });
 
         document.getElementById('docs').addEventListener('change', (e) => {
-            const count = e.target.files.length;
+            if (e.target.files.length > 0) {
+                pendingAddDocs.push(...Array.from(e.target.files)); // Tambahkan ke keranjang
+            }
+            const count = pendingAddDocs.length;
             const badge = document.getElementById('doc-badge-counter');
             if (count > 0) { badge.textContent = count; badge.classList.replace('hidden', 'flex'); }
             else { badge.classList.replace('flex', 'hidden'); }
+            e.target.value = ''; // Reset input asli agar bisa diklik lagi
         });
 
-        document.getElementById('edit-photos').addEventListener('change', (e) => {
-            const c = e.target.files.length;
+        document.getElementById('edit-photos').addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+            
+            // Tampilkan loading sebentar
             const b = document.getElementById('edit-photo-badge');
-            if (c > 0) { b.textContent = c; b.classList.replace('hidden', 'flex'); } else b.classList.replace('flex', 'hidden');
+            b.innerHTML = `<i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i>`;
+            b.classList.replace('hidden', 'flex');
+            
+            try {
+                const b64s = await Promise.all(files.map(CompressionSystem.process));
+                files.forEach((f, i) => {
+                    tempEditPhotos.push({ name: f.name, data: b64s[i] }); // Langsung proses & munculkan
+                });
+                renderEditAttachments(); // Tampilkan langsung di form edit
+            } catch(err) {
+                console.error(err);
+                customMessage("Gagal Memproses", "Gagal memproses beberapa foto.");
+            } finally {
+                b.classList.replace('flex', 'hidden');
+                e.target.value = ''; // Reset input asli
+                lucide.createIcons();
+            }
         });
 
-        document.getElementById('edit-docs').addEventListener('change', (e) => {
-            const c = e.target.files.length;
+        document.getElementById('edit-docs').addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+            
             const b = document.getElementById('edit-doc-badge');
-            if (c > 0) { b.textContent = c; b.classList.replace('hidden', 'flex'); } else b.classList.replace('flex', 'hidden');
+            b.innerHTML = `<i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i>`;
+            b.classList.replace('hidden', 'flex');
+            
+            try {
+                const b64s = await Promise.all(files.map(CompressionSystem.process));
+                files.forEach((f, i) => {
+                    tempEditFiles.push({ name: f.name, data: b64s[i] }); // Langsung proses & munculkan
+                });
+                renderEditAttachments();
+            } catch(err) {
+                console.error(err);
+                customMessage("Gagal Memproses", "Dokumen terlalu besar.");
+            } finally {
+                b.classList.replace('flex', 'hidden');
+                e.target.value = ''; // Reset input asli
+                lucide.createIcons();
+            }
         });
 
         document.getElementById('add-form').addEventListener('submit', async (e) => {
@@ -830,19 +881,17 @@
             submitBtn.disabled = true;
 
             try {
-                const photosInput = document.getElementById('photos');
-                const docsInput = document.getElementById('docs');
-                
-                const base64Photos = photosInput.files.length > 0 ? await Promise.all(Array.from(photosInput.files).map(CompressionSystem.process)) : [];
-                const base64Docs = docsInput.files.length > 0 ? await Promise.all(Array.from(docsInput.files).map(CompressionSystem.process)) : [];
+                // Ambil dari keranjang pending, bukan dari input DOM langsung
+                const base64Photos = pendingAddPhotos.length > 0 ? await Promise.all(pendingAddPhotos.map(CompressionSystem.process)) : [];
+                const base64Docs = pendingAddDocs.length > 0 ? await Promise.all(pendingAddDocs.map(CompressionSystem.process)) : [];
 
                 const totalSize = [...base64Photos, ...base64Docs].reduce((acc, curr) => acc + curr.length, 0);
                 if (totalSize > 900000) { 
                     throw new Error("Total ukuran lampiran melebihi kapasitas sistem. Kurangi jumlah file.");
                 }
 
-                const photosData = Array.from(photosInput.files).map((f, i) => ({ name: f.name, data: base64Photos[i] }));
-                const docsData = Array.from(docsInput.files).map((f, i) => ({ name: f.name, data: base64Docs[i] }));
+                const photosData = pendingAddPhotos.map((f, i) => ({ name: f.name, data: base64Photos[i] }));
+                const docsData = pendingAddDocs.map((f, i) => ({ name: f.name, data: base64Docs[i] }));
 
                 const newMilestone = {
                     id: Date.now().toString(),
@@ -857,6 +906,11 @@
                 if (!usingFirebase) { milestones.unshift(newMilestone); }
                 await saveToDB(newMilestone);
 
+                e.target.reset();
+                pendingAddPhotos = []; // Kosongkan keranjang setelah sukses
+                pendingAddDocs = [];
+                document.getElementById('photo-badge-counter').classList.replace('flex', 'hidden');
+                document.getElementById('doc-badge-counter').classList.replace('flex', 'hidden');
                 window.closeAddModal();
             } catch (error) {
                 console.error(error);
@@ -1091,17 +1145,9 @@
             submitBtn.disabled = true;
 
             try {
-                const newPhotosInput = document.getElementById('edit-photos');
-                const newDocsInput = document.getElementById('edit-docs');
-                
-                const base64Photos = newPhotosInput.files.length > 0 ? await Promise.all(Array.from(newPhotosInput.files).map(CompressionSystem.process)) : [];
-                const base64Docs = newDocsInput.files.length > 0 ? await Promise.all(Array.from(newDocsInput.files).map(CompressionSystem.process)) : [];
-
-                const newPhotosData = Array.from(newPhotosInput.files).map((f, i) => ({ name: f.name, data: base64Photos[i] }));
-                const newFilesData = Array.from(newDocsInput.files).map((f, i) => ({ name: f.name, data: base64Docs[i] }));
-
-                const allPhotos = [...tempEditPhotos, ...newPhotosData];
-                const allFiles = [...tempEditFiles, ...newFilesData];
+                // Semua file baru dan lama sudah terakumulasi otomatis di tempEditPhotos dan tempEditFiles
+                const allPhotos = [...tempEditPhotos];
+                const allFiles = [...tempEditFiles];
                 const totalSize = [...allPhotos, ...allFiles].reduce((acc, curr) => acc + (curr.data ? curr.data.length : 0), 0);
                 
                 if (totalSize > 900000) { 
