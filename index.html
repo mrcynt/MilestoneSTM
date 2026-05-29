@@ -9,6 +9,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     
     <title>MILEWORKS</title>
+    <!-- Favicon -->
     <link rel="icon" href="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -57,6 +58,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 <img src="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL" alt="Logo" class="w-10 h-10 sm:w-11 sm:h-11 object-contain shrink-0 drop-shadow-sm">
+                
                 <h1 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight truncate">MILEWORKS</h1>
                 <div id="cloud-indicator" class="hidden items-center gap-1 px-2 py-1 bg-emerald-50 text-emerald-600 text-[9px] sm:text-[10px] font-bold rounded-full ml-1 border border-emerald-100 uppercase tracking-wide shrink-0">
                     <i data-lucide="cloud-lightning" class="w-3 h-3"></i> <span class="hidden sm:inline">Tersinkron</span>
@@ -116,13 +118,13 @@
 
                 <div id="issues-box" class="col-span-2 bg-rose-50 rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-rose-100 hidden shadow-soft">
                     <h3 class="text-xs sm:text-sm font-bold text-rose-800 mb-3 flex items-center gap-2"><i data-lucide="alert-octagon" class="w-4 h-4"></i> Catatan Kendala Kuartal Ini</h3>
-                    <ul id="issues-list" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-2"></ul>
+                    <ul id="issues-list" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-2">
+                    </ul>
                 </div>
             </div>
         </div>
 
         <div class="flex-grow min-w-0">
-            <!-- Mobile Filter -->
             <div class="flex sm:hidden overflow-x-auto pb-4 mb-2 gap-2 hide-scrollbar -mx-4 px-4">
                 <button onclick="filterMilestones('all')" id="filter-all-mob" class="filter-btn active shrink-0 px-5 py-2 text-sm font-semibold rounded-full bg-slate-800 text-white transition-all">Semua</button>
                 <button onclick="filterMilestones('pending')" id="filter-pending-mob" class="filter-btn shrink-0 px-5 py-2 text-sm font-medium rounded-full bg-white border border-slate-200 text-slate-600 transition-all">Berjalan</button>
@@ -393,9 +395,15 @@
             </div>
             
             <div class="flex flex-col flex-grow overflow-hidden bg-slate-50/50">
-                <!-- Toolbar Area (Add Folder & Upload) -->
+                <!-- Toolbar Area -->
                 <div class="p-4 sm:p-5 border-b border-slate-200/60 bg-white/50 backdrop-blur-sm shrink-0 flex flex-col sm:flex-row gap-3">
-                    <button onclick="openCreateFolderModal()" class="px-4 py-2.5 bg-white border border-slate-200 hover:border-brand-300 hover:bg-brand-50 text-slate-700 rounded-xl text-sm font-semibold transition-all shadow-sm flex items-center justify-center gap-2">
+                    
+                    <!-- Tombol Kembali yang Baru -->
+                    <button id="btn-back-folder" onclick="goBackFolder()" class="hidden px-4 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-semibold transition-all shadow-sm items-center justify-center gap-2 shrink-0">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali
+                    </button>
+
+                    <button onclick="openCreateFolderModal()" class="px-4 py-2.5 bg-white border border-slate-200 hover:border-brand-300 hover:bg-brand-50 text-slate-700 rounded-xl text-sm font-semibold transition-all shadow-sm flex items-center justify-center gap-2 shrink-0">
                         <i data-lucide="folder-plus" class="w-4 h-4 text-brand-500"></i> Buat Folder
                     </button>
                     
@@ -440,6 +448,23 @@
                 <div class="flex justify-end gap-2.5">
                     <button type="button" onclick="closeCreateFolderModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-all">Batal</button>
                     <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-semibold transition-all">Buat</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Rename Folder/Berkas -->
+    <div id="rename-modal" class="hidden fixed inset-0 z-[140] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeRenameModal()"></div>
+        <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 transform scale-95 transition-transform duration-300" id="rename-modal-content">
+            <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <i data-lucide="edit-2" class="w-5 h-5 text-amber-500"></i> Ubah Nama
+            </h3>
+            <form id="rename-form">
+                <input type="text" id="rename-input" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all mb-5">
+                <div class="flex justify-end gap-2.5">
+                    <button type="button" onclick="closeRenameModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-all">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-sm font-semibold transition-all">Simpan</button>
                 </div>
             </form>
         </div>
@@ -520,8 +545,10 @@
         let currentFolderId = 'root';
         let folderHistory = [{ id: 'root', name: 'Utama' }];
 
+        // KITA PAKSA MENGGUNAKAN APP ID LAMA SECARA PERMANEN
         const appId = 'milestone-stm-app';
 
+        // KONFIGURASI FIREBASE VERCEL KAMU
         const myFirebaseConfig = {
             apiKey: "AIzaSyD_r1cVxGygRJgYFp3rYLlGwUngN_AsnkU",
             authDomain: "milestone-app-7dc3e.firebaseapp.com",
@@ -548,40 +575,41 @@
                     auth = getAuth(app);
                     db = getFirestore(app);
 
-                    try {
-                        const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-                        if (token && typeof __firebase_config !== 'undefined' && firebaseConfig !== myFirebaseConfig) {
-                            await signInWithCustomToken(auth, token);
-                        } else {
-                            await signInAnonymously(auth);
-                        }
-                    } catch (authErr) {
-                        console.error("Auth Error:", authErr);
-                        fallbackToLocal();
-                        return;
+                    const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                    if (token && typeof myFirebaseConfig === 'undefined') {
+                        await signInWithCustomToken(auth, token);
+                    } else {
+                        await signInAnonymously(auth);
                     }
 
                     usingFirebase = true;
                     document.getElementById('cloud-indicator').style.display = 'flex';
                     
                     milestonesRef = collection(db, 'artifacts', appId, 'public', 'data', 'milestones');
-                    berkasRef = collection(db, 'artifacts', appId, 'public', 'data', 'berkas');
+                    berkasRef = collection(db, 'artifacts', appId, 'public', 'data', 'berkas'); // Tambahan untuk Folder Berkas
                     
                     onSnapshot(milestonesRef, (snapshot) => {
                         milestones = [];
-                        snapshot.forEach(docSnap => milestones.push(docSnap.data()));
+                        snapshot.forEach(docSnap => {
+                            milestones.push(docSnap.data());
+                        });
                         renderMilestones();
                         updateStats();
                     }, (error) => {
                         console.error("Firestore error:", error);
-                        usingFirebase = false;
-                        document.getElementById('cloud-indicator').style.display = 'none';
+                        if (error.code === 'permission-denied') {
+                            customMessage("Akses Ditolak", "Database belum dalam mode Test/Publik.");
+                        } else {
+                            customMessage("Gagal Sinkronisasi", "Terjadi kesalahan saat memuat data cloud.");
+                        }
                         fallbackToLocal();
                     });
 
                     onSnapshot(berkasRef, (snapshot) => {
                         globalFiles = [];
-                        snapshot.forEach(docSnap => globalFiles.push(docSnap.data()));
+                        snapshot.forEach(docSnap => {
+                            globalFiles.push(docSnap.data());
+                        });
                         renderBerkas();
                     }, (error) => {
                         console.error("Firestore error (berkas):", error);
@@ -1037,8 +1065,6 @@
             if(m) { m.failed = true; m.completed = false; m.failReason = reason; await saveToDB(m); } window.closeFailModal();
         });
 
-        // --- MANAJEMEN FOLDER BERKAS ---
-        
         window.openPasswordModal = () => {
             document.getElementById('berkas-password').value = ''; document.getElementById('password-error').classList.add('hidden');
             const m = document.getElementById('password-modal'); m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0'); document.getElementById('password-modal-content').classList.remove('scale-95');
@@ -1068,6 +1094,32 @@
         window.closeCreateFolderModal = () => {
             const m = document.getElementById('create-folder-modal'); m.classList.add('opacity-0'); document.getElementById('create-folder-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300);
         };
+
+        // Fitur Rename
+        let currentRenameId = null;
+        window.openRenameModal = (id, currentName, event) => {
+            if(event) event.stopPropagation();
+            currentRenameId = id;
+            document.getElementById('rename-input').value = currentName;
+            const m = document.getElementById('rename-modal'); m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0'); document.getElementById('rename-modal-content').classList.remove('scale-95');
+        };
+        window.closeRenameModal = () => {
+            const m = document.getElementById('rename-modal'); m.classList.add('opacity-0'); document.getElementById('rename-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); currentRenameId = null;
+        };
+
+        document.getElementById('rename-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newName = document.getElementById('rename-input').value.trim();
+            if(!newName || !currentRenameId) return;
+
+            const item = globalFiles.find(f => f.id === currentRenameId);
+            if(item) {
+                item.name = newName;
+                if (!usingFirebase) { saveBerkasLocal(); } 
+                else { await setDoc(doc(berkasRef, item.id), { name: newName }, { merge: true }); }
+            }
+            closeRenameModal();
+        });
 
         document.getElementById('create-folder-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1100,19 +1152,31 @@
             renderBerkas();
         };
 
+        // Tombol Kembali Folder
+        window.goBackFolder = () => {
+            if (folderHistory.length > 1) {
+                const prevFolderId = folderHistory[folderHistory.length - 2].id;
+                navigateToFolder(prevFolderId);
+            }
+        };
+
         const renderBerkas = () => {
             const grid = document.getElementById('berkas-grid');
             const empty = document.getElementById('berkas-empty');
             const breadcrumb = document.getElementById('berkas-breadcrumb');
+            const backBtn = document.getElementById('btn-back-folder');
+            
             grid.innerHTML = '';
             
-            // Render Breadcrumb Navigation
+            // Atur Visibilitas Tombol Kembali
+            if (currentFolderId === 'root') { backBtn.classList.replace('flex', 'hidden'); } 
+            else { backBtn.classList.replace('hidden', 'flex'); }
+
             breadcrumb.innerHTML = folderHistory.map((h, i) => `
                 <button onclick="navigateToFolder('${h.id}')" class="${i === folderHistory.length - 1 ? 'text-slate-800 font-bold' : 'hover:text-brand-600'} transition-colors">${h.name}</button>
                 ${i < folderHistory.length - 1 ? '<i data-lucide="chevron-right" class="w-3.5 h-3.5 mx-1 text-slate-300"></i>' : ''}
             `).join('');
 
-            // Filter items by current folder
             const currentItems = globalFiles.filter(f => (f.parentId || 'root') === currentFolderId);
             
             if (currentItems.length === 0) {
@@ -1120,7 +1184,6 @@
             } else {
                 grid.classList.remove('hidden'); empty.classList.replace('flex', 'hidden');
                 
-                // Sort: Folders first, then files by date
                 currentItems.sort((a,b) => {
                     if (a.type === 'folder' && b.type !== 'folder') return -1;
                     if (a.type !== 'folder' && b.type === 'folder') return 1;
@@ -1149,7 +1212,11 @@
                                 </div>
                                 <h4 class="text-sm font-bold text-slate-800 line-clamp-2 leading-tight" title="${f.name}">${f.name}</h4>
                             </div>
-                            <button onclick="deleteBerkas('${f.id}', true)" class="absolute top-2 right-2 p-1.5 text-slate-300 hover:bg-rose-50 hover:text-rose-500 rounded-lg transition-colors opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            <!-- Aksi Folder (Rename & Delete) -->
+                            <div class="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button onclick="openRenameModal('${f.id}', '${f.name}', event)" class="p-1.5 bg-white border border-slate-200 text-slate-400 hover:bg-amber-50 hover:text-amber-600 rounded-lg shadow-sm transition-colors" title="Ubah Nama"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i></button>
+                                <button onclick="deleteBerkas('${f.id}', true, event)" class="p-1.5 bg-white border border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-500 rounded-lg shadow-sm transition-colors" title="Hapus"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                            </div>
                         `;
                     } else {
                         card.innerHTML = `
@@ -1165,7 +1232,8 @@
                                 </div>
                                 <div class="flex items-center justify-end gap-1.5 mt-auto pt-2 border-t border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity">
                                     ${canPreview ? `<button onclick="previewBerkas('${f.id}')" class="px-2 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition-colors"><i data-lucide="eye" class="w-3.5 h-3.5"></i> Lihat</button>` : `<a href="${f.data}" download="${f.name}" class="px-2 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition-colors"><i data-lucide="download" class="w-3.5 h-3.5"></i> Unduh</a>`}
-                                    <button onclick="deleteBerkas('${f.id}', false)" class="p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-500 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                    <button onclick="openRenameModal('${f.id}', '${f.name}', event)" class="p-1.5 text-slate-400 hover:bg-amber-50 hover:text-amber-600 rounded-lg transition-colors" title="Ubah Nama"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                    <button onclick="deleteBerkas('${f.id}', false, event)" class="p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-500 rounded-lg transition-colors" title="Hapus"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                 </div>
                             </div>
                         `;
@@ -1191,7 +1259,7 @@
                         name: filesArr[i].name,
                         type: filesArr[i].type || (filesArr[i].name.endsWith('.pdf') ? 'application/pdf' : 'unknown'),
                         data: b64s[i],
-                        parentId: currentFolderId, // Save file into current active folder
+                        parentId: currentFolderId,
                         createdAt: new Date().toISOString()
                     };
                     if (newFile.data.length > 950000) throw new Error(`File ${newFile.name} terlalu besar setelah diproses.`);
@@ -1207,21 +1275,17 @@
             }
         });
 
-        window.deleteBerkas = (id, isFolder) => {
+        window.deleteBerkas = (id, isFolder, event) => {
+            if(event) event.stopPropagation(); // Mencegah masuk ke folder saat tombol hapus diklik
             const msg = isFolder ? "Semua isi dalam folder ini juga akan terhapus. Yakin?" : "Berkas yang dihapus tidak dapat dikembalikan.";
             customMessage(isFolder ? "Hapus Folder" : "Hapus Berkas", msg, async () => {
                 if(!usingFirebase) { 
-                    if (isFolder) {
-                        // Cascade delete files inside folder locally
-                        globalFiles = globalFiles.filter(f => f.parentId !== id && f.id !== id);
-                    } else {
-                        globalFiles = globalFiles.filter(f => f.id !== id); 
-                    }
+                    if (isFolder) { globalFiles = globalFiles.filter(f => f.parentId !== id && f.id !== id); } 
+                    else { globalFiles = globalFiles.filter(f => f.id !== id); }
                     saveBerkasLocal(); 
                 }
                 else { 
                     if (isFolder) {
-                        // Cascade delete in Firestore (Find all files where parentId == id)
                         const itemsToDelete = globalFiles.filter(f => f.parentId === id);
                         for(let item of itemsToDelete) { await deleteDoc(doc(berkasRef, item.id)); }
                     }
