@@ -481,10 +481,10 @@
         let currentFilter = 'all';
         let currentSearch = '';
 
-        // KEMBALIKAN KE APP_ID YANG LAMA AGAR DATA LAMA TERBACA KEMBALI
+        // TETAP GUNAKAN APP ID LAMA
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'milestone-stm-app';
 
-        // KONFIGURASI FIREBASE VERCEL
+        // KONFIGURASI FIREBASE VERCEL KAMU
         const myFirebaseConfig = {
             apiKey: "AIzaSyD_r1cVxGygRJgYFp3rYLlGwUngN_AsnkU",
             authDomain: "milestone-app-7dc3e.firebaseapp.com",
@@ -503,6 +503,7 @@
 
         let db, auth, userId, milestonesRef, berkasRef;
         let usingFirebase = false;
+        window.hasMigrated = false;
 
         async function initApp() {
             if (firebaseConfig) {
@@ -526,41 +527,65 @@
                             customMessage("Gagal Login Firebase", authErr.message);
                         }
                         fallbackToLocal();
-                        return; // Berhenti di sini jika Auth gagal
+                        return;
                     }
 
-                    usingFirebase = true;
-                    document.getElementById('cloud-indicator').style.display = 'flex';
+                    // AMBIL ID UNIK DARI LAPTOPMU
+                    userId = auth.currentUser?.uid;
                     
-                    // Public Paths for Global Sync
-                    milestonesRef = collection(db, 'artifacts', appId, 'public', 'data', 'milestones');
-                    berkasRef = collection(db, 'artifacts', appId, 'public', 'data', 'berkas');
-                    
-                    onSnapshot(milestonesRef, (snapshot) => {
-                        milestones = [];
-                        snapshot.forEach(docSnap => milestones.push(docSnap.data()));
-                        renderMilestones();
-                        updateStats();
-                    }, (error) => {
-                        console.error("Firestore error (milestones):", error);
-                        usingFirebase = false;
-                        document.getElementById('cloud-indicator').style.display = 'none';
+                    if (userId) {
+                        usingFirebase = true;
+                        document.getElementById('cloud-indicator').style.display = 'flex';
                         
-                        if (error.code === 'permission-denied') {
-                            customMessage("Akses Database Ditolak (PENTING)", "Masuk ke Firebase Console Anda -> menu Firestore Database -> tab Rules. Ubah aturannya menjadi 'allow read, write: if true;' (Test Mode).");
-                        } else {
-                            customMessage("Database Error", error.message);
-                        }
-                        fallbackToLocal();
-                    });
+                        // KEMBALIKAN KE JALUR PRIVATE (USERS/USERID) AGAR DATA LAMA TERBACA KEMBALI
+                        milestonesRef = collection(db, 'artifacts', appId, 'users', userId, 'milestones');
+                        berkasRef = collection(db, 'artifacts', appId, 'users', userId, 'berkas');
+                        
+                        onSnapshot(milestonesRef, async (snapshot) => {
+                            milestones = [];
+                            snapshot.forEach(docSnap => milestones.push(docSnap.data()));
+                            
+                            // SCRIPT PEMULIHAN & MIGRASI OTOMATIS
+                            // Jika cloud kosong, cari data lokal lama dan otomatis upload ke Firebase
+                            if (milestones.length === 0 && !window.hasMigrated) {
+                                window.hasMigrated = true;
+                                const savedLocal = localStorage.getItem('milestoneApp_v3') || localStorage.getItem('mileworks_v4');
+                                if (savedLocal) {
+                                    try {
+                                        const localData = JSON.parse(savedLocal);
+                                        if (localData.length > 0) {
+                                            console.log("Memulihkan data lama ke Cloud...");
+                                            for (const item of localData) {
+                                                await setDoc(doc(milestonesRef, item.id), item);
+                                            }
+                                        }
+                                    } catch(e) { console.error("Gagal memulihkan:", e); }
+                                }
+                            }
 
-                    onSnapshot(berkasRef, (snapshot) => {
-                        globalFiles = [];
-                        snapshot.forEach(docSnap => globalFiles.push(docSnap.data()));
-                        renderBerkas();
-                    }, (error) => {
-                        console.error("Firestore error (berkas):", error);
-                    });
+                            renderMilestones();
+                            updateStats();
+                        }, (error) => {
+                            console.error("Firestore error (milestones):", error);
+                            usingFirebase = false;
+                            document.getElementById('cloud-indicator').style.display = 'none';
+                            
+                            if (error.code === 'permission-denied') {
+                                customMessage("Akses Database Ditolak (PENTING)", "Masuk ke Firebase Console Anda -> menu Firestore Database -> tab Rules. Ubah aturannya menjadi 'allow read, write: if true;' (Test Mode).");
+                            } else {
+                                customMessage("Database Error", error.message);
+                            }
+                            fallbackToLocal();
+                        });
+
+                        onSnapshot(berkasRef, (snapshot) => {
+                            globalFiles = [];
+                            snapshot.forEach(docSnap => globalFiles.push(docSnap.data()));
+                            renderBerkas();
+                        }, (error) => {
+                            console.error("Firestore error (berkas):", error);
+                        });
+                    }
                     
                 } catch (e) {
                     console.error("Firebase init failed:", e);
@@ -573,7 +598,8 @@
         }
 
         function fallbackToLocal() {
-            const saved = localStorage.getItem('mileworks_v4');
+            // MENGGABUNGKAN PENCARIAN DI KUNCI LAMA DAN KUNCI BARU
+            const saved = localStorage.getItem('mileworks_v4') || localStorage.getItem('milestoneApp_v3');
             const savedBerkas = localStorage.getItem('mileworks_berkas_v1');
             if (saved) { try { milestones = JSON.parse(saved); } catch (e) { milestones = []; } }
             if (savedBerkas) { try { globalFiles = JSON.parse(savedBerkas); } catch (e) { globalFiles = []; } }
