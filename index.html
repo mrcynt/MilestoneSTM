@@ -481,7 +481,8 @@
         let currentFilter = 'all';
         let currentSearch = '';
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'mileworks-app-v4';
+        // KEMBALIKAN KE APP_ID YANG LAMA AGAR DATA LAMA TERBACA KEMBALI
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'milestone-stm-app';
 
         // KONFIGURASI FIREBASE VERCEL
         const myFirebaseConfig = {
