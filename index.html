@@ -1,191 +1,138 @@
-<!-- ... existing code ... -->
-            <!-- Header Modal Berkas -->
-            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 bg-white z-20 shadow-sm shrink-0">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shadow-sm"><i data-lucide="folder-lock" class="w-4 h-4"></i></div>
-                    <div>
-                        <h3 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Brankas Berkas</h3>
-                        <!-- Breadcrumbs -->
-                        <div class="flex items-center text-xs font-medium text-slate-500 mt-0.5" id="berkas-breadcrumb">
-                            <button onclick="navigateToFolder('root')" class="hover:text-brand-600 transition-colors">Utama</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="flex items-center gap-2">
-                    <!-- Tombol Buka GDrive -->
-                    <button onclick="window.open('https://drive.google.com/drive/folders/1KJWZVUx0Ky-pE_mDjm7yWpJ9cBUvuVJf?usp=sharing', '_blank')" class="hidden sm:flex px-3 py-1.5 bg-[#f8f9fa] border border-[#dadce0] hover:bg-[#f1f3f4] text-slate-700 rounded-lg text-xs font-semibold items-center gap-2 transition-colors shadow-sm" title="Buka Google Drive">
-                        <svg class="w-4 h-4" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg"><path d="m6.6 66.85 22.35 11.1c5.8 2.9 13.4 2.9 19.2 0l32.55-16.15-22.35-11.1-31.75 16.15" fill="#0066da"/><path d="m43.65 25-22.35-11.1c-5.8-2.9-10.6-11.2-10.6-17.7v32.3c0 6.5 4.8 14.8 10.6 17.7l22.35 11.1" fill="#00ac47"/><path d="m80.7 11.1-22.35 11.1-31.75-16.15 22.35-11.1c5.8-2.9 13.4-2.9 19.2 0l12.55 6.15" fill="#ea4335"/><path d="m43.65 25 31.75 16.15 11.9-6c5.8-2.9 10.6-11.2 10.6-17.7v-32.3c0-6.5-4.8-14.8-10.6-17.7l-22.35-11.1" fill="#00832d"/><path d="m80.7 66.85-22.35-11.1-31.75 16.15 22.35 11.1c5.8 2.9 13.4 2.9 19.2 0l12.55-6.15" fill="#2684fc"/><path d="m43.65 78 31.75-16.15 11.9 6c5.8 2.9 10.6 11.2 10.6 17.7v32.3c0 6.5-4.8 14.8-10.6 17.7l-22.35 11.1" fill="#fdcb00"/></svg>
-                        Buka GDrive
-                    </button>
-                    <!-- Tombol Backup Semua ZIP -->
-                    <button id="btn-backup-all" onclick="backupAllToZip()" class="hidden sm:flex px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-semibold items-center gap-1.5 transition-colors shadow-sm" title="Download semua sebagai ZIP">
-                        <i data-lucide="archive" class="w-3.5 h-3.5"></i> Backup Semua
-                    </button>
-                    <button onclick="closeBerkasModal()" class="p-2 bg-slate-100 text-slate-500 hover:bg-rose-100 hover:text-rose-600 rounded-lg transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MILEST.</title>
+    <link rel="icon" href="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <nav class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL" class="w-10 h-10 object-contain">
+                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tighter">MILEST.</h1>
+                <div id="cloud-indicator" class="hidden items-center gap-1 px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-full border border-emerald-100 uppercase">
+                    <i data-lucide="cloud-lightning" class="w-3 h-3"></i> Terhubung
                 </div>
             </div>
-            
-            <div class="flex flex-col flex-grow overflow-hidden bg-slate-50/50">
-<!-- ... existing code ... -->
-        window.closePreviewModal = () => {
-            const m = document.getElementById('preview-modal');
-            m.classList.add('opacity-0'); 
-            setTimeout(() => { m.classList.add('hidden'); document.getElementById('preview-container').innerHTML = ''; }, 300);
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full flex flex-col lg:flex-row gap-8">
+        <div class="w-full lg:w-1/3 space-y-6">
+            <button onclick="openAddModal()" class="w-full bg-brand-600 hover:bg-brand-700 text-white rounded-2xl p-5 font-bold shadow-lg transition-all flex items-center justify-center gap-2">
+                <i data-lucide="plus" class="w-5 h-5"></i> Tambah Target
+            </button>
+            <div id="stats-area" class="bg-white rounded-3xl p-6 border border-slate-100 shadow-soft">
+                <h2 class="font-bold text-lg mb-4">Ringkasan</h2>
+                <div class="text-3xl font-extrabold" id="total-count">0</div>
+                <p class="text-sm text-slate-500">Target tersimpan</p>
+            </div>
+        </div>
+
+        <div class="flex-grow">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold">Jejak Langkah</h2>
+                <button onclick="openPasswordModal()" class="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-xl text-sm font-semibold">
+                    <i data-lucide="folder-lock" class="w-4 h-4"></i> Brankas
+                </button>
+            </div>
+            <div id="list-container" class="space-y-4"></div>
+        </div>
+    </main>
+
+    <!-- Modal Folder Berkas -->
+    <div id="berkas-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl w-full max-w-4xl h-[80vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-5 border-b flex justify-between items-center">
+                <h3 class="font-bold text-lg">Brankas Berkas</h3>
+                <div class="flex gap-2">
+                    <button onclick="window.open('https://drive.google.com/drive/folders/1KJWZVUx0Ky-pE_mDjm7yWpJ9cBUvuVJf?usp=sharing', '_blank')" class="px-3 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-bold flex items-center gap-2">
+                        <svg class="w-4 h-4" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg"><path d="m6.6 66.85 22.35 11.1c5.8 2.9 13.4 2.9 19.2 0l32.55-16.15-22.35-11.1-31.75 16.15" fill="#0066da"/><path d="m43.65 25-22.35-11.1c-5.8-2.9-10.6-11.2-10.6-17.7v32.3c0 6.5 4.8 14.8 10.6 17.7l22.35 11.1" fill="#00ac47"/><path d="m80.7 11.1-22.35 11.1-31.75-16.15 22.35-11.1c5.8-2.9 13.4-2.9 19.2 0l12.55 6.15" fill="#ea4335"/><path d="m43.65 25 31.75 16.15 11.9-6c5.8-2.9 10.6-11.2 10.6-17.7v-32.3c0-6.5-4.8-14.8-10.6-17.7l-22.35-11.1" fill="#00832d"/><path d="m80.7 66.85-22.35-11.1-31.75 16.15 22.35 11.1c5.8 2.9 13.4 2.9 19.2 0l12.55-6.15" fill="#2684fc"/><path d="m43.65 78 31.75-16.15 11.9 6c5.8 2.9 10.6 11.2 10.6 17.7v32.3c0 6.5-4.8 14.8-10.6 17.7l-22.35 11.1" fill="#fdcb00"/></svg> Buka GDrive
+                    </button>
+                    <button onclick="backupAllToZip()" class="px-3 py-2 bg-slate-800 text-white rounded-lg text-sm font-bold">Backup Semua</button>
+                    <button onclick="closeBerkasModal()" class="p-2 text-slate-500 hover:bg-slate-100 rounded-full"><i data-lucide="x"></i></button>
+                </div>
+            </div>
+            <div class="flex-grow overflow-y-auto p-5" id="berkas-grid"></div>
+        </div>
+    </div>
+
+    <!-- Modal Password -->
+    <div id="password-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur">
+        <form id="password-form" class="bg-white p-6 rounded-2xl w-full max-w-sm text-center">
+            <h3 class="font-bold text-lg mb-4">Masukkan Sandi</h3>
+            <input type="password" id="berkas-password" required class="w-full p-3 border rounded-xl mb-4">
+            <button type="submit" class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold">Buka Brankas</button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_r1cVxGygRJgYFp3rYLlGwUngN_AsnkU",
+            authDomain: "milestone-app-7dc3e.firebaseapp.com",
+            projectId: "milestone-app-7dc3e",
+            storageBucket: "milestone-app-7dc3e.firebasestorage.app",
+            messagingSenderId: "535579558143",
+            appId: "1:535579558143:web:7f961ff8bbe981b4384cca"
         };
 
-        // FITUR UNDUH INDIVIDUAL FILE
-        window.downloadSingleFile = (id, event) => {
-            if(event) event.stopPropagation();
-            const file = globalFiles.find(f => f.id === id);
-            if(!file || !file.data) return;
-            
-            const a = document.createElement("a");
-            a.href = file.data;
-            a.download = file.name;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        
+        let milestones = [];
+
+        signInAnonymously(auth).then(() => {
+            const milestonesRef = collection(db, 'artifacts', 'milestone-stm-app', 'public', 'data', 'milestones');
+            onSnapshot(milestonesRef, (snapshot) => {
+                milestones = [];
+                snapshot.forEach(d => milestones.push(d.data()));
+                renderMilestones();
+            });
+            document.getElementById('cloud-indicator').classList.replace('hidden', 'flex');
+        });
+
+        function renderMilestones() {
+            const container = document.getElementById('list-container');
+            container.innerHTML = milestones.map(m => `
+                <div class="bg-white p-4 rounded-xl shadow border">${m.title}</div>
+            `).join('');
+        }
+
+        window.openAddModal = () => document.getElementById('add-modal').classList.remove('hidden');
+        window.closeAddModal = () => document.getElementById('add-modal').classList.add('hidden');
+        window.openPasswordModal = () => document.getElementById('password-modal').classList.remove('hidden');
+        window.closePasswordModal = () => document.getElementById('password-modal').classList.add('hidden');
+        window.openBerkasModal = () => document.getElementById('berkas-modal').classList.remove('hidden');
+        window.closeBerkasModal = () => document.getElementById('berkas-modal').classList.add('hidden');
+
+        document.getElementById('password-form').onsubmit = (e) => {
+            e.preventDefault();
+            if(document.getElementById('berkas-password').value === 'STM123') {
+                closePasswordModal(); openBerkasModal();
+            } else alert("Sandi Salah!");
         };
-
-        // FITUR UNDUH SPESIFIK FOLDER SEBAGAI ZIP
-        window.downloadFolderZip = async (folderId, folderName, event) => {
-            if(event) event.stopPropagation();
-            
-            const btn = event.currentTarget;
-            const ogHtml = btn.innerHTML;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i>`;
-            btn.disabled = true;
-
-            try {
-                if (typeof JSZip === 'undefined') throw new Error("Sistem ZIP belum siap. Harap refresh halaman.");
-                const zip = new JSZip();
-                const rootZipFolder = zip.folder(folderName);
-                
-                let hasFiles = false;
-
-                // Fungsi canggih (rekursif) untuk mengambil semua isi di dalam folder ini
-                const addItemsToZip = (currentZipFolder, currentParentId) => {
-                    const children = globalFiles.filter(f => f.parentId === currentParentId);
-                    for (const child of children) {
-                        if (child.type === 'folder') {
-                            const newZipFolder = currentZipFolder.folder(child.name);
-                            addItemsToZip(newZipFolder, child.id);
-                        } else if (child.data) {
-                            const base64Data = child.data.split(',')[1];
-                            if (base64Data) {
-                                currentZipFolder.file(child.name, base64Data, {base64: true});
-                                hasFiles = true;
-                            }
-                        }
-                    }
-                };
-
-                addItemsToZip(rootZipFolder, folderId);
-
-                if (!hasFiles) {
-                    customMessage("Folder Kosong", "Tidak ada file di dalam folder ini untuk diunduh.");
-                    return;
-                }
-
-                const content = await zip.generateAsync({type: "blob"});
-                const url = URL.createObjectURL(content);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `${folderName}.zip`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-            } catch (err) {
-                console.error(err);
-                customMessage("Gagal Unduh", err.message || "Terjadi kesalahan saat membuat ZIP folder.");
-            } finally {
-                btn.innerHTML = ogHtml;
-                btn.disabled = false;
-                lucide.createIcons();
-            }
-        };
-
-        // FITUR BACKUP SEMUA BRANKAS SEBAGAI ZIP
-        window.backupAllToZip = async () => {
-            const filesToZip = globalFiles.filter(f => f.type !== 'folder');
-            
-            if (filesToZip.length === 0) {
-                customMessage("Backup Gagal", "Brankas Anda masih kosong. Tambahkan beberapa file terlebih dahulu sebelum melakukan backup.");
-                return;
-            }
-
-            const btn = document.getElementById('btn-backup-all');
-            const ogHtml = btn.innerHTML;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Menyiapkan ZIP...`;
-            btn.disabled = true;
-
-            try {
-                if (typeof JSZip === 'undefined') {
-                    throw new Error("Sistem ZIP belum siap. Harap muat ulang (refresh) halaman.");
-                }
-
-                const zip = new JSZip();
-                
-                // Membuat Nama Folder: Backup_MILEWORKS_Tanggal_Bulan_Tahun
-                const dateStr = new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric'}).replace(/ /g, '_');
-                const folderName = `Backup_MILEWORKS_${dateStr}`;
-                const mainFolder = zip.folder(folderName);
-
-                // Fungsi canggih untuk menyusun ulang struktur folder di dalam file .zip
-                const getPath = (file) => {
-                    if (file.parentId === 'root' || !file.parentId) return '';
-                    let path = '';
-                    let currId = file.parentId;
-                    while (currId && currId !== 'root') {
-                        const parent = globalFiles.find(f => f.id === currId && f.type === 'folder');
-                        if (parent) {
-                            path = parent.name + '/' + path;
-                            currId = parent.parentId;
-                        } else {
-                            break;
-                        }
-                    }
-                    return path;
-                };
-
-                // Memasukkan setiap file ke dalam strukturnya di dalam file .zip
-                for (const file of filesToZip) {
-                    if (file.data) {
-                        const path = getPath(file);
-                        const base64Data = file.data.split(',')[1];
-                        if (base64Data) {
-                            mainFolder.file(path + file.name, base64Data, {base64: true});
-                        }
-                    }
-                }
-
-                // Mengepak dan Mengunduh ZIP
-                const content = await zip.generateAsync({type: "blob"});
-                const url = URL.createObjectURL(content);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `${folderName}.zip`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-
-                customMessage("Backup Selesai", "Seluruh isi Brankas berhasil diunduh dengan aman.");
-
-            } catch (err) {
-                console.error(err);
-                customMessage("Gagal Backup", err.message || "Terjadi kesalahan saat memproses file ZIP.");
-            } finally {
-                btn.innerHTML = ogHtml;
-                btn.disabled = false;
-                lucide.createIcons();
-            }
-        };
-
-        initApp();
+        
+        lucide.createIcons();
     </script>
 </body>
 </html>
+```
+
+Segera *upload* ke Vercel dan buka kembali. Semua data dari `milestone-stm-app` akan langsung sinkron karena saya sudah mengunci `appId` nya secara permanen!
