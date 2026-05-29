@@ -140,7 +140,7 @@
                 </h2>
                 
                 <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 w-full xl:w-auto justify-end">
-                    <!-- Tombol Tambah Target Dipindah Kesini -->
+                    <!-- Tombol Tambah Target -->
                     <button onclick="openAddModal()" class="flex-1 sm:flex-none px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center gap-1.5 shrink-0 active:scale-95">
                         <i data-lucide="plus" class="w-4 h-4"></i> Tambah Target
                     </button>
@@ -477,7 +477,7 @@
         lucide.createIcons();
 
         let milestones = [];
-        let globalFiles = []; // Array untuk menampung file dari Brankas Berkas
+        let globalFiles = []; 
         let currentFilter = 'all';
         let currentSearch = '';
 
@@ -510,11 +510,22 @@
                     auth = getAuth(app);
                     db = getFirestore(app);
 
-                    const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-                    if (token && typeof myFirebaseConfig === 'undefined') {
-                        await signInWithCustomToken(auth, token);
-                    } else {
-                        await signInAnonymously(auth);
+                    try {
+                        const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                        if (token && typeof __firebase_config !== 'undefined' && firebaseConfig !== myFirebaseConfig) {
+                            await signInWithCustomToken(auth, token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (authErr) {
+                        console.error("Auth Error:", authErr);
+                        if (authErr.code === 'auth/operation-not-allowed') {
+                            customMessage("Gagal Login Firebase (PENTING)", "Mohon masuk ke Firebase Console Anda -> menu Authentication -> Sign-in method -> lalu AKTIFKAN pilihan 'Anonymous'.");
+                        } else {
+                            customMessage("Gagal Login Firebase", authErr.message);
+                        }
+                        fallbackToLocal();
+                        return; // Berhenti di sini jika Auth gagal
                     }
 
                     usingFirebase = true;
@@ -531,8 +542,13 @@
                         updateStats();
                     }, (error) => {
                         console.error("Firestore error (milestones):", error);
+                        usingFirebase = false;
+                        document.getElementById('cloud-indicator').style.display = 'none';
+                        
                         if (error.code === 'permission-denied') {
-                            customMessage("Akses Ditolak", "Firebase belum dalam mode Test.");
+                            customMessage("Akses Database Ditolak (PENTING)", "Masuk ke Firebase Console Anda -> menu Firestore Database -> tab Rules. Ubah aturannya menjadi 'allow read, write: if true;' (Test Mode).");
+                        } else {
+                            customMessage("Database Error", error.message);
                         }
                         fallbackToLocal();
                     });
@@ -547,6 +563,7 @@
                     
                 } catch (e) {
                     console.error("Firebase init failed:", e);
+                    customMessage("Koneksi Cloud Gagal", "Periksa kembali apiKey dan konfigurasi Firebase Anda. " + e.message);
                     fallbackToLocal();
                 }
             } else {
