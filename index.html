@@ -2,14 +2,13 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <!-- Meta tag khusus untuk PWA dan mencegah Auto-Zoom di Mobile -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#f8fafc">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="mobile-web-app-capable" content="yes">
     
-    <title>Milestone STM</title>
+    <title>MILEST.</title>
     <!-- Favicon -->
     <link rel="icon" href="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL">
     
@@ -48,7 +47,6 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
         
-        /* Utility untuk efek app native di iOS */
         @supports (-webkit-touch-callout: none) {
             .min-h-screen { min-height: -webkit-fill-available; }
         }
@@ -59,11 +57,9 @@
     <nav class="bg-white/80 backdrop-blur-md border-b border-slate-200/60 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3">
-                <!-- Logo Aplikasi Diperbarui tanpa frame -->
                 <img src="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL" alt="Logo" class="w-10 h-10 sm:w-11 sm:h-11 object-contain shrink-0 drop-shadow-sm">
+                <h1 class="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tighter truncate">MILEST.</h1>
                 
-                <h1 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight truncate">Milestone STM</h1>
-                <!-- Indikator Koneksi Cloud -->
                 <div id="cloud-indicator" class="hidden items-center gap-1 px-2 py-1 bg-emerald-50 text-emerald-600 text-[9px] sm:text-[10px] font-bold rounded-full ml-1 border border-emerald-100 uppercase tracking-wide shrink-0">
                     <i data-lucide="cloud-lightning" class="w-3 h-3"></i> <span class="hidden sm:inline">Tersinkron</span>
                 </div>
@@ -80,6 +76,17 @@
 
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full flex flex-col lg:flex-row gap-6 sm:gap-8">
         <div class="w-full lg:w-1/3 flex flex-col gap-5 sm:gap-6 shrink-0">
+            <!-- Add Target Button (Replaces Form) -->
+            <button onclick="openAddModal()" class="w-full group bg-white hover:bg-slate-50 rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-slate-200 border-dashed hover:border-brand-400 transition-all shadow-sm hover:shadow-md flex flex-col items-center justify-center gap-3 text-center active:scale-[0.98]">
+                <div class="w-12 h-12 rounded-full bg-brand-50 group-hover:bg-brand-100 text-brand-600 flex items-center justify-center transition-colors">
+                    <i data-lucide="plus" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-slate-800 group-hover:text-brand-700 transition-colors">Tambah Target</h3>
+                    <p class="text-xs text-slate-500 mt-1">Buat langkah baru menuju tujuanmu.</p>
+                </div>
+            </button>
+
             <!-- Bento Stats -->
             <div class="grid grid-cols-2 gap-3 sm:gap-4">
                 <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-slate-100 shadow-soft">
@@ -102,7 +109,7 @@
                     <div class="flex justify-between items-end mb-4 relative z-10">
                         <div>
                             <p class="text-slate-400 text-xs sm:text-sm font-medium mb-1">Target Kuartal Ini</p>
-                            <h3 class="text-xl sm:text-2xl font-bold" id="q-title">Q1 2026</h3>
+                            <h3 class="text-xl sm:text-2xl font-bold" id="q-title">Q2 2026</h3>
                         </div>
                         <div class="text-right">
                             <span class="text-2xl sm:text-3xl font-bold text-brand-400" id="q-percentage">0%</span>
@@ -126,51 +133,6 @@
                     </ul>
                 </div>
             </div>
-
-            <div class="bg-white rounded-2xl sm:rounded-3xl shadow-soft border border-slate-100 p-5 sm:p-8">
-                <div class="mb-5 sm:mb-6">
-                    <h2 class="text-base sm:text-lg font-bold text-slate-900">Tambah Milestone</h2>
-                    <p class="text-xs sm:text-sm text-slate-500 mt-1">Buat target baru untuk dicapai.</p>
-                </div>
-                <form id="add-form" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Judul Target <span class="text-rose-500">*</span></label>
-                        <!-- text-base on mobile prevents iOS auto-zoom -->
-                        <input type="text" id="title" required placeholder="Misal: Rilis Fitur X" class="w-full px-4 py-2.5 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all placeholder:text-slate-400">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Tenggat Waktu <span class="text-rose-500">*</span></label>
-                        <input type="date" id="dueDate" required class="w-full px-4 py-2.5 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Deskripsi</label>
-                        <textarea id="description" rows="3" placeholder="Detail tentang milestone ini..." class="w-full px-4 py-2.5 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all resize-none placeholder:text-slate-400"></textarea>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-3 pt-2">
-                        <div class="relative group">
-                            <input type="file" id="photos" accept="image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                            <div class="h-20 sm:h-24 w-full border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 group-hover:bg-brand-50 group-hover:border-brand-300 transition-colors flex flex-col items-center justify-center text-center p-2 relative">
-                                <div id="photo-badge-counter" class="hidden absolute -top-2 -right-2 w-6 h-6 bg-brand-500 text-white rounded-full text-xs font-bold items-center justify-center shadow-md">0</div>
-                                <i data-lucide="image-plus" class="w-5 h-5 sm:w-6 sm:h-6 text-slate-400 group-hover:text-brand-500 mb-1.5 transition-colors"></i>
-                                <span class="text-[10px] font-semibold text-slate-500 group-hover:text-brand-600 text-balance leading-tight" id="photo-count-badge">Auto-Compress Foto</span>
-                            </div>
-                        </div>
-                        <div class="relative group">
-                            <input type="file" id="docs" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                            <div class="h-20 sm:h-24 w-full border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 group-hover:bg-blue-50 group-hover:border-blue-300 transition-colors flex flex-col items-center justify-center text-center p-2 relative">
-                                <div id="doc-badge-counter" class="hidden absolute -top-2 -right-2 w-6 h-6 bg-blue-500 text-white rounded-full text-xs font-bold items-center justify-center shadow-md">0</div>
-                                <i data-lucide="file-plus" class="w-5 h-5 sm:w-6 sm:h-6 text-slate-400 group-hover:text-blue-500 mb-1.5 transition-colors"></i>
-                                <span class="text-[10px] font-semibold text-slate-500 group-hover:text-blue-600 text-balance leading-tight" id="doc-count-badge">Auto-Optimasi Dokumen</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" id="submit-btn" class="w-full mt-4 bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 sm:py-3.5 rounded-xl text-sm transition-all shadow-md shadow-brand-500/20 flex items-center justify-center gap-2 active:scale-[0.98]">
-                        <i data-lucide="plus" class="w-4 h-4"></i> Tambah Milestone
-                    </button>
-                </form>
-            </div>
         </div>
 
         <div class="flex-grow min-w-0">
@@ -189,7 +151,7 @@
                 <div class="relative w-full sm:w-64">
                     <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                     <!-- text-base to prevent mobile zoom -->
-                    <input type="text" id="search-input" placeholder="Cari milestone..." class="w-full pl-9 pr-4 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all shadow-soft placeholder:text-slate-400">
+                    <input type="text" id="search-input" placeholder="Cari target..." class="w-full pl-9 pr-4 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all shadow-soft placeholder:text-slate-400">
                 </div>
             </div>
 
@@ -198,13 +160,66 @@
                     <i data-lucide="map" class="w-8 h-8 text-slate-300" id="empty-icon"></i>
                 </div>
                 <h3 class="text-base sm:text-lg font-bold text-slate-700 mb-1" id="empty-title">Perjalanan Belum Dimulai</h3>
-                <p class="text-xs sm:text-sm text-slate-500" id="empty-desc">Tambahkan target pertamamu di panel sebelah kiri.</p>
+                <p class="text-xs sm:text-sm text-slate-500" id="empty-desc">Tekan tombol Tambah Target untuk memulai.</p>
             </div>
 
             <div id="list-container" class="relative before:absolute before:inset-0 before:ml-[11px] sm:before:ml-[15px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
             </div>
         </div>
     </main>
+
+    <!-- Modal Tambah Target Baru -->
+    <div id="add-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeAddModal()"></div>
+        <div class="relative bg-white rounded-3xl shadow-xl w-full max-w-lg p-5 sm:p-8 transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="add-modal-content">
+            <div class="flex items-center justify-between mb-4 sm:mb-5">
+                <h3 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center"><i data-lucide="plus" class="w-4 h-4"></i></div>
+                    Tambah Target
+                </h3>
+                <button onclick="closeAddModal()" class="p-2 text-slate-400 hover:bg-slate-100 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            
+            <form id="add-form" class="space-y-4 overflow-y-auto custom-scrollbar pr-2 pb-2">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Judul Target <span class="text-rose-500">*</span></label>
+                    <input type="text" id="title" required placeholder="Misal: Rilis Fitur X" class="w-full px-4 py-2.5 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all placeholder:text-slate-400">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Tenggat Waktu <span class="text-rose-500">*</span></label>
+                    <input type="date" id="dueDate" required class="w-full px-4 py-2.5 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Deskripsi</label>
+                    <textarea id="description" rows="3" placeholder="Detail tentang target ini..." class="w-full px-4 py-2.5 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all resize-none placeholder:text-slate-400"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <div class="relative group">
+                        <input type="file" id="photos" accept="image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                        <div class="h-20 sm:h-24 w-full border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 group-hover:bg-brand-50 group-hover:border-brand-300 transition-colors flex flex-col items-center justify-center text-center p-2 relative">
+                            <div id="photo-badge-counter" class="hidden absolute -top-2 -right-2 w-6 h-6 bg-brand-500 text-white rounded-full text-xs font-bold items-center justify-center shadow-md">0</div>
+                            <i data-lucide="image-plus" class="w-5 h-5 sm:w-6 sm:h-6 text-slate-400 group-hover:text-brand-500 mb-1.5 transition-colors"></i>
+                            <span class="text-[10px] font-semibold text-slate-500 group-hover:text-brand-600 text-balance leading-tight" id="photo-count-badge">Auto-Compress Foto</span>
+                        </div>
+                    </div>
+                    <div class="relative group">
+                        <input type="file" id="docs" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                        <div class="h-20 sm:h-24 w-full border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 group-hover:bg-blue-50 group-hover:border-blue-300 transition-colors flex flex-col items-center justify-center text-center p-2 relative">
+                            <div id="doc-badge-counter" class="hidden absolute -top-2 -right-2 w-6 h-6 bg-blue-500 text-white rounded-full text-xs font-bold items-center justify-center shadow-md">0</div>
+                            <i data-lucide="file-plus" class="w-5 h-5 sm:w-6 sm:h-6 text-slate-400 group-hover:text-blue-500 mb-1.5 transition-colors"></i>
+                            <span class="text-[10px] font-semibold text-slate-500 group-hover:text-blue-600 text-balance leading-tight" id="doc-count-badge">Auto-Optimasi Dokumen</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="mt-4 sm:mt-6 pt-4 border-t border-slate-100 flex justify-end shrink-0">
+                <button type="submit" form="add-form" id="submit-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 sm:py-3.5 rounded-xl text-sm transition-all shadow-md shadow-brand-500/20 flex items-center justify-center gap-2 active:scale-[0.98]">
+                    <i data-lucide="save" class="w-4 h-4"></i> Simpan Target
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal Detail -->
     <div id="detail-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
@@ -237,11 +252,11 @@
     <!-- Modal Edit -->
     <div id="edit-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeEditModal()"></div>
-        <div class="relative bg-white rounded-3xl shadow-xl w-full max-w-lg p-5 sm:p-8 transform scale-95 transition-transform duration-300 overflow-hidden flex flex-col max-h-[90vh]" id="edit-modal-content">
+        <div class="relative bg-white rounded-3xl shadow-xl w-full max-w-lg p-5 sm:p-8 transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="edit-modal-content">
             <div class="flex items-center justify-between mb-4 sm:mb-5">
                 <h3 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
                     <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center"><i data-lucide="edit-3" class="w-4 h-4"></i></div>
-                    Edit Milestone
+                    Edit Target
                 </h3>
                 <button onclick="closeEditModal()" class="p-2 text-slate-400 hover:bg-slate-100 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
@@ -317,7 +332,7 @@
                 </div>
                 <h3 class="text-base sm:text-lg font-bold text-slate-900">Tandai Tidak Selesai</h3>
             </div>
-            <p class="text-xs sm:text-sm text-slate-500 mb-4 sm:mb-5 ml-11 sm:ml-13">Berikan alasan mengapa milestone ini tidak selesai untuk evaluasi.</p>
+            <p class="text-xs sm:text-sm text-slate-500 mb-4 sm:mb-5 ml-11 sm:ml-13">Berikan alasan mengapa target ini tidak selesai untuk evaluasi.</p>
             <form id="fail-form" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1.5">Alasan / Kendala <span class="text-rose-500">*</span></label>
@@ -333,13 +348,11 @@
         </div>
     </div>
 
-    <!-- PWA Installation Script (Service Worker & Manifest injection) -->
     <script>
-        // Inject Manifest untuk PWA (Bisa di-install ke HP) menggunakan Logo Google Drive
         const pwaManifest = {
-            "name": "Milestone STM",
-            "short_name": "Milestones",
-            "description": "Aplikasi tracker milestone untuk produktivitas tim.",
+            "name": "MILEST.",
+            "short_name": "MILEST.",
+            "description": "Aplikasi tracker target untuk produktivitas tim.",
             "start_url": "./",
             "display": "standalone",
             "background_color": "#f8fafc",
@@ -364,7 +377,6 @@
         linkManifest.href = manifestURL;
         document.head.appendChild(linkManifest);
 
-        // Apple Touch Icon untuk iOS
         const linkAppleIcon = document.createElement('link');
         linkAppleIcon.rel = 'apple-touch-icon';
         linkAppleIcon.href = "https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL";
@@ -385,7 +397,7 @@
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'milestone-stm-app';
 
         // =========================================================================
-        // KONFIGURASI FIREBASE VERCEL (WAJIB DIISI AGAR SINKRON KE HP)
+        // KONFIGURASI FIREBASE VERCEL
         // =========================================================================
         const myFirebaseConfig = {
             apiKey: "AIzaSyD_r1cVxGygRJgYFp3rYLlGwUngN_AsnkU",
@@ -415,7 +427,6 @@
                     auth = getAuth(app);
                     db = getFirestore(app);
 
-                    // Login tetap dibutuhkan untuk membaca database (sekalipun publik)
                     const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
                     if (token && typeof myFirebaseConfig === 'undefined') {
                         await signInWithCustomToken(auth, token);
@@ -423,8 +434,6 @@
                         await signInAnonymously(auth);
                     }
 
-                    // KUNCI SINKRONISASI: Kita memindahkan jalur database menjadi "Global/Public"
-                    // Bukan lagi "users/userId". Sehingga HP dan Laptop mengakses laci data yang SAMA.
                     usingFirebase = true;
                     document.getElementById('cloud-indicator').style.display = 'flex';
                     
@@ -440,7 +449,7 @@
                     }, (error) => {
                         console.error("Firestore error:", error);
                         if (error.code === 'permission-denied') {
-                            customMessage("Akses Ditolak", "Database belum dalam mode Test/Publik. Buka aturan (Rules) di Firebase dan atur ke 'true'.");
+                            customMessage("Akses Ditolak", "Database belum dalam mode Test/Publik.");
                         } else {
                             customMessage("Gagal Sinkronisasi", "Terjadi kesalahan saat memuat data cloud.");
                         }
@@ -449,9 +458,6 @@
                     
                 } catch (e) {
                     console.error("Firebase init failed:", e);
-                    if (e.code === 'auth/operation-not-allowed') {
-                        customMessage("Login Diblokir", "Mohon aktifkan 'Anonymous Sign-In' di Firebase Authentication!");
-                    }
                     fallbackToLocal();
                 }
             } else {
@@ -500,7 +506,6 @@
             }
         };
 
-        // Smart Compression Engine
         const CompressionSystem = {
             process: async (file) => {
                 return new Promise((resolve, reject) => {
@@ -606,8 +611,8 @@
             if (filtered.length === 0) {
                 listContainer.classList.add('hidden');
                 emptyState.classList.remove('hidden');
-                document.getElementById('empty-title').textContent = currentSearch ? 'Pencarian Tidak Ditemukan' : currentFilter === 'all' ? 'Perjalanan Belum Dimulai' : 'Tidak ada milestone';
-                document.getElementById('empty-desc').textContent = currentSearch ? `Tidak ada hasil untuk "${currentSearch}"` : 'Tambahkan target pertamamu di panel sebelah kiri.';
+                document.getElementById('empty-title').textContent = currentSearch ? 'Pencarian Tidak Ditemukan' : currentFilter === 'all' ? 'Perjalanan Belum Dimulai' : 'Tidak ada target';
+                document.getElementById('empty-desc').textContent = currentSearch ? `Tidak ada hasil untuk "${currentSearch}"` : 'Tekan tombol Tambah Target untuk memulai.';
                 document.getElementById('empty-icon').setAttribute('data-lucide', currentSearch ? 'search-x' : 'map');
             } else {
                 listContainer.classList.remove('hidden');
@@ -773,6 +778,23 @@
             renderMilestones();
         });
 
+        // Handler Add Modal
+        window.openAddModal = () => {
+            document.getElementById('add-form').reset();
+            document.getElementById('photo-badge-counter').classList.replace('flex', 'hidden');
+            document.getElementById('doc-badge-counter').classList.replace('flex', 'hidden');
+            
+            const modal = document.getElementById('add-modal');
+            modal.classList.remove('hidden'); void modal.offsetWidth; modal.classList.remove('opacity-0');
+            document.getElementById('add-modal-content').classList.remove('scale-95');
+        };
+
+        window.closeAddModal = () => {
+            const modal = document.getElementById('add-modal');
+            modal.classList.add('opacity-0'); document.getElementById('add-modal-content').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        };
+
         // Handler Upload Bages
         document.getElementById('photos').addEventListener('change', (e) => {
             const count = e.target.files.length;
@@ -835,9 +857,7 @@
                 if (!usingFirebase) { milestones.unshift(newMilestone); }
                 await saveToDB(newMilestone);
 
-                e.target.reset();
-                document.getElementById('photo-badge-counter').classList.replace('flex', 'hidden');
-                document.getElementById('doc-badge-counter').classList.replace('flex', 'hidden');
+                window.closeAddModal();
             } catch (error) {
                 console.error(error);
                 customMessage("Gagal Upload", error.message || "File terlalu besar atau koneksi terputus.");
@@ -872,7 +892,7 @@
         };
 
         window.deleteMilestone = (id) => {
-            customMessage("Hapus Milestone", "Data yang dihapus tidak dapat dikembalikan.", async () => {
+            customMessage("Hapus Target", "Data yang dihapus tidak dapat dikembalikan.", async () => {
                 if(!usingFirebase) milestones = milestones.filter(m => m.id !== id);
                 await deleteFromDB(id);
             });
@@ -887,7 +907,6 @@
             }
         };
 
-        // Modals Management
         let confirmAction = null;
         const customMessage = (title, desc, action = null) => {
             document.getElementById('confirm-title').textContent = title;
