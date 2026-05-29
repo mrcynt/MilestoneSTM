@@ -14,8 +14,13 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    
     <!-- Library untuk membuat file ZIP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+    <!-- Library PDF.js untuk mengekstrak teks dari PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';</script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -142,6 +147,12 @@
                 </h2>
                 
                 <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 w-full xl:w-auto justify-end">
+                    
+                    <!-- Tombol AI Draft Generator -->
+                    <button onclick="openAIGeneratorModal()" class="flex-1 sm:flex-none px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl text-xs sm:text-sm font-bold transition-all shadow-md flex items-center justify-center gap-1.5 shrink-0 active:scale-95 border border-purple-400/50">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-yellow-300"></i> AI Draft
+                    </button>
+
                     <!-- Tombol Tambah Target -->
                     <button onclick="openAddModal()" class="flex-1 sm:flex-none px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center gap-1.5 shrink-0 active:scale-95">
                         <i data-lucide="plus" class="w-4 h-4"></i> Tambah Target
@@ -170,6 +181,76 @@
             </div>
         </div>
     </main>
+
+    <!-- Modal AI Draft Generator -->
+    <div id="ai-generator-modal" class="hidden fixed inset-0 z-[140] flex items-center justify-center p-4 sm:p-6 opacity-0 transition-all duration-300">
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-md" onclick="closeAIGeneratorModal()"></div>
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col transform scale-95 transition-transform duration-300 overflow-hidden" id="ai-generator-content">
+            
+            <!-- Header -->
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 bg-gradient-to-r from-indigo-50 to-purple-50 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shadow-sm"><i data-lucide="sparkles" class="w-4 h-4 text-yellow-300"></i></div>
+                    <div>
+                        <h3 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">AI Draft Generator</h3>
+                        <p class="text-[10px] sm:text-xs font-medium text-slate-500">Buat Surat Penawaran (RUP) Otomatis</p>
+                    </div>
+                </div>
+                <button onclick="closeAIGeneratorModal()" class="p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            
+            <div class="flex flex-col md:flex-row flex-grow overflow-hidden">
+                <!-- Panel Kiri: Input (Prompt & PDF) -->
+                <div class="w-full md:w-1/3 border-r border-slate-100 bg-slate-50/50 p-4 sm:p-5 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">1. Instruksi Khusus (Opsional)</label>
+                        <textarea id="ai-prompt-input" rows="3" placeholder="Contoh: Buatkan penawaran untuk CCTV merk Dahua, beri diskon 10% di paragraf akhir." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all resize-none shadow-sm"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">2. Upload Dokumen RUP (PDF)</label>
+                        <div class="relative group">
+                            <input type="file" id="ai-pdf-input" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                            <div class="h-24 w-full border-2 border-dashed border-slate-300 rounded-xl bg-white group-hover:bg-purple-50 group-hover:border-purple-300 transition-all flex flex-col items-center justify-center text-center p-3 relative overflow-hidden">
+                                <i data-lucide="file-text" class="w-6 h-6 text-slate-400 group-hover:text-purple-500 mb-1.5 transition-colors"></i>
+                                <span id="ai-pdf-filename" class="text-xs font-bold text-slate-600 group-hover:text-purple-700 line-clamp-1 px-2">Klik/Tarik file PDF kesini</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="btn-generate-ai" onclick="generateDraftAI()" class="w-full mt-auto bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i data-lucide="wand-2" class="w-4 h-4"></i> Generate Surat
+                    </button>
+                    
+                    <!-- Loading State -->
+                    <div id="ai-loading-state" class="hidden flex-col items-center justify-center text-center mt-4">
+                        <i data-lucide="loader-2" class="w-6 h-6 text-purple-600 animate-spin mb-2"></i>
+                        <p class="text-xs font-bold text-slate-600">AI sedang membaca PDF & Menyusun Draf...</p>
+                    </div>
+
+                </div>
+
+                <!-- Panel Kanan: Editor Hasil -->
+                <div class="w-full md:w-2/3 p-4 sm:p-5 flex flex-col bg-white">
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">Hasil Draf (Bisa Diedit)</label>
+                    <textarea id="ai-result-editor" class="flex-grow w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all resize-none shadow-inner leading-relaxed whitespace-pre-wrap font-mono" placeholder="Hasil surat dari AI akan muncul di sini..."></textarea>
+                    
+                    <div class="flex items-center gap-3 mt-4 pt-4 border-t border-slate-100 shrink-0">
+                        <input type="text" id="ai-save-filename" placeholder="Nama File (Misal: Surat_Penawaran_CCTV)" class="flex-grow px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none shadow-sm">
+                        
+                        <button onclick="downloadAIText()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center gap-2 shrink-0">
+                            <i data-lucide="download" class="w-4 h-4"></i> Unduh
+                        </button>
+                        <button onclick="saveAIToBerkas()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold transition-all shadow-md flex items-center gap-2 shrink-0">
+                            <i data-lucide="save" class="w-4 h-4"></i> Simpan ke Brankas
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Modal Add Target -->
     <div id="add-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
@@ -553,10 +634,10 @@
         let currentSearch = '';
         
         let currentFolderId = 'root';
-        let folderHistory = [{ id: 'root', name: 'Utama' }];
+        // KEMBALIKAN KE APP_ID YANG LAMA AGAR DATA LAMA TERBACA KEMBALI
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'milestone-stm-app';
 
-        const appId = 'milestone-stm-app';
-
+        // KONFIGURASI FIREBASE VERCEL
         const myFirebaseConfig = {
             apiKey: "AIzaSyD_r1cVxGygRJgYFp3rYLlGwUngN_AsnkU",
             authDomain: "milestone-app-7dc3e.firebaseapp.com",
@@ -565,6 +646,9 @@
             messagingSenderId: "535579558143",
             appId: "1:535579558143:web:7f961ff8bbe981b4384cca"
         };
+
+        // API KEY GEMINI
+        const GEMINI_API_KEY = "AQ.Ab8RN6I0Msc5cxHyaOfD93suaMNr43l2O_Cag7JL4N8cvpI82w"; 
 
         let firebaseConfig = null;
         if (typeof myFirebaseConfig !== 'undefined') {
@@ -1039,6 +1123,7 @@
         const customMessage = (title, desc, action = null) => {
             document.getElementById('confirm-title').textContent = title; document.getElementById('confirm-desc').textContent = desc; confirmAction = action;
             const cancelBtn = document.getElementById('confirm-cancel-btn'); const actionBtn = document.getElementById('confirm-action-btn');
+            
             actionBtn.textContent = 'Ya';
             if (!action) { cancelBtn.classList.add('hidden'); actionBtn.textContent = 'Tutup'; actionBtn.className = "px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-semibold transition-all"; } 
             else { cancelBtn.classList.remove('hidden'); actionBtn.className = "px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-semibold transition-all"; }
@@ -1172,14 +1257,14 @@
                     const card = document.createElement('div');
                     
                     if(isFolder) {
-                        card.className = "bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/60 rounded-3xl p-4 flex flex-col shadow-sm hover:shadow-md hover:border-amber-300 transition-all cursor-pointer group relative active:scale-95 overflow-hidden";
+                        card.className = "bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/60 rounded-3xl p-4 flex flex-col shadow-sm transition-all cursor-pointer group relative active:scale-95 overflow-hidden";
                         card.onclick = (e) => { if(!e.target.closest('button')) navigateToFolder(f.id); };
                         card.innerHTML = `
                             <div class="flex justify-between items-start w-full mb-3">
                                 <div class="w-12 h-12 rounded-2xl bg-amber-200/50 text-amber-600 flex items-center justify-center shrink-0 shadow-inner group-hover:-translate-y-1 transition-transform">
                                     <i data-lucide="folder-open" class="w-6 h-6 fill-amber-300"></i>
                                 </div>
-                                <div class="flex items-center gap-1 bg-white/70 backdrop-blur-sm p-1 rounded-xl shadow-sm border border-amber-100">
+                                <div class="flex items-center gap-1 bg-white/80 backdrop-blur-sm p-1 rounded-xl shadow-sm border border-amber-100/50">
                                     <button onclick="downloadFolderZip('${f.id}', '${f.name}', event)" class="p-1.5 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Unduh ZIP"><i data-lucide="folder-down" class="w-3.5 h-3.5"></i></button>
                                     <button onclick="openRenameModal('${f.id}', '${f.name}', event)" class="p-1.5 text-amber-600 hover:bg-amber-100 rounded-lg transition-colors" title="Ubah Nama"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i></button>
                                     <button onclick="deleteBerkas('${f.id}', true, event)" class="p-1.5 text-rose-500 hover:bg-rose-100 rounded-lg transition-colors" title="Hapus"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
@@ -1191,7 +1276,7 @@
                             </div>
                         `;
                     } else {
-                        card.className = "bg-white border border-slate-200 rounded-3xl p-4 flex flex-col gap-3 shadow-sm hover:shadow-md hover:border-slate-300 transition-all cursor-pointer group relative active:scale-95";
+                        card.className = "bg-white border border-slate-200 rounded-3xl p-4 flex flex-col gap-3 shadow-sm transition-all group relative active:scale-95";
                         card.innerHTML = `
                             <div class="flex flex-col gap-3 h-full">
                                 <div class="flex items-start gap-3">
@@ -1389,6 +1474,229 @@
                 console.error(err); customMessage("Gagal Backup", err.message || "Terjadi kesalahan saat membuat ZIP.");
             } finally {
                 btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
+            }
+        };
+
+        // =========================================================================
+        // AI DRAFT GENERATOR LOGIC (MENGGUNAKAN GEMINI)
+        // =========================================================================
+
+        let extractedPdfText = ""; // Tempat menyimpan teks dari PDF
+
+        // Buka / Tutup Modal
+        window.openAIGeneratorModal = () => {
+            document.getElementById('ai-prompt-input').value = '';
+            document.getElementById('ai-pdf-input').value = '';
+            document.getElementById('ai-pdf-filename').textContent = 'Klik/Tarik file PDF RUP kesini';
+            document.getElementById('ai-result-editor').value = '';
+            document.getElementById('ai-save-filename').value = '';
+            extractedPdfText = "";
+            
+            const m = document.getElementById('ai-generator-modal');
+            m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0');
+            document.getElementById('ai-generator-content').classList.remove('scale-95');
+        };
+
+        window.closeAIGeneratorModal = () => {
+            const m = document.getElementById('ai-generator-modal');
+            m.classList.add('opacity-0'); document.getElementById('ai-generator-content').classList.add('scale-95');
+            setTimeout(() => m.classList.add('hidden'), 300);
+        };
+
+        // Ekstraksi PDF saat di-upload
+        document.getElementById('ai-pdf-input').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (file.type !== "application/pdf") {
+                customMessage("Format Salah", "Hanya menerima file PDF RUP.");
+                e.target.value = '';
+                return;
+            }
+
+            const nameDisplay = document.getElementById('ai-pdf-filename');
+            nameDisplay.innerHTML = `<i data-lucide="loader-2" class="w-3 h-3 animate-spin inline-block mr-1"></i> Membaca PDF...`;
+            lucide.createIcons();
+
+            try {
+                // Konversi file ke bentuk yang bisa dibaca PDF.js
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                
+                let fullText = "";
+                // Loop semua halaman dan ambil teksnya
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    fullText += pageText + "\n";
+                }
+                
+                extractedPdfText = fullText;
+                nameDisplay.textContent = `✅ ${file.name}`;
+                nameDisplay.classList.replace('text-slate-600', 'text-emerald-600');
+            } catch (err) {
+                console.error(err);
+                nameDisplay.textContent = `❌ Gagal membaca PDF`;
+                nameDisplay.classList.replace('text-slate-600', 'text-rose-600');
+                customMessage("Gagal Membaca PDF", "Pastikan file PDF tersebut berisi teks, bukan sekadar gambar hasil scan.");
+            }
+        });
+
+        // Trigger Gemini API
+        window.generateDraftAI = async () => {
+            if (!extractedPdfText) {
+                customMessage("PDF Kosong", "Harap unggah dokumen PDF RUP terlebih dahulu agar AI punya acuan data.");
+                return;
+            }
+
+            if (GEMINI_API_KEY === "MASUKKAN_API_KEY_GEMINI_DI_SINI") {
+                customMessage("API Key Belum Diatur", "Harap masukkan API Key Gemini milik Anda ke dalam kode aplikasi.");
+                return;
+            }
+
+            const promptInput = document.getElementById('ai-prompt-input').value.trim();
+            const btn = document.getElementById('btn-generate-ai');
+            const loadingState = document.getElementById('ai-loading-state');
+            const editor = document.getElementById('ai-result-editor');
+
+            btn.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            loadingState.classList.add('flex');
+            editor.value = "AI sedang mengetik...\nMohon tunggu sekitar 5-10 detik.";
+
+            // SYSTEM PROMPT: Memaksa Gemini untuk bertindak sebagai staf administrasi PT SMART TECHNOLOGY MANDIRI
+            const systemPrompt = `Kamu adalah seorang asisten administrasi proyek yang sangat profesional di PT SMART TECHNOLOGY MANDIRI. 
+Tugas utamamu adalah membuat "Surat Penawaran Pengadaan" berdasarkan teks dari dokumen RUP (Rencana Umum Pengadaan) yang diberikan.
+
+ATURAN SANGAT KETAT YANG WAJIB DIIKUTI:
+1. GUNAKAN TEMPLATE DI BAWAH INI SEBAGAI STRUKTUR UTAMA. Jangan mengubah format header dan footer.
+2. AMBIL DATA DARI TEKS RUP: Temukan siapa instansi/dinas yang dituju (Kepada Yth), lokasi/kecamatannya, dan daftar produk/barang apa saja yang mereka butuhkan.
+3. JIKA ADA INSTRUKSI TAMBAHAN DARI USER, terapkan instruksi tersebut ke dalam isi surat.
+4. JANGAN tambahkan teks pengantar seperti "Tentu, ini suratnya:" atau "Berikut adalah hasilnya:". Langsung cetak isi suratnya saja agar bisa langsung dicopy-paste.
+
+--- TEMPLATE SURAT ---
+SURAT PENAWARAN 
+PT SMART TECHNOLOGY MANDIRI
+Telp: +6285381170567
+Nomor : 023/STM-SPH/V/2026
+Lampiran : 1 (Satu) Berkas
+Perihal : Penawaran Pengadaan [NAMA_PENGADAAN_DARI_RUP]
+
+Kepada Yth.
+Bapak/Ibu Pimpinan [NAMA_INSTANSI_DARI_RUP]
+di [LOKASI_DARI_RUP]
+
+Dengan hormat,
+
+Bersama surat ini kami dari PT Smart Technology Mandiri bermaksud mengajukan penawaran pengadaan barang dan jasa untuk proyek [NAMA_PENGADAAN_DARI_RUP] di wilayah [LOKASI_DARI_RUP].
+
+Adapun spesifikasi produk dan rincian pekerjaan yang kami tawarkan meliputi:
+1. [DAFTAR_PRODUK_1_DARI_RUP]
+2. [DAFTAR_PRODUK_2_DARI_RUP]
+(lanjutkan jika ada)
+
+[JIKA_ADA_INSTRUKSI_TAMBAHAN_USER_MASUKKAN_DI_SINI_SEBAGAI_PARAGRAF_BARU]
+
+Untuk rincian spesifikasi teknis lebih lanjut, jumlah unit, serta detail harga penawaran akan kami lampirkan dalam dokumen Rincian Anggaran Biaya (RAB) terpisah sesuai kebutuhan instansi Bapak/Ibu.
+
+Demikian surat penawaran ini kami sampaikan. Besar harapan kami agar dapat menjalin kerja sama yang baik. Atas perhatian dan kesempatan yang diberikan, kami ucapkan terima kasih.
+
+Hormat kami,
+PT SMART TECHNOLOGY MANDIRI
+
+(MARCELL VRIVAL)
+Direktur / Pimpinan Perusahaan
+----------------------
+
+Ini adalah Instruksi Tambahan dari User: "${promptInput}"
+Ini adalah Teks dari PDF RUP: "${extractedPdfText}"
+
+SEKARANG, BUAT SURATNYA BERDASARKAN TEMPLATE DI ATAS:`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: systemPrompt }] }]
+                    })
+                });
+
+                if (!response.ok) throw new Error("Gagal terhubung ke server AI Google.");
+
+                const data = await response.json();
+                const aiResponseText = data.candidates[0].content.parts[0].text;
+                
+                editor.value = aiResponseText; // Masukkan hasil ke editor
+                
+                // Coba buat nama file otomatis dari hasil teks
+                document.getElementById('ai-save-filename').value = "Surat_Penawaran_Otomatis_" + Date.now().toString().slice(-4);
+
+            } catch (err) {
+                console.error(err);
+                editor.value = "Terjadi kesalahan saat memanggil AI. Periksa koneksi internet atau validitas API Key Gemini Anda.";
+                customMessage("AI Error", err.message);
+            } finally {
+                loadingState.classList.replace('flex', 'hidden');
+                btn.classList.remove('hidden');
+            }
+        };
+
+        // Download Hasil Editor jadi .txt
+        window.downloadAIText = () => {
+            const text = document.getElementById('ai-result-editor').value;
+            let filename = document.getElementById('ai-save-filename').value.trim();
+            if (!text) { customMessage("Kosong", "Tidak ada hasil untuk diunduh."); return; }
+            if (!filename) filename = "Draft_Surat_Penawaran";
+
+            const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${filename}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
+        // Simpan Hasil Editor langsung ke Brankas (Firebase)
+        window.saveAIToBerkas = async () => {
+            const text = document.getElementById('ai-result-editor').value;
+            let filename = document.getElementById('ai-save-filename').value.trim();
+            
+            if (!text) { customMessage("Kosong", "Tidak ada hasil untuk disimpan."); return; }
+            if (!filename) { customMessage("Nama File Kosong", "Berikan nama file sebelum menyimpan ke brankas."); return; }
+            if (!filename.endsWith('.txt')) filename += '.txt';
+
+            try {
+                // Ubah teks UTF-8 biasa menjadi format Base64 yang diterima sistem Brankas kita
+                const utf8Bytes = new TextEncoder().encode(text);
+                const binaryString = String.fromCodePoint(...utf8Bytes);
+                const base64Data = "data:text/plain;base64," + btoa(binaryString);
+
+                const newFile = {
+                    id: 'berkas_ai_' + Date.now(),
+                    name: filename,
+                    type: 'text/plain',
+                    data: base64Data,
+                    parentId: 'root', // Simpan di folder utama (root)
+                    createdAt: new Date().toISOString()
+                };
+
+                if (!usingFirebase) { 
+                    globalFiles.push(newFile); saveBerkasLocal(); 
+                } else { 
+                    await setDoc(doc(berkasRef, newFile.id), newFile); 
+                }
+
+                customMessage("Berhasil Disimpan!", `File ${filename} telah tersimpan di dalam Brankas Berkas.`, () => {
+                    closeAIGeneratorModal();
+                });
+
+            } catch (err) {
+                console.error(err);
+                customMessage("Gagal Menyimpan", "Terjadi kesalahan sistem saat menyimpan ke brankas.");
             }
         };
 
