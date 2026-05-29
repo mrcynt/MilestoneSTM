@@ -15,10 +15,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Library untuk membuat file ZIP -->
+    <!-- Library untuk ZIP & PDF (Ekstraksi Teks) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    
-    <!-- Library PDF.js untuk mengekstrak teks dari PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';</script>
 
@@ -30,34 +28,21 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
                     colors: {
-                        brand: {
-                            50: '#f5f3ff', 100: '#ede9fe', 200: '#ddd6fe', 300: '#c4b5fd', 400: '#a78bfa',
-                            500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95'
-                        }
+                        brand: { 50: '#f5f3ff', 100: '#ede9fe', 200: '#ddd6fe', 300: '#c4b5fd', 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95' }
                     },
-                    boxShadow: {
-                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
-                        'inner-light': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)',
-                    }
+                    boxShadow: { 'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)', 'inner-light': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)' }
                 }
             }
         }
     </script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
-        
-        @supports (-webkit-touch-callout: none) {
-            .min-h-screen { min-height: -webkit-fill-available; }
-        }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="text-slate-800 antialiased min-h-screen flex flex-col selection:bg-brand-200">
@@ -65,1642 +50,384 @@
     <nav class="bg-white/80 backdrop-blur-md border-b border-slate-200/60 sticky top-0 z-40 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3">
-                <img src="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL" alt="Logo" class="w-10 h-10 sm:w-11 sm:h-11 object-contain shrink-0 drop-shadow-sm">
-                
-                <h1 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight truncate">MILEWORKS</h1>
-                <div id="cloud-indicator" class="hidden items-center gap-1 px-2 py-1 bg-emerald-50 text-emerald-600 text-[9px] sm:text-[10px] font-bold rounded-full ml-1 border border-emerald-100 uppercase tracking-wide shrink-0">
-                    <i data-lucide="cloud-lightning" class="w-3 h-3"></i> <span class="hidden sm:inline">Tersinkron</span>
+                <img src="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL" alt="Logo" class="w-10 h-10 object-contain shrink-0">
+                <h1 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight truncate uppercase">MILEWORKS</h1>
+                <div id="cloud-indicator" class="hidden items-center gap-1 px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-full border border-emerald-100 uppercase shrink-0">
+                    <i data-lucide="cloud-lightning" class="w-3 h-3"></i> <span class="hidden sm:inline">Online</span>
                 </div>
             </div>
             
             <div class="hidden sm:flex bg-slate-100 p-1 rounded-full border border-slate-200/60">
-                <button onclick="filterMilestones('all')" id="filter-all" class="filter-btn active px-4 py-1.5 text-sm font-semibold rounded-full bg-white text-slate-800 shadow-sm transition-all">Semua</button>
-                <button onclick="filterMilestones('pending')" id="filter-pending" class="filter-btn px-4 py-1.5 text-sm font-medium rounded-full text-slate-500 hover:text-slate-800 transition-all">Berjalan</button>
-                <button onclick="filterMilestones('completed')" id="filter-completed" class="filter-btn px-4 py-1.5 text-sm font-medium rounded-full text-slate-500 hover:text-slate-800 transition-all">Selesai</button>
-                <button onclick="filterMilestones('failed')" id="filter-failed" class="filter-btn px-4 py-1.5 text-sm font-medium rounded-full text-slate-500 hover:text-slate-800 transition-all">Gagal</button>
+                <button onclick="filterMilestones('all')" id="filter-all" class="filter-btn active px-4 py-1.5 text-sm font-semibold rounded-full bg-white text-slate-800 shadow-sm">Semua</button>
+                <button onclick="filterMilestones('pending')" id="filter-pending" class="filter-btn px-4 py-1.5 text-sm font-medium rounded-full text-slate-500">Berjalan</button>
+                <button onclick="filterMilestones('completed')" id="filter-completed" class="filter-btn px-4 py-1.5 text-sm font-medium rounded-full text-slate-500">Selesai</button>
             </div>
         </div>
     </nav>
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full flex flex-col lg:flex-row gap-6 sm:gap-8 relative z-10">
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex flex-col lg:flex-row gap-8">
         
-        <!-- Kolom Kiri: Dashboard Stats -->
-        <div class="w-full lg:w-1/3 flex flex-col gap-5 sm:gap-6 shrink-0">
-            <div class="grid grid-cols-2 gap-3 sm:gap-4">
-                <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-slate-100 shadow-soft">
-                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-2 sm:mb-3">
-                        <i data-lucide="layers" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-                    </div>
-                    <p class="text-xs sm:text-sm font-medium text-slate-500 mb-0.5 sm:mb-1">Total Target</p>
-                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900" id="total-count">0</h2>
+        <!-- Dashboard Samping -->
+        <div class="w-full lg:w-1/3 flex flex-col gap-6 shrink-0">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-soft">
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-3"><i data-lucide="layers"></i></div>
+                    <p class="text-xs font-medium text-slate-500">Total Target</p>
+                    <h2 class="text-3xl font-bold" id="total-count">0</h2>
                 </div>
-                <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-slate-100 shadow-soft">
-                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 sm:mb-3">
-                        <i data-lucide="check-circle-2" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-                    </div>
-                    <p class="text-xs sm:text-sm font-medium text-slate-500 mb-0.5 sm:mb-1">Diselesaikan</p>
-                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900" id="completed-count">0</h2>
+                <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-soft">
+                    <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3"><i data-lucide="check-circle-2"></i></div>
+                    <p class="text-xs font-medium text-slate-500">Selesai</p>
+                    <h2 class="text-3xl font-bold" id="completed-count">0</h2>
                 </div>
+            </div>
 
-                <div class="col-span-2 bg-slate-900 rounded-2xl sm:rounded-3xl p-5 sm:p-6 text-white shadow-lg relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
-                    <div class="flex justify-between items-end mb-4 relative z-10">
-                        <div>
-                            <p class="text-slate-400 text-xs sm:text-sm font-medium mb-1">Target Kuartal Ini</p>
-                            <h3 class="text-xl sm:text-2xl font-bold" id="q-title">Q1 2026</h3>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-2xl sm:text-3xl font-bold text-brand-400" id="q-percentage">0%</span>
-                        </div>
-                    </div>
-                    <div class="w-full h-2.5 sm:h-3 bg-slate-800 rounded-full overflow-hidden relative z-10 p-0.5">
-                        <div id="q-progress-bar" class="bg-brand-500 h-full rounded-full transition-all duration-1000 w-0 shadow-inner-light"></div>
-                    </div>
-                    <p class="text-[11px] sm:text-xs text-slate-400 mt-3 font-medium flex items-center gap-1.5"><i data-lucide="info" class="w-3.5 h-3.5"></i> <span id="q-status-text">Belum ada target di kuartal ini.</span></p>
-
-                    <div id="evaluation-alert" class="hidden mt-4 bg-rose-500/20 border border-rose-400/30 rounded-xl p-3 text-xs sm:text-sm flex items-start gap-2.5 backdrop-blur-md animate-pulse">
-                        <i data-lucide="siren" class="w-4 h-4 text-rose-200 mt-0.5 shrink-0"></i>
-                        <p class="text-rose-100 leading-snug"><strong class="font-semibold text-white">Evaluasi Dibutuhkan!</strong> <span id="evaluation-message">Target belum tercapai.</span></p>
-                    </div>
-                </div>
-
-                <div id="issues-box" class="col-span-2 bg-rose-50 rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-rose-100 hidden shadow-soft">
-                    <h3 class="text-xs sm:text-sm font-bold text-rose-800 mb-3 flex items-center gap-2"><i data-lucide="alert-octagon" class="w-4 h-4"></i> Catatan Kendala Kuartal Ini</h3>
-                    <ul id="issues-list" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-2">
-                    </ul>
-                </div>
+            <!-- Tombol Aksi Utama -->
+            <div class="flex flex-col gap-3">
+                <button onclick="openAddModal()" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-2xl font-bold shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all">
+                    <i data-lucide="plus-circle"></i> Tambah Target Baru
+                </button>
+                <button onclick="openAIGeneratorModal()" class="w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 text-white rounded-2xl font-bold shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all">
+                    <i data-lucide="sparkles" class="text-yellow-300"></i> AI Draft Generator
+                </button>
+                <button onclick="openPasswordModal()" class="w-full py-4 bg-slate-800 hover:bg-slate-900 text-white rounded-2xl font-bold shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all">
+                    <i data-lucide="folder-lock"></i> Brankas Berkas
+                </button>
             </div>
         </div>
 
-        <div class="flex-grow min-w-0">
-            <div class="flex sm:hidden overflow-x-auto pb-4 mb-2 gap-2 hide-scrollbar -mx-4 px-4">
-                <button onclick="filterMilestones('all')" id="filter-all-mob" class="filter-btn active shrink-0 px-5 py-2 text-sm font-semibold rounded-full bg-slate-800 text-white transition-all">Semua</button>
-                <button onclick="filterMilestones('pending')" id="filter-pending-mob" class="filter-btn shrink-0 px-5 py-2 text-sm font-medium rounded-full bg-white border border-slate-200 text-slate-600 transition-all">Berjalan</button>
-                <button onclick="filterMilestones('completed')" id="filter-completed-mob" class="filter-btn shrink-0 px-5 py-2 text-sm font-medium rounded-full bg-white border border-slate-200 text-slate-600 transition-all">Selesai</button>
-                <button onclick="filterMilestones('failed')" id="filter-failed-mob" class="filter-btn shrink-0 px-5 py-2 text-sm font-medium rounded-full bg-white border border-slate-200 text-slate-600 transition-all">Gagal</button>
-            </div>
-
-            <!-- Header Action & Search area -->
-            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-5 sm:mb-6 gap-4">
-                <h2 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2 shrink-0">
-                    <i data-lucide="milestone" class="w-5 h-5 text-brand-500"></i> Jejak Langkah
-                </h2>
-                
-                <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 w-full xl:w-auto justify-end">
-                    
-                    <!-- Tombol AI Draft Generator -->
-                    <button onclick="openAIGeneratorModal()" class="flex-1 sm:flex-none px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl text-xs sm:text-sm font-bold transition-all shadow-md flex items-center justify-center gap-1.5 shrink-0 active:scale-95 border border-purple-400/50">
-                        <i data-lucide="sparkles" class="w-4 h-4 text-yellow-300"></i> AI Draft
-                    </button>
-
-                    <!-- Tombol Tambah Target -->
-                    <button onclick="openAddModal()" class="flex-1 sm:flex-none px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center gap-1.5 shrink-0 active:scale-95">
-                        <i data-lucide="plus" class="w-4 h-4"></i> Tambah Target
-                    </button>
-                    <!-- Tombol Berkas Khusus -->
-                    <button onclick="openPasswordModal()" class="flex-1 sm:flex-none px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center gap-1.5 shrink-0 active:scale-95">
-                        <i data-lucide="folder-lock" class="w-4 h-4"></i> Folder Berkas
-                    </button>
-                    
-                    <div class="relative w-full sm:w-56 shrink-0 mt-2 sm:mt-0">
-                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" id="search-input" placeholder="Cari target..." class="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all shadow-soft placeholder:text-slate-400">
-                    </div>
+        <!-- Daftar Konten -->
+        <div class="flex-grow">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold flex items-center gap-2"><i data-lucide="milestone" class="text-brand-500"></i> Jejak Langkah</h2>
+                <div class="relative w-full sm:w-64">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="search-input" placeholder="Cari target..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 outline-none">
                 </div>
             </div>
-
-            <div id="empty-state" class="hidden bg-white rounded-3xl border border-slate-200 border-dashed p-8 sm:p-12 text-center shadow-sm">
-                <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="map" class="w-8 h-8 text-slate-300" id="empty-icon"></i>
-                </div>
-                <h3 class="text-base sm:text-lg font-bold text-slate-700 mb-1" id="empty-title">Perjalanan Belum Dimulai</h3>
-                <p class="text-xs sm:text-sm text-slate-500" id="empty-desc">Tekan tombol Tambah Target di atas untuk memulai.</p>
-            </div>
-
-            <div id="list-container" class="relative before:absolute before:inset-0 before:ml-[11px] sm:before:ml-[15px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
+            <div id="list-container" class="space-y-4"></div>
+            <div id="empty-state" class="hidden text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
+                <i data-lucide="map" class="w-16 h-16 text-slate-200 mx-auto mb-4"></i>
+                <h3 class="font-bold text-slate-500">Belum ada target di sini.</h3>
             </div>
         </div>
     </main>
 
-    <!-- Modal AI Draft Generator -->
-    <div id="ai-generator-modal" class="hidden fixed inset-0 z-[140] flex items-center justify-center p-4 sm:p-6 opacity-0 transition-all duration-300">
-        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-md" onclick="closeAIGeneratorModal()"></div>
-        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col transform scale-95 transition-transform duration-300 overflow-hidden" id="ai-generator-content">
+    <!-- MODAL: AI DRAFT GENERATOR -->
+    <div id="ai-generator-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden relative">
             
-            <!-- Header -->
-            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 bg-gradient-to-r from-indigo-50 to-purple-50 shrink-0">
+            <div class="flex items-center justify-between p-5 border-b bg-slate-50/50">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shadow-sm"><i data-lucide="sparkles" class="w-4 h-4 text-yellow-300"></i></div>
+                    <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center"><i data-lucide="sparkles"></i></div>
                     <div>
-                        <h3 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">AI Draft Generator</h3>
-                        <p class="text-[10px] sm:text-xs font-medium text-slate-500">Buat Surat Penawaran (RUP) Otomatis</p>
+                        <h3 class="font-extrabold text-lg">AI Surat Penawaran</h3>
+                        <p class="text-[11px] text-slate-500 font-medium">Berdasarkan RUP & Template PT STM</p>
                     </div>
                 </div>
-                <button onclick="closeAIGeneratorModal()" class="p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="closeAIGeneratorModal()" class="p-2 hover:bg-slate-200 rounded-full transition-colors"><i data-lucide="x"></i></button>
             </div>
-            
-            <div class="flex flex-col md:flex-row flex-grow overflow-hidden">
-                <!-- Panel Kiri: Input (Prompt & PDF) -->
-                <div class="w-full md:w-1/3 border-r border-slate-100 bg-slate-50/50 p-4 sm:p-5 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
-                    
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">1. Instruksi Khusus (Opsional)</label>
-                        <textarea id="ai-prompt-input" rows="3" placeholder="Contoh: Buatkan penawaran untuk CCTV merk Dahua, beri diskon 10% di paragraf akhir." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all resize-none shadow-sm"></textarea>
-                    </div>
 
+            <div class="flex flex-col md:flex-row flex-grow overflow-hidden">
+                <!-- Panel Input -->
+                <div class="w-full md:w-1/3 p-5 border-r bg-slate-50/30 flex flex-col gap-5 overflow-y-auto custom-scrollbar">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">2. Upload Dokumen RUP (PDF)</label>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">1. Upload PDF RUP</label>
                         <div class="relative group">
                             <input type="file" id="ai-pdf-input" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                            <div class="h-24 w-full border-2 border-dashed border-slate-300 rounded-xl bg-white group-hover:bg-purple-50 group-hover:border-purple-300 transition-all flex flex-col items-center justify-center text-center p-3 relative overflow-hidden">
-                                <i data-lucide="file-text" class="w-6 h-6 text-slate-400 group-hover:text-purple-500 mb-1.5 transition-colors"></i>
-                                <span id="ai-pdf-filename" class="text-xs font-bold text-slate-600 group-hover:text-purple-700 line-clamp-1 px-2">Klik/Tarik file PDF kesini</span>
+                            <div class="h-28 border-2 border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center text-center p-4 bg-white group-hover:bg-indigo-50 transition-all">
+                                <i data-lucide="file-text" id="ai-pdf-icon" class="w-8 h-8 text-slate-300 mb-2"></i>
+                                <span id="ai-pdf-name" class="text-xs font-bold text-slate-600 line-clamp-1">Klik untuk pilih file PDF</span>
                             </div>
                         </div>
                     </div>
-
-                    <button id="btn-generate-ai" onclick="generateDraftAI()" class="w-full mt-auto bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
-                        <i data-lucide="wand-2" class="w-4 h-4"></i> Generate Surat
-                    </button>
-                    
-                    <!-- Loading State -->
-                    <div id="ai-loading-state" class="hidden flex-col items-center justify-center text-center mt-4">
-                        <i data-lucide="loader-2" class="w-6 h-6 text-purple-600 animate-spin mb-2"></i>
-                        <p class="text-xs font-bold text-slate-600">AI sedang membaca PDF & Menyusun Draf...</p>
-                    </div>
-
-                </div>
-
-                <!-- Panel Kanan: Editor Hasil -->
-                <div class="w-full md:w-2/3 p-4 sm:p-5 flex flex-col bg-white">
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">Hasil Draf (Bisa Diedit)</label>
-                    <textarea id="ai-result-editor" class="flex-grow w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all resize-none shadow-inner leading-relaxed whitespace-pre-wrap font-mono" placeholder="Hasil surat dari AI akan muncul di sini..."></textarea>
-                    
-                    <div class="flex items-center gap-3 mt-4 pt-4 border-t border-slate-100 shrink-0">
-                        <input type="text" id="ai-save-filename" placeholder="Nama File (Misal: Surat_Penawaran_CCTV)" class="flex-grow px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none shadow-sm">
-                        
-                        <button onclick="downloadAIText()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center gap-2 shrink-0">
-                            <i data-lucide="download" class="w-4 h-4"></i> Unduh
-                        </button>
-                        <button onclick="saveAIToBerkas()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold transition-all shadow-md flex items-center gap-2 shrink-0">
-                            <i data-lucide="save" class="w-4 h-4"></i> Simpan ke Brankas
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Modal Add Target -->
-    <div id="add-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeAddModal()"></div>
-        <div class="relative bg-white rounded-3xl shadow-xl w-full max-w-lg p-5 sm:p-8 transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="add-modal-content">
-            <div class="flex items-center justify-between mb-4 sm:mb-5">
-                <h3 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
-                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center"><i data-lucide="plus" class="w-4 h-4"></i></div>
-                    Tambah Target
-                </h3>
-                <button onclick="closeAddModal()" class="p-2 text-slate-400 hover:bg-slate-100 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            
-            <form id="add-form" class="space-y-4 overflow-y-auto custom-scrollbar pr-2 pb-2">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Judul Target <span class="text-rose-500">*</span></label>
-                    <input type="text" id="title" required placeholder="Misal: Rilis Fitur X" class="w-full px-4 py-2.5 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all placeholder:text-slate-400">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Tenggat Waktu <span class="text-rose-500">*</span></label>
-                    <input type="date" id="dueDate" required class="w-full px-4 py-2.5 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Deskripsi</label>
-                    <textarea id="description" rows="3" placeholder="Detail tentang target ini..." class="w-full px-4 py-2.5 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all resize-none placeholder:text-slate-400"></textarea>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-3 pt-2">
-                    <div class="relative group">
-                        <input type="file" id="photos" accept="image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                        <div class="h-20 w-full border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 group-hover:bg-brand-50 group-hover:border-brand-300 transition-colors flex flex-col items-center justify-center text-center p-2 relative">
-                            <div id="photo-badge-counter" class="hidden absolute -top-2 -right-2 w-6 h-6 bg-brand-500 text-white rounded-full text-xs font-bold items-center justify-center shadow-md">0</div>
-                            <i data-lucide="image-plus" class="w-5 h-5 text-slate-400 group-hover:text-brand-500 mb-1.5 transition-colors"></i>
-                            <span class="text-[10px] font-semibold text-slate-500 group-hover:text-brand-600">Auto-Compress Foto</span>
-                        </div>
-                    </div>
-                    <div class="relative group">
-                        <input type="file" id="docs" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                        <div class="h-20 w-full border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 group-hover:bg-blue-50 group-hover:border-blue-300 transition-colors flex flex-col items-center justify-center text-center p-2 relative">
-                            <div id="doc-badge-counter" class="hidden absolute -top-2 -right-2 w-6 h-6 bg-blue-500 text-white rounded-full text-xs font-bold items-center justify-center shadow-md">0</div>
-                            <i data-lucide="file-plus" class="w-5 h-5 text-slate-400 group-hover:text-blue-500 mb-1.5 transition-colors"></i>
-                            <span class="text-[10px] font-semibold text-slate-500 group-hover:text-blue-600">Auto-Optimasi Dokumen</span>
-                        </div>
-                    </div>
-                </div>
-            </form>
-            <div class="mt-4 sm:mt-6 pt-4 border-t border-slate-100 flex justify-end shrink-0">
-                <button type="submit" form="add-form" id="submit-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 sm:py-3.5 rounded-xl text-sm transition-all shadow-md shadow-brand-500/20 flex items-center justify-center gap-2 active:scale-[0.98]">
-                    <i data-lucide="save" class="w-4 h-4"></i> Simpan Target
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Detail -->
-    <div id="detail-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeModal()"></div>
-        <div class="relative bg-white rounded-3xl shadow-xl w-full max-w-lg p-5 sm:p-8 transform scale-95 transition-transform duration-300 overflow-hidden flex flex-col max-h-[90vh]" id="detail-modal-content">
-            <button onclick="closeModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 rounded-full transition-colors z-10"><i data-lucide="x" class="w-5 h-5"></i></button>
-            <div class="overflow-y-auto custom-scrollbar pr-2">
-                <div class="flex items-start gap-3 sm:gap-4 mb-5 sm:mb-6">
-                    <div id="modal-icon-container" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-sm shrink-0"></div>
                     <div>
-                        <h3 class="text-lg sm:text-xl font-bold text-slate-900 mb-0.5 sm:mb-1 pr-6" id="modal-title">Judul</h3>
-                        <p class="text-xs sm:text-sm font-semibold text-brand-600 mb-2 sm:mb-3" id="modal-date">Tanggal</p>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">2. Catatan Tambahan (Opsional)</label>
+                        <textarea id="ai-prompt-input" rows="4" placeholder="Misal: Berikan diskon khusus 5% atau sebutkan merk tertentu..." class="w-full p-4 bg-white border border-slate-200 rounded-2xl text-xs focus:ring-2 focus:ring-indigo-500/20 outline-none resize-none shadow-sm"></textarea>
                     </div>
-                </div>
-                <div class="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-100 mb-5 sm:mb-6">
-                    <p class="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-wrap" id="modal-desc">Deskripsi</p>
-                </div>
-                <div id="photo-gallery" class="hidden mb-5 sm:mb-6">
-                    <h4 class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5 sm:mb-3 flex items-center gap-2"><i data-lucide="image" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> Galeri Foto</h4>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3" id="photo-grid"></div>
-                </div>
-                <div id="file-list" class="hidden pb-2">
-                    <h4 class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5 sm:mb-3 flex items-center gap-2"><i data-lucide="paperclip" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> Dokumen Terlampir</h4>
-                    <div class="flex flex-col gap-2" id="document-list"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Edit -->
-    <div id="edit-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeEditModal()"></div>
-        <div class="relative bg-white rounded-3xl shadow-xl w-full max-w-lg p-5 sm:p-8 transform scale-95 transition-transform duration-300 overflow-hidden flex flex-col max-h-[90vh]" id="edit-modal-content">
-            <div class="flex items-center justify-between mb-4 sm:mb-5">
-                <h3 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
-                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center"><i data-lucide="edit-3" class="w-4 h-4"></i></div>
-                    Edit Target
-                </h3>
-                <button onclick="closeEditModal()" class="p-2 text-slate-400 hover:bg-slate-100 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            
-            <form id="edit-form" class="space-y-4 overflow-y-auto custom-scrollbar pr-2 pb-2">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Judul Target</label>
-                    <input type="text" id="edit-title" required class="w-full px-4 py-2.5 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Tenggat Waktu</label>
-                    <input type="date" id="edit-date" required class="w-full px-4 py-2.5 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Deskripsi</label>
-                    <textarea id="edit-desc" rows="3" class="w-full px-4 py-2.5 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none resize-none"></textarea>
-                </div>
-
-                <div class="bg-slate-50 rounded-xl p-3 sm:p-4 border border-slate-100">
-                    <h4 class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wide mb-2 sm:mb-3">Lampiran Saat Ini</h4>
-                    <div id="edit-old-photos" class="grid grid-cols-4 gap-2 mb-3"></div>
-                    <div id="edit-old-files" class="flex flex-col gap-1.5"></div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 pt-2">
-                    <div class="relative group">
-                        <input type="file" id="edit-photos" accept="image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                        <div class="h-20 w-full border-2 border-dashed border-slate-200 rounded-xl bg-white group-hover:bg-amber-50 transition-colors flex flex-col items-center justify-center text-center p-2 relative">
-                            <div id="edit-photo-badge" class="hidden absolute -top-2 -right-2 w-5 h-5 bg-amber-500 text-white rounded-full text-[10px] font-bold items-center justify-center shadow-md">0</div>
-                            <i data-lucide="image-plus" class="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 group-hover:text-amber-500 mb-1"></i>
-                            <span class="text-[10px] font-medium text-slate-500">Auto-Compress Foto</span>
-                        </div>
-                    </div>
-                    <div class="relative group">
-                        <input type="file" id="edit-docs" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                        <div class="h-20 w-full border-2 border-dashed border-slate-200 rounded-xl bg-white group-hover:bg-blue-50 transition-colors flex flex-col items-center justify-center text-center p-2 relative">
-                            <div id="edit-doc-badge" class="hidden absolute -top-2 -right-2 w-5 h-5 bg-blue-500 text-white rounded-full text-[10px] font-bold items-center justify-center shadow-md">0</div>
-                            <i data-lucide="file-plus" class="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 group-hover:text-blue-500 mb-1"></i>
-                            <span class="text-[10px] font-medium text-slate-500">Auto-Optimasi Dok</span>
-                        </div>
-                    </div>
-                </div>
-            </form>
-            <div class="mt-4 sm:mt-6 pt-4 border-t border-slate-100 flex justify-end gap-3 shrink-0">
-                <button type="button" onclick="closeEditModal()" class="px-4 sm:px-5 py-2 sm:py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-all">Batal</button>
-                <button type="submit" form="edit-form" id="edit-submit-btn" class="px-5 sm:px-6 py-2 sm:py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-semibold transition-all flex items-center gap-2">
-                    <i data-lucide="save" class="w-4 h-4"></i> Simpan
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Konfirmasi Umum -->
-    <div id="confirm-modal" class="hidden fixed inset-0 z-[160] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeConfirmModal()"></div>
-        <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 transform scale-95 transition-transform duration-300" id="confirm-modal-content">
-            <h3 class="text-lg font-bold text-slate-900 mb-2" id="confirm-title">Konfirmasi</h3>
-            <p class="text-sm text-slate-600 mb-6" id="confirm-desc">Apakah Anda yakin?</p>
-            <div class="flex justify-end gap-3">
-                <button id="confirm-cancel-btn" onclick="closeConfirmModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-all">Batal</button>
-                <button id="confirm-action-btn" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-semibold transition-all">Ya</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Gagal (Evaluasi) -->
-    <div id="fail-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeFailModal()"></div>
-        <div class="relative bg-white rounded-3xl shadow-xl w-full max-w-md p-5 sm:p-6 transform scale-95 transition-transform duration-300" id="fail-modal-content">
-            <div class="flex items-center gap-3 mb-2">
-                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
-                    <i data-lucide="x-octagon" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-                </div>
-                <h3 class="text-base sm:text-lg font-bold text-slate-900">Tandai Tidak Selesai</h3>
-            </div>
-            <p class="text-xs sm:text-sm text-slate-500 mb-4 sm:mb-5 ml-11 sm:ml-13">Berikan alasan mengapa target ini tidak selesai untuk evaluasi.</p>
-            <form id="fail-form" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Alasan / Kendala <span class="text-rose-500">*</span></label>
-                    <textarea id="fail-reason" required rows="3" class="w-full px-4 py-2.5 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 outline-none resize-none"></textarea>
-                </div>
-                <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" onclick="closeFailModal()" class="px-4 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-xl text-sm font-semibold">Batal</button>
-                    <button type="submit" id="fail-submit-btn" class="px-5 py-2.5 bg-rose-600 active:bg-rose-700 text-white rounded-xl text-sm font-semibold flex items-center gap-2">
-                        Simpan
+                    <button id="btn-generate-ai" onclick="generateDraftAI()" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg disabled:opacity-50">
+                        <i data-lucide="wand-2"></i> Generate Draf Sekarang
                     </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Password Berkas -->
-    <div id="password-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closePasswordModal()"></div>
-        <div class="relative bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 transform scale-95 transition-transform duration-300 text-center" id="password-modal-content">
-            <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center mx-auto mb-4">
-                <i data-lucide="lock" class="w-6 h-6"></i>
-            </div>
-            <h3 class="text-lg font-bold text-slate-900 mb-1">Akses Terkunci</h3>
-            <p class="text-xs text-slate-500 mb-5">Masukkan kata sandi untuk mengakses Folder Berkas.</p>
-            <form id="password-form" class="space-y-4">
-                <input type="password" id="berkas-password" placeholder="Kata Sandi" required class="w-full text-center px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-base focus:ring-2 focus:ring-slate-500/20 focus:border-slate-500 outline-none transition-all">
-                <p id="password-error" class="hidden text-xs font-semibold text-rose-500 text-center">Kata sandi salah!</p>
-                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-xl text-sm transition-all shadow-md">Buka Brankas</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Utama Folder Berkas -->
-    <div id="berkas-modal" class="hidden fixed inset-0 z-[130] flex items-center justify-center p-4 sm:p-6 opacity-0 transition-all duration-300">
-        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-md" onclick="closeBerkasModal()"></div>
-        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-5xl h-[90vh] flex flex-col transform scale-95 transition-transform duration-300 overflow-hidden" id="berkas-modal-content">
-            
-            <!-- Header Modal Berkas -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-5 border-b border-slate-100 bg-white z-20 shadow-sm shrink-0 gap-3">
-                <div class="flex items-center gap-3 w-full sm:w-auto">
-                    <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shadow-sm shrink-0"><i data-lucide="folder-lock" class="w-4 h-4"></i></div>
-                    <div class="min-w-0">
-                        <h3 class="text-base sm:text-lg font-bold text-slate-900 leading-tight truncate">Brankas Berkas</h3>
-                        <!-- Breadcrumbs -->
-                        <div class="flex items-center text-xs font-medium text-slate-500 mt-0.5 overflow-x-auto hide-scrollbar whitespace-nowrap" id="berkas-breadcrumb">
-                            <button onclick="navigateToFolder('root')" class="hover:text-brand-600 transition-colors">Utama</button>
-                        </div>
+                    <div id="ai-loading" class="hidden flex-col items-center justify-center py-4">
+                        <i data-lucide="loader-2" class="w-8 h-8 text-indigo-600 animate-spin mb-2"></i>
+                        <p class="text-[11px] font-bold text-slate-600">AI Sedang Menyusun Surat...</p>
                     </div>
-                    <!-- Tombol Tutup untuk HP (di pojok kanan atas) -->
-                    <button onclick="closeBerkasModal()" class="sm:hidden p-2 bg-slate-100 text-slate-500 hover:bg-rose-100 hover:text-rose-600 rounded-lg ml-auto shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
                 </div>
-                
-                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                    <!-- Tombol Buka GDrive (Murni hanya buka link) -->
-                    <button onclick="window.open('https://drive.google.com/drive/folders/1KJWZVUx0Ky-pE_mDjm7yWpJ9cBUvuVJf?usp=sharing', '_blank')" class="flex-1 sm:flex-none px-3 py-2 sm:py-1.5 bg-[#f8f9fa] border border-[#dadce0] hover:bg-[#f1f3f4] text-slate-700 rounded-lg text-xs font-semibold flex justify-center items-center gap-1.5 transition-colors shadow-sm">
-                        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg"><path d="m6.6 66.85 22.35 11.1c5.8 2.9 13.4 2.9 19.2 0l32.55-16.15-22.35-11.1-31.75 16.15" fill="#0066da"/><path d="m43.65 25-22.35-11.1c-5.8-2.9-10.6-11.2-10.6-17.7v32.3c0 6.5 4.8 14.8 10.6 17.7l22.35 11.1" fill="#00ac47"/><path d="m80.7 11.1-22.35 11.1-31.75-16.15 22.35-11.1c5.8-2.9 13.4-2.9 19.2 0l12.55 6.15" fill="#ea4335"/><path d="m43.65 25 31.75 16.15 11.9-6c5.8-2.9 10.6-11.2 10.6-17.7v-32.3c0-6.5-4.8-14.8-10.6-17.7l-22.35-11.1" fill="#00832d"/><path d="m80.7 66.85-22.35-11.1-31.75 16.15 22.35 11.1c5.8 2.9 13.4 2.9 19.2 0l12.55-6.15" fill="#2684fc"/><path d="m43.65 78 31.75-16.15 11.9 6c5.8 2.9 10.6 11.2 10.6 17.7v32.3c0 6.5-4.8 14.8-10.6 17.7l-22.35 11.1" fill="#fdcb00"/></svg>
-                        <span class="hidden sm:inline">Buka</span> GDrive
-                    </button>
-                    <!-- Tombol Backup Semua -->
-                    <button id="btn-backup-zip" onclick="backupAllToZip()" class="flex-1 sm:flex-none px-3 py-2 sm:py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-semibold flex justify-center items-center gap-1.5 transition-colors shadow-sm">
-                        <i data-lucide="download-cloud" class="w-3.5 h-3.5 shrink-0"></i> Backup<span class="hidden sm:inline"> Semua</span>
-                    </button>
-                    <!-- Tombol Tutup Desktop -->
-                    <button onclick="closeBerkasModal()" class="hidden sm:flex p-1.5 bg-slate-100 text-slate-500 hover:bg-rose-100 hover:text-rose-600 rounded-lg transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
-                </div>
-            </div>
-            
-            <div class="flex flex-col flex-grow overflow-hidden bg-slate-50/50">
-                <!-- Toolbar Area -->
-                <div class="p-3 sm:p-5 border-b border-slate-200/60 bg-white/50 backdrop-blur-sm shrink-0 flex flex-col sm:flex-row gap-3">
+
+                <!-- Panel Editor Hasil -->
+                <div class="flex-grow flex flex-col p-5 bg-white">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Hasil Draf (Dapat diedit kembali)</label>
+                    <textarea id="ai-result-editor" class="flex-grow w-full p-6 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-mono leading-relaxed outline-none focus:ring-2 focus:ring-indigo-500/10" placeholder="Hasil ketikan AI akan muncul di sini..."></textarea>
                     
-                    <div class="flex gap-2">
-                        <!-- Tombol Kembali Folder -->
-                        <button id="btn-back-folder" onclick="goBackFolder()" class="hidden px-3 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-semibold transition-all shadow-sm items-center justify-center gap-1.5 shrink-0">
-                            <i data-lucide="arrow-left" class="w-4 h-4"></i> <span class="hidden sm:inline">Kembali</span>
-                        </button>
-                        <!-- Tombol Buat Folder -->
-                        <button onclick="openCreateFolderModal()" class="flex-1 sm:flex-none px-3 py-2.5 bg-white border border-slate-200 hover:border-brand-300 hover:bg-brand-50 text-slate-700 rounded-xl text-sm font-semibold transition-all shadow-sm flex items-center justify-center gap-1.5 shrink-0">
-                            <i data-lucide="folder-plus" class="w-4 h-4 text-brand-500"></i> Buat Folder
-                        </button>
-                    </div>
-                    
-                    <div class="relative group flex-grow">
-                        <input type="file" id="berkas-upload-input" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                        <div class="h-10 w-full border border-dashed border-slate-300 rounded-xl bg-white group-hover:bg-blue-50 group-hover:border-blue-300 transition-all flex items-center justify-center gap-2 px-4 shadow-sm relative overflow-hidden">
-                            <i data-lucide="upload-cloud" class="w-4 h-4 text-slate-400 group-hover:text-blue-500 transition-colors"></i>
-                            <span class="text-sm font-bold text-slate-600 group-hover:text-blue-600">Unggah File ke Sini</span>
-                            <div id="berkas-uploading-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center z-20 gap-2">
-                                <i data-lucide="loader-2" class="w-4 h-4 text-blue-600 animate-spin"></i>
-                                <span class="text-xs font-bold text-slate-700">Mengunggah...</span>
-                            </div>
+                    <div class="mt-5 pt-5 border-t flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="ai-save-name" placeholder="Nama file (Misal: Penawaran_CCTV_Cibeunying)" class="flex-grow px-4 py-3 bg-white border rounded-xl text-sm outline-none">
+                        <div class="flex gap-2">
+                            <button onclick="downloadAIText()" class="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold flex items-center gap-2">
+                                <i data-lucide="download" class="w-4 h-4"></i> Download
+                            </button>
+                            <button onclick="saveAIToBerkas()" class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold flex items-center gap-2">
+                                <i data-lucide="save" class="w-4 h-4"></i> Simpan ke Brankas
+                            </button>
                         </div>
                     </div>
                 </div>
-
-                <!-- File & Folder List Area -->
-                <div class="flex-grow overflow-y-auto custom-scrollbar p-4 sm:p-6 relative">
-                    <div id="berkas-empty" class="hidden h-full flex-col items-center justify-center text-center opacity-60 absolute inset-0">
-                        <i data-lucide="folder-open" class="w-12 h-12 sm:w-16 sm:h-16 text-slate-300 mb-3"></i>
-                        <p class="text-xs sm:text-sm font-bold text-slate-500">Folder ini kosong</p>
-                    </div>
-                    
-                    <!-- Grid Layout for Items -->
-                    <div id="berkas-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 pb-10">
-                        <!-- Folders and Files injected here -->
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Create Folder -->
-    <div id="create-folder-modal" class="hidden fixed inset-0 z-[140] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeCreateFolderModal()"></div>
-        <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 transform scale-95 transition-transform duration-300" id="create-folder-modal-content">
-            <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <i data-lucide="folder-plus" class="w-5 h-5 text-brand-500"></i> Buat Folder Baru
-            </h3>
-            <form id="create-folder-form">
-                <input type="text" id="new-folder-name" placeholder="Nama Folder..." required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all mb-5">
-                <div class="flex justify-end gap-2.5">
-                    <button type="button" onclick="closeCreateFolderModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-all">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-semibold transition-all">Buat</button>
+    <!-- MODAL: PASSWORD BRANKAS -->
+    <div id="password-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <form id="password-form" class="bg-white p-8 rounded-3xl w-full max-w-sm text-center shadow-2xl">
+            <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-700"><i data-lucide="lock" class="w-8 h-8"></i></div>
+            <h3 class="font-bold text-xl mb-1">Akses Terkunci</h3>
+            <p class="text-xs text-slate-500 mb-6">Masukkan sandi untuk membuka Brankas.</p>
+            <input type="password" id="berkas-password" placeholder="Sandi" required class="w-full p-4 bg-slate-50 border rounded-2xl text-center font-bold mb-4 focus:ring-2 focus:ring-slate-500/20 outline-none">
+            <button type="submit" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-lg active:scale-95 transition-all">Buka Brankas</button>
+        </form>
+    </div>
+
+    <!-- MODAL: BRANKAS BERKAS UTAMA -->
+    <div id="berkas-modal" class="hidden fixed inset-0 z-[130] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md">
+        <div class="bg-white rounded-3xl w-full max-w-5xl h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-5 border-b flex justify-between items-center bg-slate-50/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-slate-800 text-white rounded-xl flex items-center justify-center"><i data-lucide="folder-lock"></i></div>
+                    <h3 class="font-extrabold text-lg">Brankas Berkas</h3>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="backupAllToZip()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center gap-2"><i data-lucide="download-cloud"></i> Backup ZIP</button>
+                    <button onclick="closeBerkasModal()" class="p-2 hover:bg-slate-200 rounded-full"><i data-lucide="x"></i></button>
+                </div>
+            </div>
+            <div class="p-4 border-b bg-white flex gap-3">
+                <button onclick="openCreateFolderModal()" class="px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold flex items-center gap-2"><i data-lucide="folder-plus" class="text-brand-500"></i> Buat Folder</button>
+                <div class="relative flex-grow">
+                    <input type="file" id="berkas-upload-input" multiple class="absolute inset-0 opacity-0 cursor-pointer">
+                    <div class="h-10 border-2 border-dashed rounded-xl flex items-center justify-center gap-2 text-xs font-bold text-slate-400">
+                        <i data-lucide="upload-cloud"></i> Seret atau Pilih Berkas untuk Diunggah
+                    </div>
+                </div>
+            </div>
+            <div class="flex-grow overflow-y-auto p-6" id="berkas-grid-container">
+                <div id="berkas-breadcrumb" class="mb-4 text-xs font-bold text-slate-400 flex items-center gap-1 uppercase tracking-widest"></div>
+                <div id="berkas-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD/EDIT (Disederhanakan untuk fungsionalitas) -->
+    <div id="add-modal" class="hidden fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur">
+        <div class="bg-white p-6 rounded-3xl w-full max-w-lg shadow-2xl">
+            <h3 class="font-bold text-xl mb-4">Tambah Target</h3>
+            <form id="add-form" class="space-y-4">
+                <input type="text" id="title" placeholder="Judul Target" required class="w-full p-4 bg-slate-50 border rounded-2xl">
+                <input type="date" id="dueDate" required class="w-full p-4 bg-slate-50 border rounded-2xl">
+                <textarea id="description" placeholder="Deskripsi..." class="w-full p-4 bg-slate-50 border rounded-2xl h-24"></textarea>
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeAddModal()" class="px-6 py-3 bg-slate-100 rounded-xl font-bold">Batal</button>
+                    <button type="submit" class="px-6 py-3 bg-brand-600 text-white rounded-xl font-bold">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
-
-    <!-- Modal Rename Folder/Berkas -->
-    <div id="rename-modal" class="hidden fixed inset-0 z-[140] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeRenameModal()"></div>
-        <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 transform scale-95 transition-transform duration-300" id="rename-modal-content">
-            <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <i data-lucide="edit-2" class="w-5 h-5 text-amber-500"></i> Ubah Nama
-            </h3>
-            <form id="rename-form">
-                <input type="text" id="rename-input" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all mb-5">
-                <div class="flex justify-end gap-2.5">
-                    <button type="button" onclick="closeRenameModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-all">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-sm font-semibold transition-all">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Preview Berkas -->
-    <div id="preview-modal" class="hidden fixed inset-0 z-[150] flex flex-col p-2 sm:p-6 opacity-0 transition-all duration-300">
-        <div class="absolute inset-0 bg-slate-900/95 backdrop-blur-md" onclick="closePreviewModal()"></div>
-        <div class="relative w-full max-w-5xl mx-auto flex-grow flex flex-col" id="preview-modal-content">
-            <div class="flex justify-between items-center pb-4 mb-2 shrink-0">
-                <h3 class="text-white font-semibold flex items-center gap-2 truncate pr-4" id="preview-title">
-                    <i data-lucide="eye" class="w-4 h-4"></i> <span class="truncate">Pratinjau</span>
-                </h3>
-                <div class="flex items-center gap-2 shrink-0">
-                    <a id="preview-download-btn" href="#" download="" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5">
-                        <i data-lucide="download" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Unduh</span>
-                    </a>
-                    <button onclick="closePreviewModal()" class="p-1.5 bg-white/10 hover:bg-rose-500/80 text-white rounded-lg transition-colors">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="flex-grow bg-slate-800/50 rounded-2xl border border-slate-700 overflow-hidden flex items-center justify-center p-2 sm:p-4 shadow-2xl relative" id="preview-container">
-                <!-- Image or Iframe injected here -->
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const pwaManifest = {
-            "name": "MILEWORKS",
-            "short_name": "MILEWORKS",
-            "description": "Aplikasi tracker target untuk produktivitas tim.",
-            "start_url": "./",
-            "display": "standalone",
-            "background_color": "#f8fafc",
-            "theme_color": "#ffffff",
-            "icons": [
-                {
-                    "src": "https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL",
-                    "sizes": "192x192",
-                    "type": "image/png"
-                },
-                {
-                    "src": "https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL",
-                    "sizes": "512x512",
-                    "type": "image/png"
-                }
-            ]
-        };
-        const blob = new Blob([JSON.stringify(pwaManifest)], {type: 'application/json'});
-        const manifestURL = URL.createObjectURL(blob);
-        const linkManifest = document.createElement('link');
-        linkManifest.rel = 'manifest';
-        linkManifest.href = manifestURL;
-        document.head.appendChild(linkManifest);
-
-        const linkAppleIcon = document.createElement('link');
-        linkAppleIcon.rel = 'apple-touch-icon';
-        linkAppleIcon.href = "https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL";
-        document.head.appendChild(linkAppleIcon);
-    </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        lucide.createIcons();
-
-        let milestones = [];
-        let globalFiles = []; 
-        let currentFilter = 'all';
-        let currentSearch = '';
-        
-        let currentFolderId = 'root';
-        // KEMBALIKAN KE APP_ID YANG LAMA AGAR DATA LAMA TERBACA KEMBALI
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'milestone-stm-app';
-
-        // KONFIGURASI FIREBASE VERCEL
-        const myFirebaseConfig = {
-            apiKey: "AIzaSyD_r1cVxGygRJgYFp3rYLlGwUngN_AsnkU",
-            authDomain: "milestone-app-7dc3e.firebaseapp.com",
-            projectId: "milestone-app-7dc3e",
-            storageBucket: "milestone-app-7dc3e.firebasestorage.app",
-            messagingSenderId: "535579558143",
-            appId: "1:535579558143:web:7f961ff8bbe981b4384cca"
-        };
-
-        // API KEY GEMINI
+        // =========================================================================
+        // KUNCI KONFIGURASI (JANGAN DIUBAH LAGI YA SAYANG)
+        // =========================================================================
+        const myFirebaseConfig = { apiKey: "AIzaSyD_r1cVxGygRJgYFp3rYLlGwUngN_AsnkU", authDomain: "milestone-app-7dc3e.firebaseapp.com", projectId: "milestone-app-7dc3e", storageBucket: "milestone-app-7dc3e.firebasestorage.app", messagingSenderId: "535579558143", appId: "1:535579558143:web:7f961ff8bbe981b4384cca" };
         const GEMINI_API_KEY = "AQ.Ab8RN6I0Msc5cxHyaOfD93suaMNr43l2O_Cag7JL4N8cvpI82w"; 
-
-        let firebaseConfig = null;
-        if (typeof myFirebaseConfig !== 'undefined') {
-            firebaseConfig = myFirebaseConfig;
-        } else if (typeof __firebase_config !== 'undefined') {
-            firebaseConfig = JSON.parse(__firebase_config);
-        }
+        const appId = 'milestone-stm-app';
+        // =========================================================================
 
         let db, auth, milestonesRef, berkasRef;
-        let usingFirebase = false;
+        let milestones = [];
+        let globalFiles = [];
+        let currentFolderId = 'root';
+        let folderHistory = [{ id: 'root', name: 'Utama' }];
+        let extractedPdfText = "";
 
-        async function initApp() {
-            if (firebaseConfig) {
-                try {
-                    const app = initializeApp(firebaseConfig);
-                    auth = getAuth(app);
-                    db = getFirestore(app);
-
-                    const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-                    if (token && typeof myFirebaseConfig === 'undefined') {
-                        await signInWithCustomToken(auth, token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-
-                    usingFirebase = true;
-                    document.getElementById('cloud-indicator').style.display = 'flex';
-                    
-                    milestonesRef = collection(db, 'artifacts', appId, 'public', 'data', 'milestones');
-                    berkasRef = collection(db, 'artifacts', appId, 'public', 'data', 'berkas');
-                    
-                    onSnapshot(milestonesRef, (snapshot) => {
-                        milestones = [];
-                        snapshot.forEach(docSnap => milestones.push(docSnap.data()));
-                        renderMilestones();
-                        updateStats();
-                    }, (error) => {
-                        console.error("Firestore error:", error);
-                        if (error.code === 'permission-denied') customMessage("Akses Ditolak", "Database belum dalam mode Test/Publik.");
-                        fallbackToLocal();
-                    });
-
-                    onSnapshot(berkasRef, (snapshot) => {
-                        globalFiles = [];
-                        snapshot.forEach(docSnap => globalFiles.push(docSnap.data()));
-                        renderBerkas();
-                    }, (error) => {
-                        console.error("Firestore error (berkas):", error);
-                    });
-                    
-                } catch (e) {
-                    console.error("Firebase init failed:", e);
-                    fallbackToLocal();
-                }
-            } else {
-                fallbackToLocal();
-            }
-        }
-
-        function fallbackToLocal() {
-            const saved = localStorage.getItem('mileworks_v4') || localStorage.getItem('milestoneApp_v3');
-            const savedBerkas = localStorage.getItem('mileworks_berkas_v2');
-            if (saved) { try { milestones = JSON.parse(saved); } catch (e) { milestones = []; } }
-            if (savedBerkas) { try { globalFiles = JSON.parse(savedBerkas); } catch (e) { globalFiles = []; } }
-            renderMilestones(); updateStats(); renderBerkas();
-        }
-
-        async function saveToDB(milestoneData) {
-            if (usingFirebase) { await setDoc(doc(milestonesRef, milestoneData.id), milestoneData); } 
-            else { saveMilestonesLocal(); }
-        }
-
-        async function deleteFromDB(id) {
-            if (usingFirebase) { await deleteDoc(doc(milestonesRef, id)); } 
-            else { saveMilestonesLocal(); }
-        }
-
-        const saveMilestonesLocal = () => {
+        async function init() {
             try {
-                localStorage.setItem('mileworks_v4', JSON.stringify(milestones));
-                renderMilestones(); updateStats();
-            } catch (e) {
-                if (e.name === 'QuotaExceededError') customMessage("Memori Penuh", "Hapus beberapa file lama.");
-            }
-        };
-
-        const saveBerkasLocal = () => {
-            try {
-                localStorage.setItem('mileworks_berkas_v2', JSON.stringify(globalFiles));
-                renderBerkas();
-            } catch (e) {
-                if (e.name === 'QuotaExceededError') customMessage("Memori Penuh", "Hapus file dari Brankas.");
-            }
-        };
-
-        const CompressionSystem = {
-            process: async (file) => {
-                return new Promise((resolve, reject) => {
-                    if (file.size > 700 * 1024 && !file.type.startsWith('image/')) {
-                        reject(new Error(`Sistem menolak dokumen "${file.name}" (Maksimal 700KB).`)); return;
-                    }
-                    if (file.type.startsWith('image/')) CompressionSystem.compressImage(file).then(resolve).catch(reject);
-                    else CompressionSystem.optimizeDocument(file).then(resolve).catch(reject);
-                });
-            },
-            compressImage: (file) => {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = (e) => {
-                        const img = new Image();
-                        img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            const MAX_DIMENSION = 800; 
-                            let width = img.width; let height = img.height;
-                            if (width > height && width > MAX_DIMENSION) { height *= MAX_DIMENSION / width; width = MAX_DIMENSION; } 
-                            else if (height > MAX_DIMENSION) { width *= MAX_DIMENSION / height; height = MAX_DIMENSION; }
-                            canvas.width = width; canvas.height = height;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, width, height);
-                            resolve(canvas.toDataURL('image/jpeg', 0.6)); 
-                        };
-                        img.onerror = () => reject(new Error("Gagal memproses gambar otomatis"));
-                        img.src = e.target.result;
-                    };
-                    reader.onerror = error => reject(error);
-                });
-            },
-            optimizeDocument: (file) => {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = error => reject(error);
-                });
-            }
-        };
-
-        const formatDate = (dateString) => {
-            if (!dateString) return '-';
-            return new Date(dateString).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-        };
-
-        const isOverdue = (dueDate) => {
-            if (!dueDate) return false;
-            const today = new Date(); today.setHours(0, 0, 0, 0);
-            const target = new Date(dueDate); target.setHours(0, 0, 0, 0);
-            return target < today;
-        };
-
-        const getQuarter = (date) => Math.floor(date.getMonth() / 3) + 1;
-
-        const renderMilestones = () => {
-            const listContainer = document.getElementById('list-container');
-            const emptyState = document.getElementById('empty-state');
-            listContainer.innerHTML = '';
-            
-            let filtered = milestones;
-            if (currentFilter === 'pending') filtered = milestones.filter(m => !m.completed && !m.failed);
-            else if (currentFilter === 'completed') filtered = milestones.filter(m => m.completed);
-            else if (currentFilter === 'failed') filtered = milestones.filter(m => m.failed);
-
-            if (currentSearch) {
-                const s = currentSearch.toLowerCase();
-                filtered = filtered.filter(m => m.title.toLowerCase().includes(s) || (m.description && m.description.toLowerCase().includes(s)));
-            }
-
-            filtered.sort((a, b) => {
-                if (a.completed === b.completed && a.failed === b.failed) return new Date(a.dueDate) - new Date(b.dueDate);
-                if (a.completed) return 1; if (b.completed) return -1;
-                return a.failed ? 1 : -1;
-            });
-
-            if (filtered.length === 0) {
-                listContainer.classList.add('hidden'); emptyState.classList.remove('hidden');
-                document.getElementById('empty-title').textContent = currentSearch ? 'Pencarian Tidak Ditemukan' : currentFilter === 'all' ? 'Perjalanan Belum Dimulai' : 'Tidak ada target';
-                document.getElementById('empty-desc').textContent = currentSearch ? `Tidak ada hasil untuk "${currentSearch}"` : 'Tekan tombol Tambah Target di atas untuk memulai.';
-                document.getElementById('empty-icon').setAttribute('data-lucide', currentSearch ? 'search-x' : 'map');
-            } else {
-                listContainer.classList.remove('hidden'); emptyState.classList.add('hidden');
-                filtered.forEach(milestone => {
-                    const isPastDue = isOverdue(milestone.dueDate) && !milestone.completed && !milestone.failed;
-                    const statusColor = milestone.completed ? 'emerald' : milestone.failed ? 'slate' : isPastDue ? 'rose' : 'brand';
-                    const nodeBg = milestone.completed ? 'bg-emerald-500' : milestone.failed ? 'bg-slate-400' : 'bg-white';
-                    const nodeBorder = milestone.completed ? 'border-emerald-500' : milestone.failed ? 'border-slate-400' : isPastDue ? 'border-rose-400' : 'border-slate-300';
-                    const cardOpacity = (milestone.completed || milestone.failed) ? 'opacity-70 hover:opacity-100' : '';
-                    const titleClass = milestone.completed ? 'text-slate-500 line-through decoration-slate-300' : milestone.failed ? 'text-slate-500 line-through decoration-rose-300' : 'text-slate-900';
-
-                    const card = document.createElement('div');
-                    card.className = `timeline-item relative pl-8 sm:pl-10 pb-5 sm:pb-6 ${cardOpacity} group`;
-                    card.innerHTML = `
-                        <div class="absolute left-[-5px] sm:left-1 top-6 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full ${nodeBg} border-[3px] ${nodeBorder} shadow-sm z-10 transition-colors"></div>
-                        <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/60 hover:shadow-md hover:border-${statusColor}-200 transition-all flex flex-col sm:flex-row gap-3 sm:gap-4">
-                            ${!milestone.failed ? `
-                            <button onclick="toggleStatus('${milestone.id}')" class="hidden sm:flex mt-1 flex-shrink-0 w-8 h-8 rounded-full border-2 items-center justify-center transition-all ${milestone.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-200 hover:border-brand-500 text-transparent hover:text-brand-200'}">
-                                <i data-lucide="check" class="w-4 h-4"></i>
-                            </button>` : `
-                            <div class="hidden sm:flex mt-1 flex-shrink-0 w-8 h-8 rounded-full border-2 border-slate-200 bg-slate-100 items-center justify-center text-slate-400">
-                                <i data-lucide="x" class="w-4 h-4"></i>
-                            </div>`}
-                            <div class="flex-grow min-w-0">
-                                <div class="flex flex-wrap items-center gap-2 mb-1">
-                                    <h3 class="text-base sm:text-lg font-bold truncate ${titleClass}">${milestone.title}</h3>
-                                    ${isPastDue && !milestone.completed && !milestone.failed ? `<span class="px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-bold bg-rose-100 text-rose-700 uppercase tracking-wide">Terlambat</span>` : ''}
-                                    ${milestone.failed ? `<span class="px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-bold bg-slate-100 text-slate-600 uppercase tracking-wide">Dibatalkan</span>` : ''}
-                                </div>
-                                <div class="flex items-center text-[11px] sm:text-xs font-medium ${isPastDue && !milestone.completed && !milestone.failed ? 'text-rose-600' : 'text-slate-500'} mb-2">
-                                    <i data-lucide="calendar" class="w-3.5 h-3.5 mr-1.5"></i> Tenggat: ${formatDate(milestone.dueDate)}
-                                </div>
-                                ${milestone.failed && milestone.failReason ? `
-                                <div class="mt-2 mb-2 bg-rose-50 border border-rose-100/60 rounded-xl p-3 text-[11px] sm:text-xs shadow-inner-light">
-                                    <span class="font-bold text-rose-800 flex items-center gap-1.5 mb-1"><i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> Kendala:</span>
-                                    <span class="text-slate-700 leading-relaxed">${milestone.failReason}</span>
-                                </div>` : ''}
-                                <div class="flex flex-wrap gap-2 mt-3">
-                                    ${milestone.photos?.length ? `<div class="flex items-center text-[10px] sm:text-[11px] font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded-md"><i data-lucide="image" class="w-3.5 h-3.5 mr-1.5 text-brand-500"></i> ${milestone.photos.length} Foto</div>` : ''}
-                                    ${milestone.files?.length ? `<div class="flex items-center text-[10px] sm:text-[11px] font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded-md"><i data-lucide="file-text" class="w-3.5 h-3.5 mr-1.5 text-blue-500"></i> ${milestone.files.length} Dokumen</div>` : ''}
-                                </div>
-                            </div>
-                            <div class="flex flex-row sm:flex-col justify-end gap-2 border-t sm:border-t-0 sm:border-l border-slate-100 pt-3 sm:pt-0 sm:pl-4 mt-2 sm:mt-0 shrink-0">
-                                ${!milestone.failed ? `
-                                <button onclick="toggleStatus('${milestone.id}')" class="sm:hidden flex-1 px-3 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center justify-center gap-1.5 ${milestone.completed ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-50 text-slate-600 border-slate-200'}">
-                                    <i data-lucide="${milestone.completed ? 'rotate-ccw' : 'check'}" class="w-3.5 h-3.5"></i> ${milestone.completed ? 'Batal' : 'Selesai'}
-                                </button>` : ''}
-                                <div class="flex flex-1 sm:flex-none justify-end sm:justify-start gap-1.5">
-                                    ${milestone.failed ? `<button onclick="restoreMilestone('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-600 rounded-xl border border-slate-200" title="Pulihkan"><i data-lucide="refresh-ccw" class="w-4 h-4"></i></button>` : !milestone.completed ? `<button onclick="openFailModal('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-500 rounded-xl" title="Tandai Gagal"><i data-lucide="x-octagon" class="w-4 h-4"></i></button>` : ''}
-                                    <button onclick="openModal('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-600 rounded-xl" title="Detail"><i data-lucide="expand" class="w-4 h-4"></i></button>
-                                    <button onclick="openEditModal('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-500 rounded-xl" title="Edit"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
-                                    <button onclick="deleteMilestone('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-400 rounded-xl" title="Hapus"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    listContainer.appendChild(card);
-                });
-            }
-            lucide.createIcons();
-        };
-
-        const updateStats = () => {
-            document.getElementById('total-count').textContent = milestones.length;
-            document.getElementById('completed-count').textContent = milestones.filter(m => m.completed).length;
-
-            const today = new Date(); const currentYear = today.getFullYear(); const currentQuarter = getQuarter(today);
-            document.getElementById('q-title').textContent = `Q${currentQuarter} ${currentYear}`;
-
-            const qMilestones = milestones.filter(m => m.dueDate && new Date(m.dueDate).getFullYear() === currentYear && getQuarter(new Date(m.dueDate)) === currentQuarter);
-            const qTotalCount = qMilestones.length;
-            const qCompletedCount = qMilestones.filter(m => m.completed).length;
-            let qProg = qTotalCount === 0 ? 0 : Math.round((qCompletedCount / qTotalCount) * 100);
-
-            document.getElementById('q-status-text').textContent = qTotalCount === 0 ? "Belum ada target di kuartal ini." : `${qCompletedCount} dari ${qTotalCount} diselesaikan.`;
-            document.getElementById('q-percentage').textContent = `${qProg}%`;
-            
-            setTimeout(() => {
-                document.getElementById('q-progress-bar').style.width = `${qProg}%`;
-                let barColor = qProg > 80 ? "bg-emerald-400" : qProg > 40 ? "bg-amber-400" : "bg-rose-400";
-                document.getElementById('q-progress-bar').className = `${barColor} h-full rounded-full transition-all duration-1000 shadow-inner-light`;
-            }, 100);
-
-            const pastDueQuarterMilestones = milestones.filter(m => {
-                if (m.completed || m.failed || !m.dueDate) return false;
-                const d = new Date(m.dueDate);
-                return d.getFullYear() < currentYear || (d.getFullYear() === currentYear && getQuarter(d) < currentQuarter);
-            });
-
-            const isLastMonthOfQuarter = (today.getMonth() % 3) === 2;
-            const evalAlert = document.getElementById('evaluation-alert');
-            const evalMsg = document.getElementById('evaluation-message');
-
-            if (pastDueQuarterMilestones.length > 0) {
-                evalAlert.classList.remove('hidden'); evalMsg.textContent = `${pastDueQuarterMilestones.length} tugas dari kuartal lalu terlewat.`;
-            } else if (isLastMonthOfQuarter && qProg < 100 && qTotalCount > 0) {
-                evalAlert.classList.remove('hidden'); evalMsg.textContent = "Bulan terakhir di kuartal ini, target belum 100%.";
-            } else {
-                evalAlert.classList.add('hidden');
-            }
-
-            const failedThisQuarter = milestones.filter(m => m.failed && m.dueDate && new Date(m.dueDate).getFullYear() === currentYear && getQuarter(new Date(m.dueDate)) === currentQuarter);
-            const issuesBox = document.getElementById('issues-box');
-            if (failedThisQuarter.length > 0) {
-                issuesBox.classList.remove('hidden');
-                document.getElementById('issues-list').innerHTML = failedThisQuarter.map(m => `
-                    <li class="bg-white/60 rounded-xl p-3 text-xs border border-rose-100/50 shadow-sm relative pl-8">
-                        <div class="absolute left-3 top-3.5 w-1.5 h-1.5 rounded-full bg-rose-500"></div>
-                        <span class="font-bold text-slate-800 block mb-0.5 truncate">${m.title}</span>
-                        <span class="text-rose-700 leading-relaxed block">${m.failReason}</span>
-                    </li>
-                `).join('');
-            } else issuesBox.classList.add('hidden');
-        };
-
-        document.getElementById('search-input').addEventListener('input', (e) => { currentSearch = e.target.value; renderMilestones(); });
-
-        window.filterMilestones = (filter) => {
-            currentFilter = filter;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.className = btn.id.includes('mob') ? "filter-btn shrink-0 px-5 py-2 text-sm font-medium rounded-full bg-white border border-slate-200 text-slate-600 transition-all" : "filter-btn px-4 py-1.5 text-sm font-medium rounded-full text-slate-500 hover:text-slate-800 transition-all";
-            });
-            document.getElementById(`filter-${filter}`).className = "filter-btn active px-4 py-1.5 text-sm font-semibold rounded-full bg-white text-slate-800 shadow-sm transition-all";
-            if(document.getElementById(`filter-${filter}-mob`)) document.getElementById(`filter-${filter}-mob`).className = "filter-btn active shrink-0 px-5 py-2 text-sm font-semibold rounded-full bg-slate-800 text-white transition-all";
-            renderMilestones();
-        };
-
-        window.toggleStatus = async (id) => {
-            const milestone = milestones.find(m => m.id === id);
-            if (milestone) { milestone.completed = !milestone.completed; if(milestone.completed) milestone.failed = false; await saveToDB(milestone); }
-        };
-
-        window.deleteMilestone = (id) => {
-            customMessage("Hapus Target", "Data yang dihapus tidak dapat dikembalikan.", async () => {
-                if(!usingFirebase) milestones = milestones.filter(m => m.id !== id); await deleteFromDB(id);
-            });
-        };
-
-        window.restoreMilestone = async (id) => {
-            const m = milestones.find(x => x.id === id);
-            if(m) { m.failed = false; m.failReason = ""; await saveToDB(m); }
-        };
-
-        let pendingAddPhotos = []; let pendingAddDocs = [];
-        window.openAddModal = () => {
-            document.getElementById('add-form').reset(); pendingAddPhotos = []; pendingAddDocs = [];
-            document.getElementById('photo-badge-counter').classList.replace('flex', 'hidden'); document.getElementById('doc-badge-counter').classList.replace('flex', 'hidden');
-            const modal = document.getElementById('add-modal');
-            modal.classList.remove('hidden'); void modal.offsetWidth; modal.classList.remove('opacity-0');
-            document.getElementById('add-modal-content').classList.remove('scale-95');
-        };
-        window.closeAddModal = () => {
-            const modal = document.getElementById('add-modal');
-            modal.classList.add('opacity-0'); document.getElementById('add-modal-content').classList.add('scale-95');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        };
-
-        document.getElementById('photos').addEventListener('change', (e) => {
-            if(e.target.files.length) pendingAddPhotos.push(...Array.from(e.target.files));
-            const badge = document.getElementById('photo-badge-counter');
-            if (pendingAddPhotos.length > 0) { badge.textContent = pendingAddPhotos.length; badge.classList.replace('hidden', 'flex'); }
-            e.target.value = '';
-        });
-
-        document.getElementById('docs').addEventListener('change', (e) => {
-            if(e.target.files.length) pendingAddDocs.push(...Array.from(e.target.files));
-            const badge = document.getElementById('doc-badge-counter');
-            if (pendingAddDocs.length > 0) { badge.textContent = pendingAddDocs.length; badge.classList.replace('hidden', 'flex'); }
-            e.target.value = '';
-        });
-
-        document.getElementById('add-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const submitBtn = document.getElementById('submit-btn'); const originalBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Memproses...`; submitBtn.disabled = true;
-
-            try {
-                const base64Photos = pendingAddPhotos.length > 0 ? await Promise.all(pendingAddPhotos.map(CompressionSystem.process)) : [];
-                const base64Docs = pendingAddDocs.length > 0 ? await Promise.all(pendingAddDocs.map(CompressionSystem.process)) : [];
+                const app = initializeApp(myFirebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                await signInAnonymously(auth);
                 
-                if ([...base64Photos, ...base64Docs].reduce((a, b) => a + b.length, 0) > 900000) throw new Error("Total lampiran melebihi 900KB.");
+                milestonesRef = collection(db, 'artifacts', appId, 'public', 'data', 'milestones');
+                berkasRef = collection(db, 'artifacts', appId, 'public', 'data', 'berkas');
                 
-                const newMilestone = {
-                    id: Date.now().toString(), title: document.getElementById('title').value.trim(), dueDate: document.getElementById('dueDate').value,
-                    description: document.getElementById('description').value.trim(), completed: false, failed: false, failReason: "",
-                    createdAt: new Date().toISOString(),
-                    photos: pendingAddPhotos.map((f, i) => ({ name: f.name, data: base64Photos[i] })),
-                    files: pendingAddDocs.map((f, i) => ({ name: f.name, data: base64Docs[i] }))
-                };
-                if (!usingFirebase) { milestones.unshift(newMilestone); }
-                await saveToDB(newMilestone); closeAddModal();
-            } catch (err) { customMessage("Gagal Upload", err.message); } 
-            finally { submitBtn.innerHTML = originalBtnText; submitBtn.disabled = false; lucide.createIcons(); }
-        });
+                onSnapshot(milestonesRef, (snap) => {
+                    milestones = snap.docs.map(d => d.data());
+                    renderMilestones();
+                });
 
-        window.openModal = (id) => {
-            const m = milestones.find(m => m.id === id); if (!m) return;
-            document.getElementById('modal-title').textContent = m.title;
-            document.getElementById('modal-date').textContent = "Tenggat Waktu: " + formatDate(m.dueDate);
-            document.getElementById('modal-desc').textContent = m.description || "Tidak ada deskripsi.";
-            
-            const isPastDue = isOverdue(m.dueDate) && !m.completed && !m.failed;
-            const iconContainer = document.getElementById('modal-icon-container');
-            iconContainer.className = `w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-sm shrink-0 ${m.completed ? 'bg-emerald-100 text-emerald-600' : m.failed ? 'bg-slate-100 text-slate-600' : isPastDue ? 'bg-rose-100 text-rose-600' : 'bg-brand-100 text-brand-600'}`;
-            iconContainer.innerHTML = `<i data-lucide="${m.completed ? 'check-circle-2' : m.failed ? 'x-octagon' : isPastDue ? 'alert-triangle' : 'flag'}" class="w-5 h-5 sm:w-6 sm:h-6"></i>`;
+                onSnapshot(berkasRef, (snap) => {
+                    globalFiles = snap.docs.map(d => d.data());
+                    renderBerkas();
+                });
 
-            const gallery = document.getElementById('photo-gallery');
-            if (m.photos?.length) {
-                gallery.classList.remove('hidden');
-                document.getElementById('photo-grid').innerHTML = m.photos.map((p) => `
-                    <div class="relative group aspect-square rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
-                        <img src="${p.data}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <a href="${p.data}" download="${p.name}" class="p-2 bg-white/90 rounded-full text-slate-900 hover:scale-110 transition-transform shadow-sm"><i data-lucide="download" class="w-4 h-4"></i></a>
-                        </div>
-                    </div>`).join('');
-            } else gallery.classList.add('hidden');
-
-            const fileList = document.getElementById('file-list');
-            if (m.files?.length) {
-                fileList.classList.remove('hidden');
-                document.getElementById('document-list').innerHTML = m.files.map((f) => `
-                    <div class="flex items-center justify-between p-2.5 sm:p-3 bg-slate-50 border border-slate-100 rounded-xl">
-                        <div class="flex items-center gap-2.5 sm:gap-3 overflow-hidden">
-                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0"><i data-lucide="file-text" class="w-3.5 h-3.5"></i></div>
-                            <span class="text-xs sm:text-sm font-medium text-slate-700 truncate">${f.name}</span>
-                        </div>
-                        <a href="${f.data}" download="${f.name}" class="ml-2 shrink-0 p-1.5 bg-white border border-slate-200 text-slate-600 hover:text-brand-600 hover:border-brand-200 rounded-md transition-colors shadow-sm"><i data-lucide="download" class="w-3.5 h-3.5"></i></a>
-                    </div>`).join('');
-            } else fileList.classList.add('hidden');
-
-            lucide.createIcons();
-            const modal = document.getElementById('detail-modal'); modal.classList.remove('hidden'); void modal.offsetWidth; modal.classList.remove('opacity-0'); document.getElementById('detail-modal-content').classList.remove('scale-95');
-        };
-        window.closeModal = () => { const m = document.getElementById('detail-modal'); m.classList.add('opacity-0'); document.getElementById('detail-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); };
-
-        let currentEditId = null; let tempEditPhotos = []; let tempEditFiles = [];
-        window.openEditModal = (id) => {
-            const m = milestones.find(m => m.id === id); if (!m) return; currentEditId = id;
-            document.getElementById('edit-title').value = m.title; document.getElementById('edit-date').value = m.dueDate; document.getElementById('edit-desc').value = m.description || "";
-            document.getElementById('edit-photos').value = ""; document.getElementById('edit-docs').value = "";
-            document.getElementById('edit-photo-badge').classList.replace('flex','hidden'); document.getElementById('edit-doc-badge').classList.replace('flex','hidden');
-            tempEditPhotos = m.photos ? [...m.photos] : []; tempEditFiles = m.files ? [...m.files] : [];
-            renderEditAttachments();
-            const eModal = document.getElementById('edit-modal'); eModal.classList.remove('hidden'); void eModal.offsetWidth; eModal.classList.remove('opacity-0'); document.getElementById('edit-modal-content').classList.remove('scale-95');
-        };
-        window.closeEditModal = () => { const eModal = document.getElementById('edit-modal'); eModal.classList.add('opacity-0'); document.getElementById('edit-modal-content').classList.add('scale-95'); setTimeout(() => eModal.classList.add('hidden'), 300); currentEditId = null; };
-
-        const renderEditAttachments = () => {
-            document.getElementById('edit-old-photos').innerHTML = tempEditPhotos.map((p, i) => `
-                <div class="relative group aspect-square rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
-                    <img src="${p.data}" class="w-full h-full object-cover">
-                    <button type="button" onclick="removeEditPhoto(${i})" class="absolute top-1 right-1 w-6 h-6 bg-white/90 hover:bg-rose-50 rounded-full text-rose-500 flex items-center justify-center shadow-sm"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
-                </div>`).join('');
-            document.getElementById('edit-old-files').innerHTML = tempEditFiles.map((f, i) => `
-                <div class="flex items-center justify-between p-2 bg-slate-50 border border-slate-100 rounded-lg mb-1.5">
-                    <span class="text-[10px] sm:text-xs font-medium text-slate-600 truncate mr-2">${f.name}</span>
-                    <button type="button" onclick="removeEditFile(${i})" class="text-slate-400 hover:text-rose-500"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
-                </div>`).join('');
-            lucide.createIcons();
-        };
-
-        window.removeEditPhoto = (idx) => { tempEditPhotos.splice(idx, 1); renderEditAttachments(); };
-        window.removeEditFile = (idx) => { tempEditFiles.splice(idx, 1); renderEditAttachments(); };
-
-        document.getElementById('edit-photos').addEventListener('change', async (e) => {
-            if(!e.target.files.length) return;
-            try {
-                const b64s = await Promise.all(Array.from(e.target.files).map(CompressionSystem.process));
-                Array.from(e.target.files).forEach((f, i) => tempEditPhotos.push({ name: f.name, data: b64s[i] })); renderEditAttachments();
-            } catch(err) { customMessage("Gagal Upload", err.message); } e.target.value = '';
-        });
-        document.getElementById('edit-docs').addEventListener('change', async (e) => {
-            if(!e.target.files.length) return;
-            try {
-                const b64s = await Promise.all(Array.from(e.target.files).map(CompressionSystem.process));
-                Array.from(e.target.files).forEach((f, i) => tempEditFiles.push({ name: f.name, data: b64s[i] })); renderEditAttachments();
-            } catch(err) { customMessage("Gagal Upload", err.message); } e.target.value = '';
-        });
-
-        document.getElementById('edit-form').addEventListener('submit', async (e) => {
-            e.preventDefault(); const m = milestones.find(x => x.id === currentEditId); if(!m) return;
-            const submitBtn = document.getElementById('edit-submit-btn'); const originalBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Proses...`; submitBtn.disabled = true;
-
-            try {
-                if ([...tempEditPhotos, ...tempEditFiles].reduce((acc, curr) => acc + (curr.data ? curr.data.length : 0), 0) > 900000) throw new Error("Total lampiran melebihi kapasitas.");
-                await saveToDB({ ...m, title: document.getElementById('edit-title').value.trim(), dueDate: document.getElementById('edit-date').value, description: document.getElementById('edit-desc').value.trim(), photos: tempEditPhotos, files: tempEditFiles });
-                window.closeEditModal();
-            } catch (err) { customMessage("Gagal Edit", err.message); } 
-            finally { submitBtn.innerHTML = originalBtnText; submitBtn.disabled = false; lucide.createIcons(); }
-        });
-
-        let confirmAction = null; let currentFailId = null;
-        const customMessage = (title, desc, action = null) => {
-            document.getElementById('confirm-title').textContent = title; document.getElementById('confirm-desc').textContent = desc; confirmAction = action;
-            const cancelBtn = document.getElementById('confirm-cancel-btn'); const actionBtn = document.getElementById('confirm-action-btn');
-            
-            actionBtn.textContent = 'Ya';
-            if (!action) { cancelBtn.classList.add('hidden'); actionBtn.textContent = 'Tutup'; actionBtn.className = "px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-semibold transition-all"; } 
-            else { cancelBtn.classList.remove('hidden'); actionBtn.className = "px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-semibold transition-all"; }
-            const m = document.getElementById('confirm-modal'); m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0'); document.getElementById('confirm-modal-content').classList.remove('scale-95');
-        };
-        window.closeConfirmModal = () => { const m = document.getElementById('confirm-modal'); m.classList.add('opacity-0'); document.getElementById('confirm-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); };
-        document.getElementById('confirm-action-btn').addEventListener('click', () => { if(confirmAction) confirmAction(); window.closeConfirmModal(); });
-
-        window.openFailModal = (id) => { currentFailId = id; document.getElementById('fail-reason').value = ''; const m = document.getElementById('fail-modal'); m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0'); document.getElementById('fail-modal-content').classList.remove('scale-95'); };
-        window.closeFailModal = () => { const m = document.getElementById('fail-modal'); m.classList.add('opacity-0'); document.getElementById('fail-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); };
-        document.getElementById('fail-form').addEventListener('submit', async (e) => {
-            e.preventDefault(); const reason = document.getElementById('fail-reason').value.trim(); const m = milestones.find(x => x.id === currentFailId);
-            if(m) { m.failed = true; m.completed = false; m.failReason = reason; await saveToDB(m); } window.closeFailModal();
-        });
-
-        window.openPasswordModal = () => {
-            document.getElementById('berkas-password').value = ''; document.getElementById('password-error').classList.add('hidden');
-            const m = document.getElementById('password-modal'); m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0'); document.getElementById('password-modal-content').classList.remove('scale-95');
-        };
-        window.closePasswordModal = () => {
-            const m = document.getElementById('password-modal'); m.classList.add('opacity-0'); document.getElementById('password-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300);
-        };
-        document.getElementById('password-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (document.getElementById('berkas-password').value === 'STM123') { closePasswordModal(); setTimeout(() => openBerkasModal(), 300); } 
-            else { document.getElementById('password-error').classList.remove('hidden'); }
-        });
-
-        window.openBerkasModal = () => {
-            currentFolderId = 'root'; folderHistory = [{ id: 'root', name: 'Utama' }];
-            renderBerkas();
-            const m = document.getElementById('berkas-modal'); m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0'); document.getElementById('berkas-modal-content').classList.remove('scale-95');
-        };
-        window.closeBerkasModal = () => {
-            const m = document.getElementById('berkas-modal'); m.classList.add('opacity-0'); document.getElementById('berkas-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300);
-        };
-
-        window.openCreateFolderModal = () => {
-            document.getElementById('new-folder-name').value = '';
-            const m = document.getElementById('create-folder-modal'); m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0'); document.getElementById('create-folder-modal-content').classList.remove('scale-95');
-        };
-        window.closeCreateFolderModal = () => {
-            const m = document.getElementById('create-folder-modal'); m.classList.add('opacity-0'); document.getElementById('create-folder-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300);
-        };
-
-        let currentRenameId = null;
-        window.openRenameModal = (id, currentName, event) => {
-            if(event) event.stopPropagation();
-            currentRenameId = id; document.getElementById('rename-input').value = currentName;
-            const m = document.getElementById('rename-modal'); m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0'); document.getElementById('rename-modal-content').classList.remove('scale-95');
-        };
-        window.closeRenameModal = () => {
-            const m = document.getElementById('rename-modal'); m.classList.add('opacity-0'); document.getElementById('rename-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); currentRenameId = null;
-        };
-
-        document.getElementById('rename-form').addEventListener('submit', async (e) => {
-            e.preventDefault(); const newName = document.getElementById('rename-input').value.trim();
-            if(!newName || !currentRenameId) return;
-            const item = globalFiles.find(f => f.id === currentRenameId);
-            if(item) {
-                item.name = newName;
-                if (!usingFirebase) { saveBerkasLocal(); } 
-                else { await setDoc(doc(berkasRef, item.id), { name: newName }, { merge: true }); }
+                document.getElementById('cloud-indicator').classList.replace('hidden', 'flex');
+            } catch (e) {
+                console.error(e);
+                fallbackLocal();
             }
-            closeRenameModal();
-        });
+        }
 
-        document.getElementById('create-folder-form').addEventListener('submit', async (e) => {
-            e.preventDefault(); const name = document.getElementById('new-folder-name').value.trim(); if(!name) return;
-            const newFolder = { id: 'folder_' + Date.now(), name: name, type: 'folder', parentId: currentFolderId, createdAt: new Date().toISOString() };
-            try {
-                if (!usingFirebase) { globalFiles.push(newFolder); saveBerkasLocal(); } 
-                else { await setDoc(doc(berkasRef, newFolder.id), newFolder); }
-                closeCreateFolderModal();
-            } catch(err) { customMessage("Gagal Membuat Folder", err.message); }
-        });
-
-        window.navigateToFolder = (id) => {
-            const index = folderHistory.findIndex(h => h.id === id);
-            if (index !== -1) { folderHistory = folderHistory.slice(0, index + 1); } 
+        function renderMilestones() {
+            const container = document.getElementById('list-container');
+            const empty = document.getElementById('empty-state');
+            container.innerHTML = '';
+            if (milestones.length === 0) { empty.classList.remove('hidden'); }
             else {
-                const folder = globalFiles.find(f => f.id === id && f.type === 'folder');
-                if (folder) folderHistory.push({ id: folder.id, name: folder.name });
-            }
-            currentFolderId = id; renderBerkas();
-        };
-
-        window.goBackFolder = () => {
-            if (folderHistory.length > 1) { navigateToFolder(folderHistory[folderHistory.length - 2].id); }
-        };
-
-        const renderBerkas = () => {
-            const grid = document.getElementById('berkas-grid');
-            const empty = document.getElementById('berkas-empty');
-            const breadcrumb = document.getElementById('berkas-breadcrumb');
-            const backBtn = document.getElementById('btn-back-folder');
-            
-            grid.innerHTML = '';
-            
-            if (currentFolderId === 'root') { backBtn.classList.replace('flex', 'hidden'); } 
-            else { backBtn.classList.replace('hidden', 'flex'); }
-
-            breadcrumb.innerHTML = folderHistory.map((h, i) => `
-                <button onclick="navigateToFolder('${h.id}')" class="${i === folderHistory.length - 1 ? 'text-slate-800 font-bold' : 'hover:text-brand-600'} transition-colors">${h.name}</button>
-                ${i < folderHistory.length - 1 ? '<i data-lucide="chevron-right" class="w-3.5 h-3.5 mx-1 text-slate-300"></i>' : ''}
-            `).join('');
-
-            const currentItems = globalFiles.filter(f => (f.parentId || 'root') === currentFolderId);
-            
-            if (currentItems.length === 0) {
-                grid.classList.add('hidden'); empty.classList.replace('hidden', 'flex');
-            } else {
-                grid.classList.remove('hidden'); empty.classList.replace('flex', 'hidden');
-                
-                currentItems.sort((a,b) => {
-                    if (a.type === 'folder' && b.type !== 'folder') return -1;
-                    if (a.type !== 'folder' && b.type === 'folder') return 1;
-                    return new Date(b.createdAt) - new Date(a.createdAt);
-                }).forEach(f => {
-                    const isFolder = f.type === 'folder';
-                    const isImg = !isFolder && f.type.startsWith('image/');
-                    const isPdf = !isFolder && (f.type === 'application/pdf' || f.name.endsWith('.pdf'));
-                    const canPreview = isImg || isPdf;
-                    
-                    let icon = 'file-text'; let iconColor = 'text-blue-500'; let bg = 'bg-blue-50';
-                    if (isFolder) { icon = 'folder-open'; iconColor = 'text-amber-500'; bg = 'bg-amber-50'; }
-                    else if (isImg) { icon = 'image'; iconColor = 'text-brand-500'; bg = 'bg-brand-50'; }
-                    else if (isPdf) { icon = 'file-check-2'; iconColor = 'text-rose-500'; bg = 'bg-rose-50'; }
-                    else if (f.name.includes('.xls')) { icon = 'sheet'; iconColor = 'text-emerald-500'; bg = 'bg-emerald-50'; }
-
+                empty.classList.add('hidden');
+                milestones.forEach(m => {
                     const card = document.createElement('div');
-                    
-                    if(isFolder) {
-                        card.className = "bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/60 rounded-3xl p-4 flex flex-col shadow-sm transition-all cursor-pointer group relative active:scale-95 overflow-hidden";
-                        card.onclick = (e) => { if(!e.target.closest('button')) navigateToFolder(f.id); };
-                        card.innerHTML = `
-                            <div class="flex justify-between items-start w-full mb-3">
-                                <div class="w-12 h-12 rounded-2xl bg-amber-200/50 text-amber-600 flex items-center justify-center shrink-0 shadow-inner group-hover:-translate-y-1 transition-transform">
-                                    <i data-lucide="folder-open" class="w-6 h-6 fill-amber-300"></i>
-                                </div>
-                                <div class="flex items-center gap-1 bg-white/80 backdrop-blur-sm p-1 rounded-xl shadow-sm border border-amber-100/50">
-                                    <button onclick="downloadFolderZip('${f.id}', '${f.name}', event)" class="p-1.5 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Unduh ZIP"><i data-lucide="folder-down" class="w-3.5 h-3.5"></i></button>
-                                    <button onclick="openRenameModal('${f.id}', '${f.name}', event)" class="p-1.5 text-amber-600 hover:bg-amber-100 rounded-lg transition-colors" title="Ubah Nama"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i></button>
-                                    <button onclick="deleteBerkas('${f.id}', true, event)" class="p-1.5 text-rose-500 hover:bg-rose-100 rounded-lg transition-colors" title="Hapus"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                                </div>
-                            </div>
-                            <div class="mt-auto">
-                                <h4 class="text-sm font-extrabold text-slate-800 line-clamp-2 leading-snug" title="${f.name}">${f.name}</h4>
-                                <p class="text-[10px] font-bold text-amber-600/70 mt-1 uppercase tracking-wide">Folder</p>
-                            </div>
-                        `;
-                    } else {
-                        card.className = "bg-white border border-slate-200 rounded-3xl p-4 flex flex-col gap-3 shadow-sm transition-all group relative active:scale-95";
-                        card.innerHTML = `
-                            <div class="flex flex-col gap-3 h-full">
-                                <div class="flex items-start gap-3">
-                                    <div class="w-10 h-10 rounded-xl ${bg} ${iconColor} flex items-center justify-center shrink-0">
-                                        <i data-lucide="${icon}" class="w-5 h-5"></i>
-                                    </div>
-                                    <div class="min-w-0 flex-grow">
-                                        <h4 class="text-sm font-bold text-slate-800 truncate" title="${f.name}">${f.name}</h4>
-                                        <p class="text-[10px] text-slate-400 font-medium mt-0.5">${formatDate(f.createdAt)}</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between mt-auto pt-3 border-t border-slate-100">
-                                    <div>
-                                        ${canPreview ? `<button onclick="previewBerkas('${f.id}')" class="px-2 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-[11px] font-semibold flex items-center gap-1.5 transition-colors"><i data-lucide="eye" class="w-3.5 h-3.5"></i> Lihat</button>` : ''}
-                                    </div>
-                                    <div class="flex items-center gap-1">
-                                        <button onclick="downloadSingleFile('${f.id}', event)" class="p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors" title="Unduh"><i data-lucide="download" class="w-4 h-4"></i></button>
-                                        <button onclick="openRenameModal('${f.id}', '${f.name}', event)" class="p-1.5 text-slate-400 hover:bg-amber-50 hover:text-amber-600 rounded-xl transition-colors" title="Ubah Nama"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
-                                        <button onclick="deleteBerkas('${f.id}', false, event)" class="p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-500 rounded-xl transition-colors" title="Hapus"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }
-                    grid.appendChild(card);
+                    card.className = "bg-white p-5 rounded-3xl border border-slate-100 shadow-soft flex justify-between items-center";
+                    card.innerHTML = `<div><h3 class="font-bold text-slate-800">${m.title}</h3><p class="text-xs text-slate-500">${m.dueDate}</p></div><button onclick="deleteMilestone('${m.id}')" class="p-2 text-rose-400 hover:bg-rose-50 rounded-full"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`;
+                    container.appendChild(card);
                 });
             }
+            document.getElementById('total-count').textContent = milestones.length;
+            document.getElementById('completed-count').textContent = milestones.filter(x => x.completed).length;
             lucide.createIcons();
+        }
+
+        window.deleteMilestone = async (id) => {
+            if(confirm("Hapus target ini?")) await deleteDoc(doc(milestonesRef, id));
         };
 
-        document.getElementById('berkas-upload-input').addEventListener('change', async (e) => {
-            if(!e.target.files.length) return;
-            const overlay = document.getElementById('berkas-uploading-overlay');
-            overlay.classList.replace('hidden', 'flex');
-            
-            try {
-                const filesArr = Array.from(e.target.files);
-                const b64s = await Promise.all(filesArr.map(CompressionSystem.process));
-                
-                for (let i = 0; i < filesArr.length; i++) {
-                    const newFile = {
-                        id: 'berkas_' + Date.now() + '_' + i,
-                        name: filesArr[i].name,
-                        type: filesArr[i].type || (filesArr[i].name.endsWith('.pdf') ? 'application/pdf' : 'unknown'),
-                        data: b64s[i],
-                        parentId: currentFolderId,
-                        createdAt: new Date().toISOString()
-                    };
-                    if (newFile.data.length > 950000) throw new Error(`File ${newFile.name} terlalu besar setelah diproses.`);
-                    
-                    if (!usingFirebase) { globalFiles.push(newFile); saveBerkasLocal(); } 
-                    else { await setDoc(doc(berkasRef, newFile.id), newFile); }
-                }
-            } catch(err) {
-                customMessage("Gagal Upload", err.message);
-            } finally {
-                overlay.classList.replace('flex', 'hidden');
-                e.target.value = '';
-            }
-        });
+        // --- AI GENERATOR LOGIC ---
+        window.openAIGeneratorModal = () => document.getElementById('ai-generator-modal').classList.remove('hidden');
+        window.closeAIGeneratorModal = () => document.getElementById('ai-generator-modal').classList.add('hidden');
 
-        window.deleteBerkas = (id, isFolder, event) => {
-            if(event) event.stopPropagation();
-            const msg = isFolder ? "Semua isi dalam folder ini juga akan terhapus. Yakin?" : "Berkas yang dihapus tidak dapat dikembalikan.";
-            customMessage(isFolder ? "Hapus Folder" : "Hapus Berkas", msg, async () => {
-                if(!usingFirebase) { 
-                    if (isFolder) { globalFiles = globalFiles.filter(f => f.parentId !== id && f.id !== id); } 
-                    else { globalFiles = globalFiles.filter(f => f.id !== id); }
-                    saveBerkasLocal(); 
-                }
-                else { 
-                    if (isFolder) {
-                        const itemsToDelete = globalFiles.filter(f => f.parentId === id);
-                        for(let item of itemsToDelete) { await deleteDoc(doc(berkasRef, item.id)); }
-                    }
-                    await deleteDoc(doc(berkasRef, id)); 
-                }
-            });
-        };
-
-        window.previewBerkas = (id) => {
-            const f = globalFiles.find(x => x.id === id); if (!f) return;
-            const container = document.getElementById('preview-container');
-            document.getElementById('preview-title').innerHTML = `<i data-lucide="eye" class="w-4 h-4"></i> <span class="truncate pr-4">${f.name}</span>`;
-            document.getElementById('preview-download-btn').href = f.data;
-            document.getElementById('preview-download-btn').download = f.name;
-
-            if (f.type.startsWith('image/')) {
-                container.innerHTML = `<img src="${f.data}" class="max-w-full max-h-full object-contain rounded-lg shadow-lg">`;
-            } else if (f.type === 'application/pdf' || f.name.endsWith('.pdf')) {
-                container.innerHTML = `<iframe src="${f.data}" class="w-full h-full min-h-[60vh] rounded-xl border-0 bg-white"></iframe>`;
-            }
-            
-            lucide.createIcons();
-            const m = document.getElementById('preview-modal');
-            m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0');
-        };
-
-        window.closePreviewModal = () => {
-            const m = document.getElementById('preview-modal');
-            m.classList.add('opacity-0'); 
-            setTimeout(() => { m.classList.add('hidden'); document.getElementById('preview-container').innerHTML = ''; }, 300);
-        };
-
-        window.downloadSingleFile = (id, event) => {
-            if(event) event.stopPropagation();
-            const file = globalFiles.find(f => f.id === id);
-            if(!file || !file.data) return;
-            const a = document.createElement("a");
-            a.href = file.data; a.download = file.name;
-            document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        };
-
-        window.downloadFolderZip = async (folderId, folderName, event) => {
-            if(event) event.stopPropagation();
-            const btn = event.currentTarget; const ogHtml = btn.innerHTML;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i>`; btn.disabled = true;
-
-            try {
-                if (typeof JSZip === 'undefined') throw new Error("Sistem ZIP belum siap. Harap refresh halaman.");
-                const zip = new JSZip();
-                const rootZipFolder = zip.folder(folderName);
-                let hasFiles = false;
-
-                const addItemsToZip = (currentZipFolder, currentParentId) => {
-                    const children = globalFiles.filter(f => f.parentId === currentParentId);
-                    for (const child of children) {
-                        if (child.type === 'folder') {
-                            const newZipFolder = currentZipFolder.folder(child.name);
-                            addItemsToZip(newZipFolder, child.id);
-                        } else if (child.data) {
-                            const base64Data = child.data.split(',')[1];
-                            if (base64Data) { currentZipFolder.file(child.name, base64Data, {base64: true}); hasFiles = true; }
-                        }
-                    }
-                };
-
-                addItemsToZip(rootZipFolder, folderId);
-                if (!hasFiles) { customMessage("Folder Kosong", "Tidak ada file di dalam folder ini."); return; }
-
-                const content = await zip.generateAsync({type: "blob"});
-                const url = URL.createObjectURL(content);
-                const a = document.createElement("a");
-                a.href = url; a.download = `${folderName}.zip`;
-                document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-            } catch (err) {
-                console.error(err); customMessage("Gagal Unduh", err.message || "Terjadi kesalahan saat membuat ZIP.");
-            } finally {
-                btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
-            }
-        };
-
-        window.backupAllToZip = async () => {
-            const filesToZip = globalFiles.filter(f => f.type !== 'folder');
-            if (filesToZip.length === 0) { customMessage("Backup Gagal", "Brankas masih kosong."); return; }
-
-            const btn = document.getElementById('btn-backup-zip'); const ogHtml = btn.innerHTML;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Menyiapkan...`; btn.disabled = true;
-
-            try {
-                if (typeof JSZip === 'undefined') throw new Error("Sistem ZIP belum siap. Harap muat ulang halaman.");
-                const zip = new JSZip();
-                
-                const dateStr = new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'}).replace(/ /g, '_');
-                const folderName = `Backup_MILEWORKS_${dateStr}`;
-                const mainFolder = zip.folder(folderName);
-
-                const getPath = (file) => {
-                    if (file.parentId === 'root' || !file.parentId) return '';
-                    let path = ''; let currId = file.parentId;
-                    while (currId && currId !== 'root') {
-                        const parent = globalFiles.find(f => f.id === currId && f.type === 'folder');
-                        if (parent) { path = parent.name + '/' + path; currId = parent.parentId; } 
-                        else break;
-                    }
-                    return path;
-                };
-
-                for (const file of filesToZip) {
-                    if (file.data) {
-                        const path = getPath(file);
-                        const base64Data = file.data.split(',')[1];
-                        if (base64Data) mainFolder.file(path + file.name, base64Data, {base64: true});
-                    }
-                }
-
-                const content = await zip.generateAsync({type: "blob"});
-                const url = URL.createObjectURL(content);
-                const a = document.createElement("a");
-                a.href = url; a.download = `${folderName}.zip`;
-                document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-                
-                customMessage("Backup Selesai!", "File ZIP berhasil diunduh ke perangkat Anda.");
-            } catch (err) {
-                console.error(err); customMessage("Gagal Backup", err.message || "Terjadi kesalahan saat membuat ZIP.");
-            } finally {
-                btn.innerHTML = ogHtml; btn.disabled = false; lucide.createIcons();
-            }
-        };
-
-        // =========================================================================
-        // AI DRAFT GENERATOR LOGIC (MENGGUNAKAN GEMINI)
-        // =========================================================================
-
-        let extractedPdfText = ""; // Tempat menyimpan teks dari PDF
-
-        // Buka / Tutup Modal
-        window.openAIGeneratorModal = () => {
-            document.getElementById('ai-prompt-input').value = '';
-            document.getElementById('ai-pdf-input').value = '';
-            document.getElementById('ai-pdf-filename').textContent = 'Klik/Tarik file PDF RUP kesini';
-            document.getElementById('ai-result-editor').value = '';
-            document.getElementById('ai-save-filename').value = '';
-            extractedPdfText = "";
-            
-            const m = document.getElementById('ai-generator-modal');
-            m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0');
-            document.getElementById('ai-generator-content').classList.remove('scale-95');
-        };
-
-        window.closeAIGeneratorModal = () => {
-            const m = document.getElementById('ai-generator-modal');
-            m.classList.add('opacity-0'); document.getElementById('ai-generator-content').classList.add('scale-95');
-            setTimeout(() => m.classList.add('hidden'), 300);
-        };
-
-        // Ekstraksi PDF saat di-upload
         document.getElementById('ai-pdf-input').addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
-            if (file.type !== "application/pdf") {
-                customMessage("Format Salah", "Hanya menerima file PDF RUP.");
-                e.target.value = '';
-                return;
-            }
-
-            const nameDisplay = document.getElementById('ai-pdf-filename');
-            nameDisplay.innerHTML = `<i data-lucide="loader-2" class="w-3 h-3 animate-spin inline-block mr-1"></i> Membaca PDF...`;
-            lucide.createIcons();
-
+            const status = document.getElementById('ai-pdf-name');
+            status.textContent = "Mengekstrak teks...";
             try {
-                // Konversi file ke bentuk yang bisa dibaca PDF.js
                 const arrayBuffer = await file.arrayBuffer();
                 const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                
                 let fullText = "";
-                // Loop semua halaman dan ambil teksnya
                 for (let i = 1; i <= pdf.numPages; i++) {
                     const page = await pdf.getPage(i);
                     const textContent = await page.getTextContent();
-                    const pageText = textContent.items.map(item => item.str).join(' ');
-                    fullText += pageText + "\n";
+                    fullText += textContent.items.map(item => item.str).join(' ') + "\n";
                 }
-                
                 extractedPdfText = fullText;
-                nameDisplay.textContent = `✅ ${file.name}`;
-                nameDisplay.classList.replace('text-slate-600', 'text-emerald-600');
+                status.textContent = "✅ " + file.name;
+                document.getElementById('ai-pdf-icon').classList.replace('text-slate-300', 'text-emerald-500');
             } catch (err) {
-                console.error(err);
-                nameDisplay.textContent = `❌ Gagal membaca PDF`;
-                nameDisplay.classList.replace('text-slate-600', 'text-rose-600');
-                customMessage("Gagal Membaca PDF", "Pastikan file PDF tersebut berisi teks, bukan sekadar gambar hasil scan.");
+                status.textContent = "❌ Gagal membaca PDF";
             }
         });
 
-        // Trigger Gemini API
         window.generateDraftAI = async () => {
-            if (!extractedPdfText) {
-                customMessage("PDF Kosong", "Harap unggah dokumen PDF RUP terlebih dahulu agar AI punya acuan data.");
-                return;
-            }
-
-            if (GEMINI_API_KEY === "MASUKKAN_API_KEY_GEMINI_DI_SINI") {
-                customMessage("API Key Belum Diatur", "Harap masukkan API Key Gemini milik Anda ke dalam kode aplikasi.");
-                return;
-            }
-
-            const promptInput = document.getElementById('ai-prompt-input').value.trim();
+            if (!extractedPdfText) return alert("Upload PDF RUP dulu ya sayang!");
             const btn = document.getElementById('btn-generate-ai');
-            const loadingState = document.getElementById('ai-loading-state');
+            const loader = document.getElementById('ai-loading');
             const editor = document.getElementById('ai-result-editor');
+            const promptExtra = document.getElementById('ai-prompt-input').value;
 
-            btn.classList.add('hidden');
-            loadingState.classList.remove('hidden');
-            loadingState.classList.add('flex');
-            editor.value = "AI sedang mengetik...\nMohon tunggu sekitar 5-10 detik.";
+            btn.classList.add('hidden'); loader.classList.replace('hidden', 'flex');
+            editor.value = "AI sedang berpikir... Mohon tunggu 5-10 detik.";
 
-            // SYSTEM PROMPT: Memaksa Gemini untuk bertindak sebagai staf administrasi PT SMART TECHNOLOGY MANDIRI
-            const systemPrompt = `Kamu adalah seorang asisten administrasi proyek yang sangat profesional di PT SMART TECHNOLOGY MANDIRI. 
-Tugas utamamu adalah membuat "Surat Penawaran Pengadaan" berdasarkan teks dari dokumen RUP (Rencana Umum Pengadaan) yang diberikan.
-
-ATURAN SANGAT KETAT YANG WAJIB DIIKUTI:
-1. GUNAKAN TEMPLATE DI BAWAH INI SEBAGAI STRUKTUR UTAMA. Jangan mengubah format header dan footer.
-2. AMBIL DATA DARI TEKS RUP: Temukan siapa instansi/dinas yang dituju (Kepada Yth), lokasi/kecamatannya, dan daftar produk/barang apa saja yang mereka butuhkan.
-3. JIKA ADA INSTRUKSI TAMBAHAN DARI USER, terapkan instruksi tersebut ke dalam isi surat.
-4. JANGAN tambahkan teks pengantar seperti "Tentu, ini suratnya:" atau "Berikut adalah hasilnya:". Langsung cetak isi suratnya saja agar bisa langsung dicopy-paste.
-
---- TEMPLATE SURAT ---
-SURAT PENAWARAN 
-PT SMART TECHNOLOGY MANDIRI
-Telp: +6285381170567
-Nomor : 023/STM-SPH/V/2026
-Lampiran : 1 (Satu) Berkas
-Perihal : Penawaran Pengadaan [NAMA_PENGADAAN_DARI_RUP]
-
-Kepada Yth.
-Bapak/Ibu Pimpinan [NAMA_INSTANSI_DARI_RUP]
-di [LOKASI_DARI_RUP]
-
-Dengan hormat,
-
-Bersama surat ini kami dari PT Smart Technology Mandiri bermaksud mengajukan penawaran pengadaan barang dan jasa untuk proyek [NAMA_PENGADAAN_DARI_RUP] di wilayah [LOKASI_DARI_RUP].
-
-Adapun spesifikasi produk dan rincian pekerjaan yang kami tawarkan meliputi:
-1. [DAFTAR_PRODUK_1_DARI_RUP]
-2. [DAFTAR_PRODUK_2_DARI_RUP]
-(lanjutkan jika ada)
-
-[JIKA_ADA_INSTRUKSI_TAMBAHAN_USER_MASUKKAN_DI_SINI_SEBAGAI_PARAGRAF_BARU]
-
-Untuk rincian spesifikasi teknis lebih lanjut, jumlah unit, serta detail harga penawaran akan kami lampirkan dalam dokumen Rincian Anggaran Biaya (RAB) terpisah sesuai kebutuhan instansi Bapak/Ibu.
-
-Demikian surat penawaran ini kami sampaikan. Besar harapan kami agar dapat menjalin kerja sama yang baik. Atas perhatian dan kesempatan yang diberikan, kami ucapkan terima kasih.
-
-Hormat kami,
-PT SMART TECHNOLOGY MANDIRI
-
-(MARCELL VRIVAL)
-Direktur / Pimpinan Perusahaan
-----------------------
-
-Ini adalah Instruksi Tambahan dari User: "${promptInput}"
-Ini adalah Teks dari PDF RUP: "${extractedPdfText}"
-
-SEKARANG, BUAT SURATNYA BERDASARKAN TEMPLATE DI ATAS:`;
+            const systemPrompt = `Kamu asisten admin PT SMART TECHNOLOGY MANDIRI. Buat Surat Penawaran berdasarkan Template:
+            HEADER: PT SMART TECHNOLOGY MANDIRI, Telp: +6285381170567
+            Daftar Produk sesuai isi RUP ini: ${extractedPdfText}
+            Catatan Tambahan User: ${promptExtra}
+            PENUTUP: Hormat kami, (MARCELL VRIVAL) Direktur.
+            Cetak isi surat saja, tanpa teks pembuka dari AI.`;
 
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+                // MENGGUNAKAN VERSION v1beta UNTUK FORMAT API KEY AQ...
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: systemPrompt }] }]
-                    })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: systemPrompt }] }] })
                 });
 
-                if (!response.ok) throw new Error("Gagal terhubung ke server AI Google.");
-
-                const data = await response.json();
-                const aiResponseText = data.candidates[0].content.parts[0].text;
-                
-                editor.value = aiResponseText; // Masukkan hasil ke editor
-                
-                // Coba buat nama file otomatis dari hasil teks
-                document.getElementById('ai-save-filename').value = "Surat_Penawaran_Otomatis_" + Date.now().toString().slice(-4);
-
-            } catch (err) {
-                console.error(err);
-                editor.value = "Terjadi kesalahan saat memanggil AI. Periksa koneksi internet atau validitas API Key Gemini Anda.";
-                customMessage("AI Error", err.message);
-            } finally {
-                loadingState.classList.replace('flex', 'hidden');
-                btn.classList.remove('hidden');
-            }
-        };
-
-        // Download Hasil Editor jadi .txt
-        window.downloadAIText = () => {
-            const text = document.getElementById('ai-result-editor').value;
-            let filename = document.getElementById('ai-save-filename').value.trim();
-            if (!text) { customMessage("Kosong", "Tidak ada hasil untuk diunduh."); return; }
-            if (!filename) filename = "Draft_Surat_Penawaran";
-
-            const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `${filename}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        };
-
-        // Simpan Hasil Editor langsung ke Brankas (Firebase)
-        window.saveAIToBerkas = async () => {
-            const text = document.getElementById('ai-result-editor').value;
-            let filename = document.getElementById('ai-save-filename').value.trim();
-            
-            if (!text) { customMessage("Kosong", "Tidak ada hasil untuk disimpan."); return; }
-            if (!filename) { customMessage("Nama File Kosong", "Berikan nama file sebelum menyimpan ke brankas."); return; }
-            if (!filename.endsWith('.txt')) filename += '.txt';
-
-            try {
-                // Ubah teks UTF-8 biasa menjadi format Base64 yang diterima sistem Brankas kita
-                const utf8Bytes = new TextEncoder().encode(text);
-                const binaryString = String.fromCodePoint(...utf8Bytes);
-                const base64Data = "data:text/plain;base64," + btoa(binaryString);
-
-                const newFile = {
-                    id: 'berkas_ai_' + Date.now(),
-                    name: filename,
-                    type: 'text/plain',
-                    data: base64Data,
-                    parentId: 'root', // Simpan di folder utama (root)
-                    createdAt: new Date().toISOString()
-                };
-
-                if (!usingFirebase) { 
-                    globalFiles.push(newFile); saveBerkasLocal(); 
-                } else { 
-                    await setDoc(doc(berkasRef, newFile.id), newFile); 
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || "Server Google Error");
                 }
 
-                customMessage("Berhasil Disimpan!", `File ${filename} telah tersimpan di dalam Brankas Berkas.`, () => {
-                    closeAIGeneratorModal();
-                });
-
+                const data = await response.json();
+                editor.value = data.candidates[0].content.parts[0].text;
+                document.getElementById('ai-save-name').value = "Surat_Penawaran_" + Date.now().toString().slice(-4);
             } catch (err) {
-                console.error(err);
-                customMessage("Gagal Menyimpan", "Terjadi kesalahan sistem saat menyimpan ke brankas.");
+                editor.value = "ERROR: " + err.message + "\n\nSaran: Jika error 400/401, artinya API Key kamu memang tidak cocok untuk jalur ini. Coba buat API Key baru yang diawali AIza...";
+                alert("Gagal Terhubung ke AI Google.");
+            } finally {
+                btn.classList.remove('hidden'); loader.classList.replace('flex', 'hidden');
             }
         };
 
-        initApp();
+        // --- BRANKAS LOGIC ---
+        window.openPasswordModal = () => document.getElementById('password-modal').classList.remove('hidden');
+        document.getElementById('password-form').onsubmit = (e) => {
+            e.preventDefault();
+            if(document.getElementById('berkas-password').value === 'STM123') {
+                document.getElementById('password-modal').classList.add('hidden');
+                document.getElementById('berkas-modal').classList.remove('hidden');
+            } else alert("Sandi Salah!");
+        };
+        window.closeBerkasModal = () => document.getElementById('berkas-modal').classList.add('hidden');
+
+        function renderBerkas() {
+            const grid = document.getElementById('berkas-grid');
+            grid.innerHTML = '';
+            const currentItems = globalFiles.filter(f => (f.parentId || 'root') === currentFolderId);
+            currentItems.forEach(f => {
+                const div = document.createElement('div');
+                div.className = "bg-slate-50 p-4 rounded-2xl border text-center relative group";
+                const isFolder = f.type === 'folder';
+                div.innerHTML = `
+                    <div class="w-12 h-12 ${isFolder ? 'bg-amber-100 text-amber-600' : 'bg-blue-100 text-blue-600'} rounded-xl mx-auto flex items-center justify-center mb-2"><i data-lucide="${isFolder ? 'folder' : 'file-text'}"></i></div>
+                    <p class="text-[10px] font-bold truncate">${f.name}</p>
+                    <button onclick="deleteFile('${f.id}')" class="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full text-[10px] hidden group-hover:flex items-center justify-center shadow-md">X</button>
+                `;
+                if(isFolder) div.onclick = () => { currentFolderId = f.id; renderBerkas(); };
+                grid.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        window.deleteFile = async (id) => { if(confirm("Hapus berkas?")) await deleteDoc(doc(berkasRef, id)); };
+
+        // Helper kompresi gambar otomatis
+        const CompressionSystem = {
+            process: async (file) => {
+                if (file.type.startsWith('image/')) {
+                    return new Promise(res => {
+                        const r = new FileReader(); r.readAsDataURL(file);
+                        r.onload = (e) => {
+                            const img = new Image(); img.src = e.target.result;
+                            img.onload = () => {
+                                const c = document.createElement('canvas');
+                                const ctx = c.getContext('2d');
+                                const size = 800;
+                                let w = img.width, h = img.height;
+                                if (w > h) { h = (h / w) * size; w = size; } else { w = (w / h) * size; h = size; }
+                                c.width = w; c.height = h;
+                                ctx.drawImage(img, 0, 0, w, h);
+                                res(c.toDataURL('image/jpeg', 0.6));
+                            }
+                        }
+                    });
+                } else {
+                    return new Promise(res => { const r = new FileReader(); r.readAsDataURL(file); r.onload = () => res(r.result); });
+                }
+            }
+        };
+
+        init();
+        lucide.createIcons();
     </script>
 </body>
 </html>
