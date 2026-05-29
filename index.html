@@ -9,7 +9,6 @@
     <meta name="mobile-web-app-capable" content="yes">
     
     <title>MILEWORKS</title>
-    <!-- Favicon -->
     <link rel="icon" href="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -58,7 +57,6 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 <img src="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL" alt="Logo" class="w-10 h-10 sm:w-11 sm:h-11 object-contain shrink-0 drop-shadow-sm">
-                
                 <h1 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight truncate">MILEWORKS</h1>
                 <div id="cloud-indicator" class="hidden items-center gap-1 px-2 py-1 bg-emerald-50 text-emerald-600 text-[9px] sm:text-[10px] font-bold rounded-full ml-1 border border-emerald-100 uppercase tracking-wide shrink-0">
                     <i data-lucide="cloud-lightning" class="w-3 h-3"></i> <span class="hidden sm:inline">Tersinkron</span>
@@ -118,8 +116,7 @@
 
                 <div id="issues-box" class="col-span-2 bg-rose-50 rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-rose-100 hidden shadow-soft">
                     <h3 class="text-xs sm:text-sm font-bold text-rose-800 mb-3 flex items-center gap-2"><i data-lucide="alert-octagon" class="w-4 h-4"></i> Catatan Kendala Kuartal Ini</h3>
-                    <ul id="issues-list" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-2">
-                    </ul>
+                    <ul id="issues-list" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-2"></ul>
                 </div>
             </div>
         </div>
@@ -369,44 +366,82 @@
     <!-- Modal Utama Folder Berkas -->
     <div id="berkas-modal" class="hidden fixed inset-0 z-[130] flex items-center justify-center p-4 sm:p-6 opacity-0 transition-all duration-300">
         <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-md" onclick="closeBerkasModal()"></div>
-        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col transform scale-95 transition-transform duration-300 overflow-hidden" id="berkas-modal-content">
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-5xl h-[90vh] flex flex-col transform scale-95 transition-transform duration-300 overflow-hidden" id="berkas-modal-content">
             
-            <div class="flex items-center justify-between p-5 sm:p-6 border-b border-slate-100 bg-slate-50/50">
-                <h3 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+            <!-- Header Modal Berkas -->
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 bg-white z-20 shadow-sm shrink-0">
+                <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shadow-sm"><i data-lucide="folder-lock" class="w-4 h-4"></i></div>
-                    Brankas Berkas
-                </h3>
-                <button onclick="closeBerkasModal()" class="p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+                    <div>
+                        <h3 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Brankas Berkas</h3>
+                        <!-- Breadcrumbs -->
+                        <div class="flex items-center text-xs font-medium text-slate-500 mt-0.5" id="berkas-breadcrumb">
+                            <button onclick="navigateToFolder('root')" class="hover:text-brand-600 transition-colors">Utama</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <!-- Tombol Google Drive Shortcut -->
+                    <a href="https://drive.google.com/drive/folders/1KJWZVUx0Ky-pE_mDjm7yWpJ9cBUvuVJf?usp=sharing" target="_blank" class="hidden sm:flex px-3 py-1.5 bg-[#f8f9fa] border border-[#dadce0] hover:bg-[#f1f3f4] text-slate-700 rounded-lg text-xs font-semibold items-center gap-2 transition-colors shadow-sm">
+                        <!-- Custom Google Drive SVG Icon -->
+                        <svg class="w-4 h-4" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg"><path d="m6.6 66.85 22.35 11.1c5.8 2.9 13.4 2.9 19.2 0l32.55-16.15-22.35-11.1-31.75 16.15" fill="#0066da"/><path d="m43.65 25-22.35-11.1c-5.8-2.9-10.6-11.2-10.6-17.7v32.3c0 6.5 4.8 14.8 10.6 17.7l22.35 11.1" fill="#00ac47"/><path d="m80.7 11.1-22.35 11.1-31.75-16.15 22.35-11.1c5.8-2.9 13.4-2.9 19.2 0l12.55 6.15" fill="#ea4335"/><path d="m43.65 25 31.75 16.15 11.9-6c5.8-2.9 10.6-11.2 10.6-17.7v-32.3c0-6.5-4.8-14.8-10.6-17.7l-22.35-11.1" fill="#00832d"/><path d="m80.7 66.85-22.35-11.1-31.75 16.15 22.35 11.1c5.8 2.9 13.4 2.9 19.2 0l12.55-6.15" fill="#2684fc"/><path d="m43.65 78 31.75-16.15 11.9 6c5.8 2.9 10.6 11.2 10.6 17.7v32.3c0 6.5-4.8 14.8-10.6 17.7l-22.35 11.1" fill="#fdcb00"/></svg>
+                        Buka G-Drive
+                    </a>
+                    <button onclick="closeBerkasModal()" class="p-2 bg-slate-100 text-slate-500 hover:bg-rose-100 hover:text-rose-600 rounded-lg transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
+                </div>
             </div>
             
-            <div class="flex flex-col flex-grow overflow-hidden bg-slate-50/30">
-                <!-- Upload Area -->
-                <div class="p-5 sm:p-6 shrink-0 border-b border-slate-100 bg-white">
-                    <div class="relative group">
+            <div class="flex flex-col flex-grow overflow-hidden bg-slate-50/50">
+                <!-- Toolbar Area (Add Folder & Upload) -->
+                <div class="p-4 sm:p-5 border-b border-slate-200/60 bg-white/50 backdrop-blur-sm shrink-0 flex flex-col sm:flex-row gap-3">
+                    <button onclick="openCreateFolderModal()" class="px-4 py-2.5 bg-white border border-slate-200 hover:border-brand-300 hover:bg-brand-50 text-slate-700 rounded-xl text-sm font-semibold transition-all shadow-sm flex items-center justify-center gap-2">
+                        <i data-lucide="folder-plus" class="w-4 h-4 text-brand-500"></i> Buat Folder
+                    </button>
+                    
+                    <div class="relative group flex-grow">
                         <input type="file" id="berkas-upload-input" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                        <div class="h-24 sm:h-28 w-full border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 group-hover:bg-brand-50 group-hover:border-brand-300 transition-all flex flex-col items-center justify-center text-center p-4 relative overflow-hidden">
-                            <i data-lucide="cloud-upload" class="w-6 h-6 sm:w-8 sm:h-8 text-slate-400 group-hover:text-brand-500 mb-2 transition-colors"></i>
-                            <h4 class="text-xs sm:text-sm font-bold text-slate-700 group-hover:text-brand-700">Pilih atau Tarik Berkas Kesini</h4>
-                            <p class="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium">PDF, Word, Excel, Gambar (Maks 700KB)</p>
-                            <div id="berkas-uploading-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-sm flex-col items-center justify-center z-20">
-                                <i data-lucide="loader-2" class="w-6 h-6 text-brand-600 animate-spin mb-1"></i>
+                        <div class="h-10 w-full border border-dashed border-slate-300 rounded-xl bg-white group-hover:bg-blue-50 group-hover:border-blue-300 transition-all flex items-center justify-center gap-2 px-4 shadow-sm relative overflow-hidden">
+                            <i data-lucide="upload-cloud" class="w-4 h-4 text-slate-400 group-hover:text-blue-500 transition-colors"></i>
+                            <span class="text-sm font-bold text-slate-600 group-hover:text-blue-600">Unggah File ke Sini</span>
+                            <div id="berkas-uploading-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center z-20 gap-2">
+                                <i data-lucide="loader-2" class="w-4 h-4 text-blue-600 animate-spin"></i>
                                 <span class="text-xs font-bold text-slate-700">Mengunggah...</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- File List Area -->
-                <div class="flex-grow overflow-y-auto custom-scrollbar p-5 sm:p-6">
-                    <div id="berkas-empty" class="hidden h-full flex-col items-center justify-center text-center opacity-60">
+                <!-- File & Folder List Area -->
+                <div class="flex-grow overflow-y-auto custom-scrollbar p-5 sm:p-6 relative">
+                    <div id="berkas-empty" class="hidden h-full flex-col items-center justify-center text-center opacity-60 absolute inset-0">
                         <i data-lucide="folder-open" class="w-16 h-16 text-slate-300 mb-3"></i>
-                        <p class="text-sm font-bold text-slate-500">Brankas masih kosong</p>
+                        <p class="text-sm font-bold text-slate-500">Folder ini kosong</p>
                     </div>
-                    <div id="berkas-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                        <!-- File cards injected here -->
+                    
+                    <!-- Grid Layout for Items -->
+                    <div id="berkas-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                        <!-- Folders and Files injected here -->
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal Create Folder -->
+    <div id="create-folder-modal" class="hidden fixed inset-0 z-[140] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeCreateFolderModal()"></div>
+        <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 transform scale-95 transition-transform duration-300" id="create-folder-modal-content">
+            <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <i data-lucide="folder-plus" class="w-5 h-5 text-brand-500"></i> Buat Folder Baru
+            </h3>
+            <form id="create-folder-form">
+                <input type="text" id="new-folder-name" placeholder="Nama Folder..." required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all mb-5">
+                <div class="flex justify-end gap-2.5">
+                    <button type="button" onclick="closeCreateFolderModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-all">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-semibold transition-all">Buat</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -480,11 +515,13 @@
         let globalFiles = []; 
         let currentFilter = 'all';
         let currentSearch = '';
+        
+        // Navigation State for File Manager
+        let currentFolderId = 'root';
+        let folderHistory = [{ id: 'root', name: 'Utama' }];
 
-        // TETAP GUNAKAN APP ID LAMA
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'milestone-stm-app';
+        const appId = 'milestone-stm-app';
 
-        // KONFIGURASI FIREBASE VERCEL KAMU
         const myFirebaseConfig = {
             apiKey: "AIzaSyD_r1cVxGygRJgYFp3rYLlGwUngN_AsnkU",
             authDomain: "milestone-app-7dc3e.firebaseapp.com",
@@ -501,9 +538,8 @@
             firebaseConfig = JSON.parse(__firebase_config);
         }
 
-        let db, auth, userId, milestonesRef, berkasRef;
+        let db, auth, milestonesRef, berkasRef;
         let usingFirebase = false;
-        window.hasMigrated = false;
 
         async function initApp() {
             if (firebaseConfig) {
@@ -521,75 +557,38 @@
                         }
                     } catch (authErr) {
                         console.error("Auth Error:", authErr);
-                        if (authErr.code === 'auth/operation-not-allowed') {
-                            customMessage("Gagal Login Firebase (PENTING)", "Mohon masuk ke Firebase Console Anda -> menu Authentication -> Sign-in method -> lalu AKTIFKAN pilihan 'Anonymous'.");
-                        } else {
-                            customMessage("Gagal Login Firebase", authErr.message);
-                        }
                         fallbackToLocal();
                         return;
                     }
 
-                    // AMBIL ID UNIK DARI LAPTOPMU
-                    userId = auth.currentUser?.uid;
+                    usingFirebase = true;
+                    document.getElementById('cloud-indicator').style.display = 'flex';
                     
-                    if (userId) {
-                        usingFirebase = true;
-                        document.getElementById('cloud-indicator').style.display = 'flex';
-                        
-                        // KEMBALIKAN KE JALUR PRIVATE (USERS/USERID) AGAR DATA LAMA TERBACA KEMBALI
-                        milestonesRef = collection(db, 'artifacts', appId, 'users', userId, 'milestones');
-                        berkasRef = collection(db, 'artifacts', appId, 'users', userId, 'berkas');
-                        
-                        onSnapshot(milestonesRef, async (snapshot) => {
-                            milestones = [];
-                            snapshot.forEach(docSnap => milestones.push(docSnap.data()));
-                            
-                            // SCRIPT PEMULIHAN & MIGRASI OTOMATIS
-                            // Jika cloud kosong, cari data lokal lama dan otomatis upload ke Firebase
-                            if (milestones.length === 0 && !window.hasMigrated) {
-                                window.hasMigrated = true;
-                                const savedLocal = localStorage.getItem('milestoneApp_v3') || localStorage.getItem('mileworks_v4');
-                                if (savedLocal) {
-                                    try {
-                                        const localData = JSON.parse(savedLocal);
-                                        if (localData.length > 0) {
-                                            console.log("Memulihkan data lama ke Cloud...");
-                                            for (const item of localData) {
-                                                await setDoc(doc(milestonesRef, item.id), item);
-                                            }
-                                        }
-                                    } catch(e) { console.error("Gagal memulihkan:", e); }
-                                }
-                            }
+                    milestonesRef = collection(db, 'artifacts', appId, 'public', 'data', 'milestones');
+                    berkasRef = collection(db, 'artifacts', appId, 'public', 'data', 'berkas');
+                    
+                    onSnapshot(milestonesRef, (snapshot) => {
+                        milestones = [];
+                        snapshot.forEach(docSnap => milestones.push(docSnap.data()));
+                        renderMilestones();
+                        updateStats();
+                    }, (error) => {
+                        console.error("Firestore error:", error);
+                        usingFirebase = false;
+                        document.getElementById('cloud-indicator').style.display = 'none';
+                        fallbackToLocal();
+                    });
 
-                            renderMilestones();
-                            updateStats();
-                        }, (error) => {
-                            console.error("Firestore error (milestones):", error);
-                            usingFirebase = false;
-                            document.getElementById('cloud-indicator').style.display = 'none';
-                            
-                            if (error.code === 'permission-denied') {
-                                customMessage("Akses Database Ditolak (PENTING)", "Masuk ke Firebase Console Anda -> menu Firestore Database -> tab Rules. Ubah aturannya menjadi 'allow read, write: if true;' (Test Mode).");
-                            } else {
-                                customMessage("Database Error", error.message);
-                            }
-                            fallbackToLocal();
-                        });
-
-                        onSnapshot(berkasRef, (snapshot) => {
-                            globalFiles = [];
-                            snapshot.forEach(docSnap => globalFiles.push(docSnap.data()));
-                            renderBerkas();
-                        }, (error) => {
-                            console.error("Firestore error (berkas):", error);
-                        });
-                    }
+                    onSnapshot(berkasRef, (snapshot) => {
+                        globalFiles = [];
+                        snapshot.forEach(docSnap => globalFiles.push(docSnap.data()));
+                        renderBerkas();
+                    }, (error) => {
+                        console.error("Firestore error (berkas):", error);
+                    });
                     
                 } catch (e) {
                     console.error("Firebase init failed:", e);
-                    customMessage("Koneksi Cloud Gagal", "Periksa kembali apiKey dan konfigurasi Firebase Anda. " + e.message);
                     fallbackToLocal();
                 }
             } else {
@@ -598,14 +597,11 @@
         }
 
         function fallbackToLocal() {
-            // MENGGABUNGKAN PENCARIAN DI KUNCI LAMA DAN KUNCI BARU
             const saved = localStorage.getItem('mileworks_v4') || localStorage.getItem('milestoneApp_v3');
-            const savedBerkas = localStorage.getItem('mileworks_berkas_v1');
+            const savedBerkas = localStorage.getItem('mileworks_berkas_v2');
             if (saved) { try { milestones = JSON.parse(saved); } catch (e) { milestones = []; } }
             if (savedBerkas) { try { globalFiles = JSON.parse(savedBerkas); } catch (e) { globalFiles = []; } }
-            renderMilestones();
-            updateStats();
-            renderBerkas();
+            renderMilestones(); updateStats(); renderBerkas();
         }
 
         async function saveToDB(milestoneData) {
@@ -629,7 +625,7 @@
 
         const saveBerkasLocal = () => {
             try {
-                localStorage.setItem('mileworks_berkas_v1', JSON.stringify(globalFiles));
+                localStorage.setItem('mileworks_berkas_v2', JSON.stringify(globalFiles));
                 renderBerkas();
             } catch (e) {
                 if (e.name === 'QuotaExceededError') customMessage("Memori Penuh", "Hapus file dari Brankas.");
@@ -639,12 +635,10 @@
         const CompressionSystem = {
             process: async (file) => {
                 return new Promise((resolve, reject) => {
-                    // Batas ukuran awal yang diizinkan untuk menghindari macetnya Base64 rendering (700KB)
                     if (file.size > 700 * 1024 && !file.type.startsWith('image/')) {
                         reject(new Error(`Sistem menolak dokumen "${file.name}" (Maksimal 700KB).`));
                         return;
                     }
-
                     if (file.type.startsWith('image/')) {
                         CompressionSystem.compressImage(file).then(resolve).catch(reject);
                     } else {
@@ -661,19 +655,15 @@
                         img.onload = () => {
                             const canvas = document.createElement('canvas');
                             const MAX_DIMENSION = 800; 
-                            let width = img.width;
-                            let height = img.height;
+                            let width = img.width; let height = img.height;
 
                             if (width > height && width > MAX_DIMENSION) {
-                                height *= MAX_DIMENSION / width;
-                                width = MAX_DIMENSION;
+                                height *= MAX_DIMENSION / width; width = MAX_DIMENSION;
                             } else if (height > MAX_DIMENSION) {
-                                width *= MAX_DIMENSION / height;
-                                height = MAX_DIMENSION;
+                                width *= MAX_DIMENSION / height; height = MAX_DIMENSION;
                             }
                             
-                            canvas.width = width;
-                            canvas.height = height;
+                            canvas.width = width; canvas.height = height;
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0, width, height);
                             
@@ -698,7 +688,7 @@
 
         const formatDate = (dateString) => {
             if (!dateString) return '-';
-            return new Date(dateString).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            return new Date(dateString).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
         };
 
         const isOverdue = (dueDate) => {
@@ -1047,81 +1037,139 @@
             if(m) { m.failed = true; m.completed = false; m.failReason = reason; await saveToDB(m); } window.closeFailModal();
         });
 
+        // --- MANAJEMEN FOLDER BERKAS ---
+        
         window.openPasswordModal = () => {
-            document.getElementById('berkas-password').value = '';
-            document.getElementById('password-error').classList.add('hidden');
-            const m = document.getElementById('password-modal');
-            m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0');
-            document.getElementById('password-modal-content').classList.remove('scale-95');
+            document.getElementById('berkas-password').value = ''; document.getElementById('password-error').classList.add('hidden');
+            const m = document.getElementById('password-modal'); m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0'); document.getElementById('password-modal-content').classList.remove('scale-95');
         };
-
         window.closePasswordModal = () => {
-            const m = document.getElementById('password-modal');
-            m.classList.add('opacity-0'); document.getElementById('password-modal-content').classList.add('scale-95');
-            setTimeout(() => m.classList.add('hidden'), 300);
+            const m = document.getElementById('password-modal'); m.classList.add('opacity-0'); document.getElementById('password-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300);
         };
-
         document.getElementById('password-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            const pw = document.getElementById('berkas-password').value;
-            if (pw === 'STM123') {
-                closePasswordModal();
-                setTimeout(() => openBerkasModal(), 300);
-            } else {
-                document.getElementById('password-error').classList.remove('hidden');
-            }
+            if (document.getElementById('berkas-password').value === 'STM123') { closePasswordModal(); setTimeout(() => openBerkasModal(), 300); } 
+            else { document.getElementById('password-error').classList.remove('hidden'); }
         });
 
         window.openBerkasModal = () => {
+            currentFolderId = 'root'; folderHistory = [{ id: 'root', name: 'Utama' }];
             renderBerkas();
-            const m = document.getElementById('berkas-modal');
-            m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0');
-            document.getElementById('berkas-modal-content').classList.remove('scale-95');
+            const m = document.getElementById('berkas-modal'); m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0'); document.getElementById('berkas-modal-content').classList.remove('scale-95');
+        };
+        window.closeBerkasModal = () => {
+            const m = document.getElementById('berkas-modal'); m.classList.add('opacity-0'); document.getElementById('berkas-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300);
         };
 
-        window.closeBerkasModal = () => {
-            const m = document.getElementById('berkas-modal');
-            m.classList.add('opacity-0'); document.getElementById('berkas-modal-content').classList.add('scale-95');
-            setTimeout(() => m.classList.add('hidden'), 300);
+        window.openCreateFolderModal = () => {
+            document.getElementById('new-folder-name').value = '';
+            const m = document.getElementById('create-folder-modal'); m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0'); document.getElementById('create-folder-modal-content').classList.remove('scale-95');
+        };
+        window.closeCreateFolderModal = () => {
+            const m = document.getElementById('create-folder-modal'); m.classList.add('opacity-0'); document.getElementById('create-folder-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300);
+        };
+
+        document.getElementById('create-folder-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('new-folder-name').value.trim();
+            if(!name) return;
+            
+            const newFolder = {
+                id: 'folder_' + Date.now(),
+                name: name,
+                type: 'folder',
+                parentId: currentFolderId,
+                createdAt: new Date().toISOString()
+            };
+            
+            try {
+                if (!usingFirebase) { globalFiles.push(newFolder); saveBerkasLocal(); } 
+                else { await setDoc(doc(berkasRef, newFolder.id), newFolder); }
+                closeCreateFolderModal();
+            } catch(err) { customMessage("Gagal Membuat Folder", err.message); }
+        });
+
+        window.navigateToFolder = (id) => {
+            const index = folderHistory.findIndex(h => h.id === id);
+            if (index !== -1) { folderHistory = folderHistory.slice(0, index + 1); } 
+            else {
+                const folder = globalFiles.find(f => f.id === id && f.type === 'folder');
+                if (folder) folderHistory.push({ id: folder.id, name: folder.name });
+            }
+            currentFolderId = id;
+            renderBerkas();
         };
 
         const renderBerkas = () => {
             const grid = document.getElementById('berkas-grid');
             const empty = document.getElementById('berkas-empty');
+            const breadcrumb = document.getElementById('berkas-breadcrumb');
             grid.innerHTML = '';
             
-            if (globalFiles.length === 0) {
+            // Render Breadcrumb Navigation
+            breadcrumb.innerHTML = folderHistory.map((h, i) => `
+                <button onclick="navigateToFolder('${h.id}')" class="${i === folderHistory.length - 1 ? 'text-slate-800 font-bold' : 'hover:text-brand-600'} transition-colors">${h.name}</button>
+                ${i < folderHistory.length - 1 ? '<i data-lucide="chevron-right" class="w-3.5 h-3.5 mx-1 text-slate-300"></i>' : ''}
+            `).join('');
+
+            // Filter items by current folder
+            const currentItems = globalFiles.filter(f => (f.parentId || 'root') === currentFolderId);
+            
+            if (currentItems.length === 0) {
                 grid.classList.add('hidden'); empty.classList.replace('hidden', 'flex');
             } else {
                 grid.classList.remove('hidden'); empty.classList.replace('flex', 'hidden');
                 
-                globalFiles.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(f => {
-                    const isImg = f.type.startsWith('image/');
-                    const isPdf = f.type === 'application/pdf' || f.name.endsWith('.pdf');
+                // Sort: Folders first, then files by date
+                currentItems.sort((a,b) => {
+                    if (a.type === 'folder' && b.type !== 'folder') return -1;
+                    if (a.type !== 'folder' && b.type === 'folder') return 1;
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                }).forEach(f => {
+                    const isFolder = f.type === 'folder';
+                    const isImg = !isFolder && f.type.startsWith('image/');
+                    const isPdf = !isFolder && (f.type === 'application/pdf' || f.name.endsWith('.pdf'));
                     const canPreview = isImg || isPdf;
                     
                     let icon = 'file-text'; let iconColor = 'text-blue-500'; let bg = 'bg-blue-50';
-                    if (isImg) { icon = 'image'; iconColor = 'text-brand-500'; bg = 'bg-brand-50'; }
+                    if (isFolder) { icon = 'folder-open'; iconColor = 'text-amber-500'; bg = 'bg-amber-50'; }
+                    else if (isImg) { icon = 'image'; iconColor = 'text-brand-500'; bg = 'bg-brand-50'; }
                     else if (isPdf) { icon = 'file-check-2'; iconColor = 'text-rose-500'; bg = 'bg-rose-50'; }
                     else if (f.name.includes('.xls')) { icon = 'sheet'; iconColor = 'text-emerald-500'; bg = 'bg-emerald-50'; }
 
                     const card = document.createElement('div');
-                    card.className = "bg-white border border-slate-200 rounded-2xl p-4 flex flex-col gap-3 shadow-sm hover:shadow-md hover:border-slate-300 transition-all";
-                    card.innerHTML = `
-                        <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 rounded-xl ${bg} ${iconColor} flex items-center justify-center shrink-0">
-                                <i data-lucide="${icon}" class="w-5 h-5"></i>
+                    card.className = "bg-white border border-slate-200 rounded-2xl p-4 flex flex-col gap-3 shadow-sm hover:shadow-md hover:border-slate-300 transition-all cursor-pointer group relative";
+                    
+                    if(isFolder) {
+                        card.onclick = (e) => { if(!e.target.closest('button')) navigateToFolder(f.id); };
+                        card.innerHTML = `
+                            <div class="flex flex-col items-center text-center gap-2">
+                                <div class="w-14 h-14 rounded-2xl ${bg} ${iconColor} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="${icon}" class="w-7 h-7 fill-amber-100"></i>
+                                </div>
+                                <h4 class="text-sm font-bold text-slate-800 line-clamp-2 leading-tight" title="${f.name}">${f.name}</h4>
                             </div>
-                            <div class="min-w-0 flex-grow">
-                                <h4 class="text-sm font-bold text-slate-800 truncate" title="${f.name}">${f.name}</h4>
-                                <p class="text-[10px] text-slate-400 font-medium mt-0.5">${formatDate(f.createdAt)}</p>
+                            <button onclick="deleteBerkas('${f.id}', true)" class="absolute top-2 right-2 p-1.5 text-slate-300 hover:bg-rose-50 hover:text-rose-500 rounded-lg transition-colors opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        `;
+                    } else {
+                        card.innerHTML = `
+                            <div class="flex flex-col gap-3 h-full">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-10 h-10 rounded-xl ${bg} ${iconColor} flex items-center justify-center shrink-0">
+                                        <i data-lucide="${icon}" class="w-5 h-5"></i>
+                                    </div>
+                                    <div class="min-w-0 flex-grow">
+                                        <h4 class="text-sm font-bold text-slate-800 truncate" title="${f.name}">${f.name}</h4>
+                                        <p class="text-[10px] text-slate-400 font-medium mt-0.5">${formatDate(f.createdAt)}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-end gap-1.5 mt-auto pt-2 border-t border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    ${canPreview ? `<button onclick="previewBerkas('${f.id}')" class="px-2 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition-colors"><i data-lucide="eye" class="w-3.5 h-3.5"></i> Lihat</button>` : `<a href="${f.data}" download="${f.name}" class="px-2 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition-colors"><i data-lucide="download" class="w-3.5 h-3.5"></i> Unduh</a>`}
+                                    <button onclick="deleteBerkas('${f.id}', false)" class="p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-500 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex items-center justify-end gap-1.5 mt-auto pt-2 border-t border-slate-100">
-                            ${canPreview ? `<button onclick="previewBerkas('${f.id}')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"><i data-lucide="eye" class="w-3.5 h-3.5"></i> Lihat</button>` : `<a href="${f.data}" download="${f.name}" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"><i data-lucide="download" class="w-3.5 h-3.5"></i> Unduh</a>`}
-                            <button onclick="deleteBerkas('${f.id}')" class="p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-500 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                        </div>
-                    `;
+                        `;
+                    }
                     grid.appendChild(card);
                 });
             }
@@ -1143,6 +1191,7 @@
                         name: filesArr[i].name,
                         type: filesArr[i].type || (filesArr[i].name.endsWith('.pdf') ? 'application/pdf' : 'unknown'),
                         data: b64s[i],
+                        parentId: currentFolderId, // Save file into current active folder
                         createdAt: new Date().toISOString()
                     };
                     if (newFile.data.length > 950000) throw new Error(`File ${newFile.name} terlalu besar setelah diproses.`);
@@ -1158,10 +1207,26 @@
             }
         });
 
-        window.deleteBerkas = (id) => {
-            customMessage("Hapus Berkas", "Berkas yang dihapus tidak dapat dikembalikan.", async () => {
-                if(!usingFirebase) { globalFiles = globalFiles.filter(f => f.id !== id); saveBerkasLocal(); }
-                else { await deleteDoc(doc(berkasRef, id)); }
+        window.deleteBerkas = (id, isFolder) => {
+            const msg = isFolder ? "Semua isi dalam folder ini juga akan terhapus. Yakin?" : "Berkas yang dihapus tidak dapat dikembalikan.";
+            customMessage(isFolder ? "Hapus Folder" : "Hapus Berkas", msg, async () => {
+                if(!usingFirebase) { 
+                    if (isFolder) {
+                        // Cascade delete files inside folder locally
+                        globalFiles = globalFiles.filter(f => f.parentId !== id && f.id !== id);
+                    } else {
+                        globalFiles = globalFiles.filter(f => f.id !== id); 
+                    }
+                    saveBerkasLocal(); 
+                }
+                else { 
+                    if (isFolder) {
+                        // Cascade delete in Firestore (Find all files where parentId == id)
+                        const itemsToDelete = globalFiles.filter(f => f.parentId === id);
+                        for(let item of itemsToDelete) { await deleteDoc(doc(berkasRef, item.id)); }
+                    }
+                    await deleteDoc(doc(berkasRef, id)); 
+                }
             });
         };
 
