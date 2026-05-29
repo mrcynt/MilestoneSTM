@@ -10,7 +10,7 @@
     
     <title>MILEWORKS</title>
     <!-- Favicon -->
-    <link rel="icon" href="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL">
+    <link class="rounded-full" rel="icon" href="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -50,7 +50,7 @@
     <nav class="bg-white/80 backdrop-blur-md border-b border-slate-200/60 sticky top-0 z-40 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3">
-                <img src="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL" alt="Logo" class="w-10 h-10 object-contain shrink-0">
+                <img src="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL" alt="Logo" class="w-10 h-10 object-contain shrink-0 rounded-full">
                 <h1 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight truncate uppercase">MILEWORKS</h1>
                 <div id="cloud-indicator" class="hidden items-center gap-1 px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-full border border-emerald-100 uppercase shrink-0">
                     <i data-lucide="cloud-lightning" class="w-3 h-3"></i> <span class="hidden sm:inline">Online</span>
@@ -115,13 +115,13 @@
 
     <!-- MODAL: AI DRAFT GENERATOR -->
     <div id="ai-generator-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden relative">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-6xl h-[92vh] flex flex-col overflow-hidden relative">
             
             <div class="flex items-center justify-between p-5 border-b bg-slate-50/50">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center"><i data-lucide="sparkles"></i></div>
                     <div>
-                        <h3 class="font-extrabold text-lg">AI Surat Penawaran</h3>
+                        <h3 class="font-extrabold text-lg">AI Surat Penawaran (Gemini)</h3>
                         <p class="text-[11px] text-slate-500 font-medium">Berdasarkan RUP & Template PT STM</p>
                     </div>
                 </div>
@@ -131,6 +131,15 @@
             <div class="flex flex-col md:flex-row flex-grow overflow-hidden">
                 <!-- Panel Input -->
                 <div class="w-full md:w-1/3 p-5 border-r bg-slate-50/30 flex flex-col gap-5 overflow-y-auto custom-scrollbar">
+                    <!-- Pengaturan API Key (Solusi Anti-Blokir GitHub) -->
+                    <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-4">
+                        <label class="block text-xs font-bold text-indigo-700 uppercase mb-1 flex items-center gap-1">
+                            <i data-lucide="key" class="w-3.5 h-3.5"></i> Masukkan API Key Gemini
+                        </label>
+                        <p class="text-[10px] text-indigo-600 mb-2 leading-snug">Tempel API Key dari Google AI Studio di sini. Tersimpan aman di memori perangkatmu.</p>
+                        <input type="password" id="gemini-api-key-input" placeholder="AIzaSy..." class="w-full px-3 py-2 bg-white border border-indigo-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-indigo-500/30">
+                    </div>
+
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">1. Upload PDF RUP</label>
                         <div class="relative group">
@@ -192,32 +201,83 @@
             <div class="p-5 border-b flex justify-between items-center bg-slate-50/50">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-slate-800 text-white rounded-xl flex items-center justify-center"><i data-lucide="folder-lock"></i></div>
-                    <h3 class="font-extrabold text-lg">Brankas Berkas</h3>
+                    <div>
+                        <h3 class="font-extrabold text-lg">Brankas Berkas</h3>
+                        <div class="flex items-center text-xs font-semibold text-slate-500 mt-0.5" id="berkas-breadcrumb">
+                            <button onclick="navigateToFolder('root')" class="hover:text-brand-600 transition-colors">Utama</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="backupAllToZip()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center gap-2"><i data-lucide="download-cloud"></i> Backup ZIP</button>
+                    <!-- Tombol GDrive Murni -->
+                    <button onclick="window.open('https://drive.google.com/drive/folders/1KJWZVUx0Ky-pE_mDjm7yWpJ9cBUvuVJf?usp=sharing', '_blank')" class="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-xs font-bold flex items-center gap-2">
+                        <svg class="w-4 h-4" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg"><path d="m6.6 66.85 22.35 11.1c5.8 2.9 13.4 2.9 19.2 0l32.55-16.15-22.35-11.1-31.75 16.15" fill="#0066da"/><path d="m43.65 25-22.35-11.1c-5.8-2.9-10.6-11.2-10.6-17.7v32.3c0 6.5 4.8 14.8 10.6 17.7l22.35 11.1" fill="#00ac47"/><path d="m80.7 11.1-22.35 11.1-31.75-16.15 22.35-11.1c5.8-2.9 13.4-2.9 19.2 0l12.55 6.15" fill="#ea4335"/><path d="m43.65 25 31.75 16.15 11.9-6c5.8-2.9 10.6-11.2 10.6-17.7v-32.3c0-6.5-4.8-14.8-10.6-17.7l-22.35-11.1" fill="#00832d"/><path d="m80.7 66.85-22.35-11.1-31.75 16.15 22.35 11.1c5.8 2.9 13.4 2.9 19.2 0l12.55-6.15" fill="#2684fc"/><path d="m43.65 78 31.75-16.15 11.9 6c5.8 2.9 10.6 11.2 10.6 17.7v32.3c0 6.5-4.8 14.8-10.6 17.7l-22.35 11.1" fill="#fdcb00"/></svg>
+                        Buka GDrive
+                    </button>
+                    <!-- Tombol Backup Semua -->
+                    <button onclick="backupAllToZip()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center gap-2"><i data-lucide="download-cloud" class="w-4 h-4"></i> Backup Semua</button>
                     <button onclick="closeBerkasModal()" class="p-2 hover:bg-slate-200 rounded-full"><i data-lucide="x"></i></button>
                 </div>
             </div>
-            <div class="p-4 border-b bg-white flex gap-3">
-                <button onclick="openCreateFolderModal()" class="px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold flex items-center gap-2"><i data-lucide="folder-plus" class="text-brand-500"></i> Buat Folder</button>
+            
+            <div class="p-4 border-b bg-white flex flex-col sm:flex-row gap-3">
+                <div class="flex gap-2">
+                    <button id="btn-back-folder" onclick="goBackFolder()" class="hidden px-4 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i></button>
+                    <button onclick="openCreateFolderModal()" class="px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold flex items-center gap-2"><i data-lucide="folder-plus" class="text-brand-500"></i> Buat Folder</button>
+                </div>
                 <div class="relative flex-grow">
-                    <input type="file" id="berkas-upload-input" multiple class="absolute inset-0 opacity-0 cursor-pointer">
-                    <div class="h-10 border-2 border-dashed rounded-xl flex items-center justify-center gap-2 text-xs font-bold text-slate-400">
-                        <i data-lucide="upload-cloud"></i> Seret atau Pilih Berkas untuk Diunggah
+                    <input type="file" id="berkas-upload-input" multiple class="absolute inset-0 opacity-0 cursor-pointer z-10">
+                    <div class="h-10 border-2 border-dashed rounded-xl flex items-center justify-center gap-2 text-xs font-bold text-slate-400 bg-slate-50/50">
+                        <i data-lucide="upload-cloud"></i> Unggah Berkas ke Sini
                     </div>
                 </div>
             </div>
-            <div class="flex-grow overflow-y-auto p-6" id="berkas-grid-container">
-                <div id="berkas-breadcrumb" class="mb-4 text-xs font-bold text-slate-400 flex items-center gap-1 uppercase tracking-widest"></div>
+            
+            <div class="flex-grow overflow-y-auto p-6 relative">
+                <div id="berkas-empty" class="hidden h-full flex-col items-center justify-center text-center opacity-60 absolute inset-0">
+                    <i data-lucide="folder-open" class="w-16 h-16 text-slate-300 mb-3"></i>
+                    <p class="text-sm font-bold text-slate-500">Folder ini kosong</p>
+                </div>
                 <div id="berkas-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: ADD/EDIT (Disederhanakan untuk fungsionalitas) -->
+    <!-- MODAL: BUAT FOLDER -->
+    <div id="create-folder-modal" class="hidden fixed inset-0 z-[140] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 transform scale-95" id="create-folder-modal-content">
+            <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <i data-lucide="folder-plus" class="w-5 h-5 text-brand-500"></i> Buat Folder Baru
+            </h3>
+            <form id="create-folder-form">
+                <input type="text" id="new-folder-name" placeholder="Nama Folder..." required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 outline-none mb-5">
+                <div class="flex justify-end gap-2.5">
+                    <button type="button" onclick="closeCreateFolderModal()" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-sm font-semibold">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 text-white rounded-xl text-sm font-semibold">Buat</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: RENAME -->
+    <div id="rename-modal" class="hidden fixed inset-0 z-[140] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 transform scale-95" id="rename-modal-content">
+            <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <i data-lucide="edit-2" class="w-5 h-5 text-amber-500"></i> Ubah Nama
+            </h3>
+            <form id="rename-form">
+                <input type="text" id="rename-input" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500/20 outline-none mb-5">
+                <div class="flex justify-end gap-2.5">
+                    <button type="button" onclick="closeRenameModal()" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-sm font-semibold">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-amber-500 text-white rounded-xl text-sm font-semibold">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD/EDIT TARGET -->
     <div id="add-modal" class="hidden fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur">
-        <div class="bg-white p-6 rounded-3xl w-full max-w-lg shadow-2xl">
+        <div class="bg-white p-6 rounded-3xl w-full max-w-lg shadow-2xl" id="add-modal-content">
             <h3 class="font-bold text-xl mb-4">Tambah Target</h3>
             <form id="add-form" class="space-y-4">
                 <input type="text" id="title" placeholder="Judul Target" required class="w-full p-4 bg-slate-50 border rounded-2xl">
@@ -231,25 +291,142 @@
         </div>
     </div>
 
+    <!-- MODAL: PREVIEW BERKAS -->
+    <div id="preview-modal" class="hidden fixed inset-0 z-[160] flex flex-col p-4 bg-slate-900/95 backdrop-blur-md">
+        <div class="absolute inset-0" onclick="closePreviewModal()"></div>
+        <div class="relative w-full max-w-5xl mx-auto flex-grow flex flex-col" id="preview-modal-content">
+            <div class="flex justify-between items-center pb-4 mb-2 shrink-0 relative z-10">
+                <h3 class="text-white font-semibold flex items-center gap-2 truncate pr-4" id="preview-title">
+                    <i data-lucide="eye" class="w-4 h-4"></i> <span class="truncate">Pratinjau</span>
+                </h3>
+                <div class="flex items-center gap-2">
+                    <a id="preview-download-btn" href="#" download="" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i> Unduh
+                    </a>
+                    <button onclick="closePreviewModal()" class="p-1.5 bg-white/10 hover:bg-rose-500/80 text-white rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="flex-grow bg-slate-800/50 rounded-2xl border border-slate-700 overflow-hidden flex items-center justify-center p-4 shadow-2xl relative" id="preview-container"></div>
+        </div>
+    </div>
+
+    <!-- MODAL KONFIRMASI -->
+    <div id="confirm-modal" class="hidden fixed inset-0 z-[170] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+        <div class="absolute inset-0" onclick="closeConfirmModal()"></div>
+        <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 transform scale-95" id="confirm-modal-content">
+            <h3 class="text-lg font-bold text-slate-900 mb-2" id="confirm-title">Konfirmasi</h3>
+            <p class="text-sm text-slate-600 mb-6" id="confirm-desc">Apakah Anda yakin?</p>
+            <div class="flex justify-end gap-3">
+                <button id="confirm-cancel-btn" onclick="closeConfirmModal()" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-sm font-semibold">Batal</button>
+                <button id="confirm-action-btn" class="px-4 py-2 bg-rose-600 text-white rounded-xl text-sm font-semibold">Ya</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // =========================================================================
-        // KUNCI KONFIGURASI (JANGAN DIUBAH LAGI YA SAYANG)
-        // =========================================================================
-        const myFirebaseConfig = { apiKey: "AIzaSyD_r1cVxGygRJgYFp3rYLlGwUngN_AsnkU", authDomain: "milestone-app-7dc3e.firebaseapp.com", projectId: "milestone-app-7dc3e", storageBucket: "milestone-app-7dc3e.firebasestorage.app", messagingSenderId: "535579558143", appId: "1:535579558143:web:7f961ff8bbe981b4384cca" };
-        const GEMINI_API_KEY = "AQ.Ab8RN6I0Msc5cxHyaOfD93suaMNr43l2O_Cag7JL4N8cvpI82w"; 
-        const appId = 'milestone-stm-app';
-        // =========================================================================
+        lucide.createIcons();
 
-        let db, auth, milestonesRef, berkasRef;
         let milestones = [];
         let globalFiles = [];
         let currentFolderId = 'root';
         let folderHistory = [{ id: 'root', name: 'Utama' }];
         let extractedPdfText = "";
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        // =========================================================================
+        // KUNCI KONFIGURASI (KUNCI FIREBASE DIKUNCI PERMANEN)
+        // =========================================================================
+        const myFirebaseConfig = { apiKey: "AIzaSyD_r1cVxGygRJgYFp3rYLlGwUngN_AsnkU", authDomain: "milestone-app-7dc3e.firebaseapp.com", projectId: "milestone-app-7dc3e", storageBucket: "milestone-app-7dc3e.firebasestorage.app", messagingSenderId: "535579558143", appId: "1:535579558143:web:7f961ff8bbe981b4384cca" };
+        const appId = 'milestone-stm-app';
+        // =========================================================================
+
+        // AMBIL API KEY GEMINI DARI LOCAL STORAGE JIKA SUDAH DISIMPAN SEBELUMNYA
+        let GEMINI_API_KEY = localStorage.getItem('mileworks_gemini_key') || 'AQ.Ab8RN6I0Msc5cxHyaOfD93suaMNr43l2O_Cag7JL4N8cvpI82w';
+        document.getElementById('gemini-api-key-input').value = GEMINI_API_KEY;
+
+        // SIMPAN KEY BARU BILA USER MENGETIKNYA (SANGAT AMAN DARI SENSOR GITHUB!)
+        document.getElementById('gemini-api-key-input').addEventListener('input', (e) => {
+            const key = e.target.value.trim();
+            GEMINI_API_KEY = key;
+            localStorage.setItem('mileworks_gemini_key', key);
+        });
+
+        // HELPER UTILITIES
+        const formatDate = (dateString) => {
+            if (!dateString) return '-';
+            return new Date(dateString).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        };
+
+        const isOverdue = (dueDate) => {
+            if (!dueDate) return false;
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const target = new Date(dueDate); target.setHours(0, 0, 0, 0);
+            return target < today;
+        };
+
+        const CompressionSystem = {
+            process: async (file) => {
+                return new Promise((resolve, reject) => {
+                    if (file.size > 700 * 1024 && !file.type.startsWith('image/')) {
+                        reject(new Error(`Sistem menolak dokumen "${file.name}" (Maksimal 700KB).`));
+                        return;
+                    }
+                    if (file.type.startsWith('image/')) {
+                        CompressionSystem.compressImage(file).then(resolve).catch(reject);
+                    } else {
+                        CompressionSystem.optimizeDocument(file).then(resolve).catch(reject);
+                    }
+                });
+            },
+            compressImage: (file) => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            const MAX_DIMENSION = 800; 
+                            let width = img.width; let height = img.height;
+
+                            if (width > height && width > MAX_DIMENSION) {
+                                height *= MAX_DIMENSION / width; width = MAX_DIMENSION;
+                            } else if (height > MAX_DIMENSION) {
+                                width *= MAX_DIMENSION / height; height = MAX_DIMENSION;
+                            }
+                            
+                            canvas.width = width; canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            const compressedData = canvas.toDataURL('image/jpeg', 0.6);
+                            resolve(compressedData); 
+                        };
+                        img.onerror = () => reject(new Error("Gagal memproses gambar otomatis"));
+                        img.src = e.target.result;
+                    };
+                    reader.onerror = error => reject(error);
+                });
+            },
+            optimizeDocument: (file) => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = error => reject(error);
+                });
+            }
+        };
+
+        let db, auth, milestonesRef, berkasRef;
+        let usingFirebase = false;
 
         async function init() {
             try {
@@ -271,6 +448,7 @@
                     renderBerkas();
                 });
 
+                usingFirebase = true;
                 document.getElementById('cloud-indicator').classList.replace('hidden', 'flex');
             } catch (e) {
                 console.error(e);
@@ -278,17 +456,67 @@
             }
         }
 
+        window.filterMilestones = (filter) => {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = "filter-btn px-4 py-1.5 text-sm font-medium rounded-full text-slate-500";
+            });
+            document.getElementById(`filter-${filter}`).className = "filter-btn active px-4 py-1.5 text-sm font-semibold rounded-full bg-white text-slate-800 shadow-sm";
+            renderMilestones();
+        };
+
+        window.toggleStatus = async (id) => {
+            const m = milestones.find(x => x.id === id);
+            if (m) {
+                m.completed = !m.completed;
+                if (!usingFirebase) {
+                    saveMilestonesLocal();
+                } else {
+                    await setDoc(doc(milestonesRef, m.id), m);
+                }
+            }
+        };
+
         function renderMilestones() {
             const container = document.getElementById('list-container');
             const empty = document.getElementById('empty-state');
             container.innerHTML = '';
-            if (milestones.length === 0) { empty.classList.remove('hidden'); }
-            else {
+
+            let filtered = milestones;
+            if (currentFilter === 'pending') {
+                filtered = milestones.filter(m => !m.completed);
+            } else if (currentFilter === 'completed') {
+                filtered = milestones.filter(m => m.completed);
+            }
+
+            if (currentSearch) {
+                const s = currentSearch.toLowerCase();
+                filtered = filtered.filter(m => m.title.toLowerCase().includes(s));
+            }
+
+            if (filtered.length === 0) { 
+                empty.classList.remove('hidden'); 
+            } else {
                 empty.classList.add('hidden');
-                milestones.forEach(m => {
+                filtered.forEach(m => {
                     const card = document.createElement('div');
-                    card.className = "bg-white p-5 rounded-3xl border border-slate-100 shadow-soft flex justify-between items-center";
-                    card.innerHTML = `<div><h3 class="font-bold text-slate-800">${m.title}</h3><p class="text-xs text-slate-500">${m.dueDate}</p></div><button onclick="deleteMilestone('${m.id}')" class="p-2 text-rose-400 hover:bg-rose-50 rounded-full"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`;
+                    card.className = "bg-white p-5 rounded-3xl border border-slate-100 shadow-soft flex justify-between items-center transition-all hover:shadow-md";
+                    card.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <button onclick="toggleStatus('${m.id}')" class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${m.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 text-transparent'}">
+                                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <div>
+                                <h3 class="font-bold ${m.completed ? 'text-slate-400 line-through' : 'text-slate-800'}">${m.title}</h3>
+                                <p class="text-xs text-slate-500 flex items-center gap-1">
+                                    <i data-lucide="calendar" class="w-3 h-3"></i> Tenggat: ${formatDate(m.dueDate)}
+                                </p>
+                            </div>
+                        </div>
+                        <button onclick="deleteMilestone('${m.id}')" class="p-2 text-rose-400 hover:bg-rose-50 rounded-full transition-colors">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    `;
                     container.appendChild(card);
                 });
             }
@@ -298,7 +526,14 @@
         }
 
         window.deleteMilestone = async (id) => {
-            if(confirm("Hapus target ini?")) await deleteDoc(doc(milestonesRef, id));
+            customMessage("Hapus Target", "Apakah Anda yakin ingin menghapus target ini?", async () => {
+                if (!usingFirebase) {
+                    milestones = milestones.filter(x => x.id !== id);
+                    saveMilestonesLocal();
+                } else {
+                    await deleteDoc(doc(milestonesRef, id));
+                }
+            });
         };
 
         // --- AI GENERATOR LOGIC ---
@@ -329,24 +564,69 @@
 
         window.generateDraftAI = async () => {
             if (!extractedPdfText) return alert("Upload PDF RUP dulu ya sayang!");
+            if (!GEMINI_API_KEY) return alert("Masukkan API Key Gemini kamu dulu di kotak pengaturan ya sayang!");
+
             const btn = document.getElementById('btn-generate-ai');
             const loader = document.getElementById('ai-loading');
             const editor = document.getElementById('ai-result-editor');
             const promptExtra = document.getElementById('ai-prompt-input').value;
 
             btn.classList.add('hidden'); loader.classList.replace('hidden', 'flex');
-            editor.value = "AI sedang berpikir... Mohon tunggu 5-10 detik.";
+            editor.value = "AI sedang menyusun draft penawaran terbaik untukmu...";
 
-            const systemPrompt = `Kamu asisten admin PT SMART TECHNOLOGY MANDIRI. Buat Surat Penawaran berdasarkan Template:
-            HEADER: PT SMART TECHNOLOGY MANDIRI, Telp: +6285381170567
-            Daftar Produk sesuai isi RUP ini: ${extractedPdfText}
-            Catatan Tambahan User: ${promptExtra}
-            PENUTUP: Hormat kami, (MARCELL VRIVAL) Direktur.
-            Cetak isi surat saja, tanpa teks pembuka dari AI.`;
+            const systemPrompt = `Kamu adalah asisten pengadaan andalan di PT SMART TECHNOLOGY MANDIRI. 
+            Tugasmu adalah membuat SURAT PENAWARAN formal berdasarkan draf baku perusahaan.
+            
+            Gunakan informasi RUP berikut untuk melengkapi draf:
+            ${extractedPdfText}
+            
+            Tambahkan instruksi opsional ini jika ada: ${promptExtra}
+            
+            Struktur & Aturan Surat yang harus dipatuhi 100% (Jangan kurangi Kop & Tanda Tangan):
+            
+            SURAT PENAWARAN 
+
+            PT SMART TECHNOLOGY MANDIRI Telp: +6285381170567
+            Nomor : 023/STM-SPH/V/2026 (Buat nomor unik yang sesuai)
+            Lampiran : 1 (Satu) Berkas
+            Perihal : Penawaran Pengadaan [ISI: sebutkan nama paket pengadaan dari RUP]
+            
+            Kepada Yth.
+            Bapak/Ibu [ISI: nama jabatan kepala dinas/kecamatan/pembuat komitmen dari RUP]
+            Di Tempat
+            
+            Dengan hormat,
+            
+            Bersama surat ini kami dari PT Smart Technology Mandiri bermaksud mengajukan penawaran pengadaan [ISI: sebutkan nama paket pengadaan dari RUP] untuk mendukung sistem keamanan dan monitoring lingkungan di wilayah [ISI: nama dinas/kecamatan dari RUP].
+            
+            Adapun produk yang kami tawarkan menggunakan perangkat:
+            Produk Penawaran:
+            [ISI: Jika RUP menyebutkan spesifikasi CCTV, sebutkan merk yang ditawarkan, utamakan "HONEYWELL CCTV FIXED BULLET CAMERA HBL2RI" atau sesuaikan dengan tipe barang di RUP]
+            
+            Penawaran yang kami ajukan meliputi:
+            - Pengadaan unit perangkat
+            - Jasa pemasangan perangkat
+            - Penarikan kabel dan instalasi
+            - Konfigurasi sistem dan pengujian perangkat
+            - Pendampingan penggunaan sistem monitoring
+            
+            Perangkat yang kami tawarkan memiliki kualitas monitoring yang baik, mendukung penggunaan siang dan malam hari, serta sesuai digunakan untuk kebutuhan pengawasan area lingkungan dan fasilitas publik.
+            
+            Untuk rincian spesifikasi teknis, jumlah unit, serta detail harga penawaran akan kami lampirkan dalam dokumen penawaran terpisah sesuai kebutuhan pihak [ISI: nama dinas/kecamatan].
+            
+            Demikian surat penawaran ini kami sampaikan. Besar harapan kami agar dapat menjalin kerja sama yang baik dengan pihak [ISI: nama dinas/kecamatan]. Atas perhatian dan kesempatan yang diberikan, kami ucapkan terima kasih.
+            
+            Hormat kami,
+            PT SMART TECHNOLOGY MANDIRI
+            
+            
+            (MARCELL VRIVAL)
+            Direktur / Pimpinan Perusahaan
+
+            ATURAN TAMBAHAN: Cetak hanya surat penawaran saja secara lengkap dan rapi, jangan berikan kata pengantar atau penutup tambahan apapun di luar format surat tersebut.`;
 
             try {
-                // MENGGUNAKAN VERSION v1beta UNTUK FORMAT API KEY AQ...
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: systemPrompt }] }] })
@@ -354,80 +634,322 @@
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.error?.message || "Server Google Error");
+                    throw new Error(errorData.error?.message || "Koneksi Google Gemini Gagal.");
                 }
 
                 const data = await response.json();
                 editor.value = data.candidates[0].content.parts[0].text;
                 document.getElementById('ai-save-name').value = "Surat_Penawaran_" + Date.now().toString().slice(-4);
             } catch (err) {
-                editor.value = "ERROR: " + err.message + "\n\nSaran: Jika error 400/401, artinya API Key kamu memang tidak cocok untuk jalur ini. Coba buat API Key baru yang diawali AIza...";
-                alert("Gagal Terhubung ke AI Google.");
+                editor.value = "Koneksi AI Terputus.\n\nDetail Error: " + err.message + "\n\nSaran Penyelesaian:\n1. Pastikan API Key di kotak atas sudah benar (disarankan yang diawali AIza...).\n2. Cek koneksi internetmu sayang.";
+                alert("Gagal terhubung ke Google Gemini.");
             } finally {
                 btn.classList.remove('hidden'); loader.classList.replace('flex', 'hidden');
             }
         };
 
-        // --- BRANKAS LOGIC ---
-        window.openPasswordModal = () => document.getElementById('password-modal').classList.remove('hidden');
-        document.getElementById('password-form').onsubmit = (e) => {
-            e.preventDefault();
-            if(document.getElementById('berkas-password').value === 'STM123') {
-                document.getElementById('password-modal').classList.add('hidden');
-                document.getElementById('berkas-modal').classList.remove('hidden');
-            } else alert("Sandi Salah!");
+        window.downloadAIText = () => {
+            const content = document.getElementById('ai-result-editor').value;
+            const name = document.getElementById('ai-save-name').value || 'Draft_Surat_Penawaran';
+            if(!content) return alert("Belum ada draft surat untuk diunduh.");
+            
+            const blob = new Blob([content], {type: 'text/plain'});
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = name + ".txt";
+            a.click();
+        };
+
+        window.saveAIToBerkas = async () => {
+            const content = document.getElementById('ai-result-editor').value;
+            const name = document.getElementById('ai-save-name').value || 'Draft_Surat_Penawaran';
+            if(!content) return alert("Belum ada draft surat untuk disimpan.");
+
+            const fileData = {
+                id: 'berkas_ai_' + Date.now(),
+                name: name + ".txt",
+                type: 'text/plain',
+                data: "data:text/plain;base64," + btoa(unescape(encodeURIComponent(content))),
+                parentId: currentFolderId,
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                if (!usingFirebase) { globalFiles.push(fileData); saveBerkasLocal(); } 
+                else { await setDoc(doc(berkasRef, fileData.id), fileData); }
+                alert("✅ Draft berhasil disimpan ke Brankas Berkas!");
+            } catch(e) { alert("Gagal menyimpan: " + e.message); }
+        };
+
+        // --- BRANKAS & FILES LOGIC ---
+        window.openPasswordModal = () => {
+            document.getElementById('berkas-password').value = '';
+            document.getElementById('password-modal').classList.remove('hidden');
+        };
+        window.closePasswordModal = () => document.getElementById('password-modal').classList.add('hidden');
+        window.openBerkasModal = () => {
+            currentFolderId = 'root'; folderHistory = [{ id: 'root', name: 'Utama' }];
+            renderBerkas();
+            document.getElementById('berkas-modal').classList.remove('hidden');
         };
         window.closeBerkasModal = () => document.getElementById('berkas-modal').classList.add('hidden');
 
+        window.openCreateFolderModal = () => {
+            document.getElementById('new-folder-name').value = '';
+            document.getElementById('create-folder-modal').classList.remove('hidden');
+        };
+        window.closeCreateFolderModal = () => document.getElementById('create-folder-modal').classList.add('hidden');
+
+        document.getElementById('create-folder-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('new-folder-name').value.trim();
+            if(!name) return;
+            const newFolder = { id: 'folder_' + Date.now(), name: name, type: 'folder', parentId: currentFolderId, createdAt: new Date().toISOString() };
+            if (!usingFirebase) { globalFiles.push(newFolder); saveBerkasLocal(); } 
+            else { await setDoc(doc(berkasRef, newFolder.id), newFolder); }
+            closeCreateFolderModal();
+        };
+
+        window.navigateToFolder = (id) => {
+            const index = folderHistory.findIndex(h => h.id === id);
+            if (index !== -1) { folderHistory = folderHistory.slice(0, index + 1); } 
+            else {
+                const folder = globalFiles.find(f => f.id === id && f.type === 'folder');
+                if (folder) folderHistory.push({ id: folder.id, name: folder.name });
+            }
+            currentFolderId = id;
+            renderBerkas();
+        };
+
+        window.goBackFolder = () => {
+            if (folderHistory.length > 1) { navigateToFolder(folderHistory[folderHistory.length - 2].id); }
+        };
+
         function renderBerkas() {
             const grid = document.getElementById('berkas-grid');
+            const empty = document.getElementById('berkas-empty');
+            const breadcrumb = document.getElementById('berkas-breadcrumb');
+            const backBtn = document.getElementById('btn-back-folder');
             grid.innerHTML = '';
+
+            if (currentFolderId === 'root') { backBtn.classList.replace('flex', 'hidden'); } 
+            else { backBtn.classList.replace('hidden', 'flex'); }
+
+            breadcrumb.innerHTML = folderHistory.map((h, i) => `
+                <button onclick="navigateToFolder('${h.id}')" class="${i === folderHistory.length - 1 ? 'text-slate-800 font-bold' : 'hover:text-brand-600'}">${h.name}</button>
+                ${i < folderHistory.length - 1 ? '<span class="mx-1">/</span>' : ''}
+            `).join('');
+
             const currentItems = globalFiles.filter(f => (f.parentId || 'root') === currentFolderId);
-            currentItems.forEach(f => {
-                const div = document.createElement('div');
-                div.className = "bg-slate-50 p-4 rounded-2xl border text-center relative group";
-                const isFolder = f.type === 'folder';
-                div.innerHTML = `
-                    <div class="w-12 h-12 ${isFolder ? 'bg-amber-100 text-amber-600' : 'bg-blue-100 text-blue-600'} rounded-xl mx-auto flex items-center justify-center mb-2"><i data-lucide="${isFolder ? 'folder' : 'file-text'}"></i></div>
-                    <p class="text-[10px] font-bold truncate">${f.name}</p>
-                    <button onclick="deleteFile('${f.id}')" class="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full text-[10px] hidden group-hover:flex items-center justify-center shadow-md">X</button>
-                `;
-                if(isFolder) div.onclick = () => { currentFolderId = f.id; renderBerkas(); };
-                grid.appendChild(div);
-            });
+            if (currentItems.length === 0) { empty.classList.remove('hidden'); }
+            else {
+                empty.classList.add('hidden');
+                currentItems.sort((a,b) => (a.type === 'folder' ? -1 : 1)).forEach(f => {
+                    const isFolder = f.type === 'folder';
+                    const div = document.createElement('div');
+                    div.className = "bg-white p-4 rounded-3xl border border-slate-200/60 text-center relative group shadow-sm active:scale-95 transition-all cursor-pointer flex flex-col justify-between items-center min-h-[140px]";
+                    
+                    if(isFolder) {
+                        div.onclick = (e) => { if(!e.target.closest('button')) navigateToFolder(f.id); };
+                        div.innerHTML = `
+                            <div class="w-14 h-14 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center mb-2"><i data-lucide="folder-open" class="w-7 h-7 fill-amber-100"></i></div>
+                            <p class="text-xs font-extrabold text-slate-800 truncate w-full">${f.name}</p>
+                            <div class="absolute top-2 right-2 flex gap-1 bg-white/90 backdrop-blur-sm p-1 rounded-full border shadow-sm">
+                                <button onclick="downloadFolderZip('${f.id}', '${f.name}', event)" class="p-1 text-slate-400 hover:text-indigo-600" title="Unduh ZIP"><i data-lucide="folder-down" class="w-3.5 h-3.5"></i></button>
+                                <button onclick="openRenameModal('${f.id}', '${f.name}', event)" class="p-1 text-slate-400 hover:text-amber-500" title="Ubah Nama"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i></button>
+                                <button onclick="deleteBerkas('${f.id}', true, event)" class="p-1 text-slate-400 hover:text-rose-500" title="Hapus"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                            </div>
+                        `;
+                    } else {
+                        const canPreview = f.type.startsWith('image/') || f.type === 'application/pdf' || f.name.endsWith('.pdf');
+                        div.innerHTML = `
+                            <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center mb-2"><i data-lucide="file-text" class="w-6 h-6"></i></div>
+                            <p class="text-xs font-bold text-slate-800 truncate w-full mb-6">${f.name}</p>
+                            <div class="absolute bottom-2 inset-x-2 flex justify-between items-center bg-slate-50 border rounded-xl p-1 shadow-inner-light">
+                                ${canPreview ? `<button onclick="previewBerkas('${f.id}')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-[10px] font-bold text-slate-700 rounded-md">LIHAT</button>` : `<span class="w-1"></span>`}
+                                <div class="flex gap-1">
+                                    <button onclick="downloadSingleFile('${f.id}', event)" class="p-1 text-slate-400 hover:text-blue-500" title="Unduh"><i data-lucide="download" class="w-3.5 h-3.5"></i></button>
+                                    <button onclick="openRenameModal('${f.id}', '${f.name}', event)" class="p-1 text-slate-400 hover:text-amber-500" title="Ubah Nama"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i></button>
+                                    <button onclick="deleteBerkas('${f.id}', false, event)" class="p-1 text-slate-400 hover:text-rose-500" title="Hapus"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    grid.appendChild(div);
+                });
+            }
             lucide.createIcons();
         }
 
-        window.deleteFile = async (id) => { if(confirm("Hapus berkas?")) await deleteDoc(doc(berkasRef, id)); };
+        // --- BACKUP & DOWNLOAD ZIP SYSTEM ---
+        window.downloadSingleFile = (id, event) => {
+            if(event) event.stopPropagation();
+            const file = globalFiles.find(f => f.id === id);
+            if(!file || !file.data) return;
+            const a = document.createElement("a"); a.href = file.data; a.download = file.name; a.click();
+        };
 
-        // Helper kompresi gambar otomatis
-        const CompressionSystem = {
-            process: async (file) => {
-                if (file.type.startsWith('image/')) {
-                    return new Promise(res => {
-                        const r = new FileReader(); r.readAsDataURL(file);
-                        r.onload = (e) => {
-                            const img = new Image(); img.src = e.target.result;
-                            img.onload = () => {
-                                const c = document.createElement('canvas');
-                                const ctx = c.getContext('2d');
-                                const size = 800;
-                                let w = img.width, h = img.height;
-                                if (w > h) { h = (h / w) * size; w = size; } else { w = (w / h) * size; h = size; }
-                                c.width = w; c.height = h;
-                                ctx.drawImage(img, 0, 0, w, h);
-                                res(c.toDataURL('image/jpeg', 0.6));
-                            }
+        window.downloadFolderZip = async (folderId, folderName, event) => {
+            if(event) event.stopPropagation();
+            const btn = event.currentTarget;
+            const og = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-indigo-600"></i>`;
+            btn.disabled = true;
+
+            try {
+                if (typeof JSZip === 'undefined') throw new Error("Sistem ZIP belum siap.");
+                const zip = new JSZip();
+                const main = zip.folder(folderName);
+                let count = 0;
+
+                const zipRecursive = (currentFolder, currentParentId) => {
+                    const children = globalFiles.filter(f => f.parentId === currentParentId);
+                    children.forEach(c => {
+                        if (c.type === 'folder') {
+                            zipRecursive(currentFolder.folder(c.name), c.id);
+                        } else if (c.data) {
+                            const b64 = c.data.split(',')[1];
+                            if (b64) { currentFolder.file(c.name, b64, {base64: true}); count++; }
                         }
                     });
+                };
+
+                zipRecursive(main, folderId);
+                if (count === 0) return alert("Folder kosong sayang!");
+
+                const content = await zip.generateAsync({type:"blob"});
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(content);
+                a.download = `${folderName}.zip`;
+                a.click();
+            } catch(e) { alert(e.message); }
+            finally { btn.innerHTML = og; btn.disabled = false; lucide.createIcons(); }
+        };
+
+        window.backupAllToZip = async () => {
+            const files = globalFiles.filter(f => f.type !== 'folder');
+            if (files.length === 0) return alert("Brankas kosong!");
+            const dateStr = new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'}).replace(/ /g, '_');
+            const folderName = `Backup_MILEWORKS_${dateStr}`;
+            
+            try {
+                const zip = new JSZip();
+                const main = zip.folder(folderName);
+                
+                files.forEach(f => {
+                    const b64 = f.data.split(',')[1];
+                    if(b64) main.file(f.name, b64, {base64: true});
+                });
+
+                const content = await zip.generateAsync({type:"blob"});
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(content);
+                a.download = `${folderName}.zip`;
+                a.click();
+            } catch(e) { alert(e.message); }
+        };
+
+        // --- RENAME & DELETE BERKAS ---
+        let currentRenameId = null;
+        window.openRenameModal = (id, name, event) => {
+            if(event) event.stopPropagation();
+            currentRenameId = id;
+            document.getElementById('rename-input').value = name;
+            document.getElementById('rename-modal').classList.remove('hidden');
+        };
+        window.closeRenameModal = () => document.getElementById('rename-modal').classList.add('hidden');
+        document.getElementById('rename-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const newName = document.getElementById('rename-input').value.trim();
+            if(!newName || !currentRenameId) return;
+            const item = globalFiles.find(f => f.id === currentRenameId);
+            if(item) {
+                item.name = newName;
+                if (!usingFirebase) { saveBerkasLocal(); } 
+                else { await setDoc(doc(berkasRef, item.id), item); }
+            }
+            closeRenameModal();
+        };
+
+        window.deleteBerkas = (id, isFolder, event) => {
+            if(event) event.stopPropagation();
+            customMessage(isFolder ? "Hapus Folder" : "Hapus Berkas", "Data yang dihapus tidak dapat dikembalikan.", async () => {
+                if(!usingFirebase) {
+                    if (isFolder) { globalFiles = globalFiles.filter(f => f.parentId !== id && f.id !== id); }
+                    else { globalFiles = globalFiles.filter(f => f.id !== id); }
+                    saveBerkasLocal();
                 } else {
-                    return new Promise(res => { const r = new FileReader(); r.readAsDataURL(file); r.onload = () => res(r.result); });
+                    if (isFolder) {
+                        const items = globalFiles.filter(f => f.parentId === id);
+                        for(let item of items) { await deleteDoc(doc(berkasRef, item.id)); }
+                    }
+                    await deleteDoc(doc(berkasRef, id));
                 }
+            });
+        };
+
+        // Seret file upload
+        document.getElementById('berkas-upload-input').onchange = async (e) => {
+            const files = Array.from(e.target.files);
+            for(let file of files) {
+                const b64 = await CompressionSystem.process(file);
+                const newFile = { id: 'berkas_' + Date.now() + '_' + Math.random().toString().slice(-4), name: file.name, type: file.type || 'unknown', data: b64, parentId: currentFolderId, createdAt: new Date().toISOString() };
+                if (!usingFirebase) { globalFiles.push(newFile); saveBerkasLocal(); } 
+                else { await setDoc(doc(berkasRef, newFile.id), newFile); }
             }
         };
 
+        // --- TAMBAH TARGET ---
+        window.openAddModal = () => document.getElementById('add-modal').classList.remove('hidden');
+        window.closeAddModal = () => document.getElementById('add-modal').classList.add('hidden');
+        document.getElementById('add-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const m = { id: Date.now().toString(), title: document.getElementById('title').value, dueDate: document.getElementById('dueDate').value, description: document.getElementById('description').value, completed: false };
+            if (!usingFirebase) { milestones.push(m); saveMilestonesLocal(); } 
+            else { await setDoc(doc(milestonesRef, m.id), m); }
+            closeAddModal();
+        };
+
+        window.previewBerkas = (id) => {
+            const f = globalFiles.find(x => x.id === id); if (!f) return;
+            const container = document.getElementById('preview-container');
+            document.getElementById('preview-title').innerHTML = `<i data-lucide="eye" class="w-4 h-4"></i> <span class="truncate pr-4">${f.name}</span>`;
+            document.getElementById('preview-download-btn').href = f.data;
+            document.getElementById('preview-download-btn').download = f.name;
+
+            if (f.type.startsWith('image/')) {
+                container.innerHTML = `<img src="${f.data}" class="max-w-full max-h-full object-contain rounded-lg shadow-lg">`;
+            } else if (f.type === 'application/pdf' || f.name.endsWith('.pdf')) {
+                container.innerHTML = `<iframe src="${f.data}" class="w-full h-full min-h-[60vh] rounded-xl border-0 bg-white"></iframe>`;
+            }
+            lucide.createIcons();
+            document.getElementById('preview-modal').classList.remove('hidden');
+        };
+        window.closePreviewModal = () => document.getElementById('preview-modal').classList.add('hidden');
+
+        let confirmAction = null;
+        const customMessage = (title, desc, action) => {
+            document.getElementById('confirm-title').textContent = title;
+            document.getElementById('confirm-desc').textContent = desc;
+            confirmAction = action;
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        };
+        window.closeConfirmModal = () => document.getElementById('confirm-modal').classList.add('hidden');
+        document.getElementById('confirm-action-btn').onclick = () => { if(confirmAction) confirmAction(); closeConfirmModal(); };
+
+        const saveMilestonesLocal = () => localStorage.setItem('mileworks_v4', JSON.stringify(milestones));
+        const saveBerkasLocal = () => localStorage.setItem('mileworks_berkas_v2', JSON.stringify(globalFiles));
+        
+        function fallbackLocal() {
+            const saved = localStorage.getItem('mileworks_v4') || localStorage.getItem('milestoneApp_v3');
+            const savedBerkas = localStorage.getItem('mileworks_berkas_v2');
+            if (saved) { try { milestones = JSON.parse(saved); } catch (e) { milestones = []; } }
+            if (savedBerkas) { try { globalFiles = JSON.parse(savedBerkas); } catch (e) { globalFiles = []; } }
+            renderMilestones();
+            renderBerkas();
+        }
+
         init();
-        lucide.createIcons();
     </script>
 </body>
 </html>
