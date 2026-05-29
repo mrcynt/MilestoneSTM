@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="mobile-web-app-capable" content="yes">
     
-    <title>MILEST.</title>
+    <title>MILEWORKS</title>
     <!-- Favicon -->
     <link rel="icon" href="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL">
     
@@ -54,12 +54,12 @@
 </head>
 <body class="text-slate-800 antialiased min-h-screen flex flex-col selection:bg-brand-200">
 
-    <nav class="bg-white/80 backdrop-blur-md border-b border-slate-200/60 sticky top-0 z-50 shadow-sm">
+    <nav class="bg-white/80 backdrop-blur-md border-b border-slate-200/60 sticky top-0 z-40 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 <img src="https://lh3.googleusercontent.com/d/16-RUJ1vUhDv4kT8_M1F0kywejBITHuDL" alt="Logo" class="w-10 h-10 sm:w-11 sm:h-11 object-contain shrink-0 drop-shadow-sm">
-                <h1 class="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tighter truncate">MILEST.</h1>
                 
+                <h1 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight truncate">MILEWORKS</h1>
                 <div id="cloud-indicator" class="hidden items-center gap-1 px-2 py-1 bg-emerald-50 text-emerald-600 text-[9px] sm:text-[10px] font-bold rounded-full ml-1 border border-emerald-100 uppercase tracking-wide shrink-0">
                     <i data-lucide="cloud-lightning" class="w-3 h-3"></i> <span class="hidden sm:inline">Tersinkron</span>
                 </div>
@@ -74,20 +74,10 @@
         </div>
     </nav>
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full flex flex-col lg:flex-row gap-6 sm:gap-8">
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full flex flex-col lg:flex-row gap-6 sm:gap-8 relative z-10">
+        
+        <!-- Kolom Kiri: Dashboard Stats -->
         <div class="w-full lg:w-1/3 flex flex-col gap-5 sm:gap-6 shrink-0">
-            <!-- Add Target Button (Replaces Form) -->
-            <button onclick="openAddModal()" class="w-full group bg-white hover:bg-slate-50 rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-slate-200 border-dashed hover:border-brand-400 transition-all shadow-sm hover:shadow-md flex flex-col items-center justify-center gap-3 text-center active:scale-[0.98]">
-                <div class="w-12 h-12 rounded-full bg-brand-50 group-hover:bg-brand-100 text-brand-600 flex items-center justify-center transition-colors">
-                    <i data-lucide="plus" class="w-6 h-6"></i>
-                </div>
-                <div>
-                    <h3 class="text-base font-bold text-slate-800 group-hover:text-brand-700 transition-colors">Tambah Target</h3>
-                    <p class="text-xs text-slate-500 mt-1">Buat langkah baru menuju tujuanmu.</p>
-                </div>
-            </button>
-
-            <!-- Bento Stats -->
             <div class="grid grid-cols-2 gap-3 sm:gap-4">
                 <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-slate-100 shadow-soft">
                     <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-2 sm:mb-3">
@@ -109,7 +99,7 @@
                     <div class="flex justify-between items-end mb-4 relative z-10">
                         <div>
                             <p class="text-slate-400 text-xs sm:text-sm font-medium mb-1">Target Kuartal Ini</p>
-                            <h3 class="text-xl sm:text-2xl font-bold" id="q-title">Q2 2026</h3>
+                            <h3 class="text-xl sm:text-2xl font-bold" id="q-title">Q1 2026</h3>
                         </div>
                         <div class="text-right">
                             <span class="text-2xl sm:text-3xl font-bold text-brand-400" id="q-percentage">0%</span>
@@ -129,7 +119,6 @@
                 <div id="issues-box" class="col-span-2 bg-rose-50 rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-rose-100 hidden shadow-soft">
                     <h3 class="text-xs sm:text-sm font-bold text-rose-800 mb-3 flex items-center gap-2"><i data-lucide="alert-octagon" class="w-4 h-4"></i> Catatan Kendala Kuartal Ini</h3>
                     <ul id="issues-list" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-2">
-                        <!-- Issues rendered here -->
                     </ul>
                 </div>
             </div>
@@ -144,14 +133,26 @@
                 <button onclick="filterMilestones('failed')" id="filter-failed-mob" class="filter-btn shrink-0 px-5 py-2 text-sm font-medium rounded-full bg-white border border-slate-200 text-slate-600 transition-all">Gagal</button>
             </div>
 
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 sm:mb-6 gap-3">
-                <h2 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+            <!-- Header Action & Search area -->
+            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-5 sm:mb-6 gap-4">
+                <h2 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2 shrink-0">
                     <i data-lucide="milestone" class="w-5 h-5 text-brand-500"></i> Jejak Langkah
                 </h2>
-                <div class="relative w-full sm:w-64">
-                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <!-- text-base to prevent mobile zoom -->
-                    <input type="text" id="search-input" placeholder="Cari target..." class="w-full pl-9 pr-4 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all shadow-soft placeholder:text-slate-400">
+                
+                <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 w-full xl:w-auto justify-end">
+                    <!-- Tombol Tambah Target Dipindah Kesini -->
+                    <button onclick="openAddModal()" class="flex-1 sm:flex-none px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center gap-1.5 shrink-0 active:scale-95">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Tambah Target
+                    </button>
+                    <!-- Tombol Berkas Khusus -->
+                    <button onclick="openPasswordModal()" class="flex-1 sm:flex-none px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center justify-center gap-1.5 shrink-0 active:scale-95">
+                        <i data-lucide="folder-lock" class="w-4 h-4"></i> Folder Berkas
+                    </button>
+                    
+                    <div class="relative w-full sm:w-56 shrink-0 mt-2 sm:mt-0">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="search-input" placeholder="Cari target..." class="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-base sm:text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all shadow-soft placeholder:text-slate-400">
+                    </div>
                 </div>
             </div>
 
@@ -160,7 +161,7 @@
                     <i data-lucide="map" class="w-8 h-8 text-slate-300" id="empty-icon"></i>
                 </div>
                 <h3 class="text-base sm:text-lg font-bold text-slate-700 mb-1" id="empty-title">Perjalanan Belum Dimulai</h3>
-                <p class="text-xs sm:text-sm text-slate-500" id="empty-desc">Tekan tombol Tambah Target untuk memulai.</p>
+                <p class="text-xs sm:text-sm text-slate-500" id="empty-desc">Tekan tombol Tambah Target di atas untuk memulai.</p>
             </div>
 
             <div id="list-container" class="relative before:absolute before:inset-0 before:ml-[11px] sm:before:ml-[15px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
@@ -168,7 +169,7 @@
         </div>
     </main>
 
-    <!-- Modal Tambah Target Baru -->
+    <!-- Modal Add Target -->
     <div id="add-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeAddModal()"></div>
         <div class="relative bg-white rounded-3xl shadow-xl w-full max-w-lg p-5 sm:p-8 transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="add-modal-content">
@@ -197,18 +198,18 @@
                 <div class="grid grid-cols-2 gap-3 pt-2">
                     <div class="relative group">
                         <input type="file" id="photos" accept="image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                        <div class="h-20 sm:h-24 w-full border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 group-hover:bg-brand-50 group-hover:border-brand-300 transition-colors flex flex-col items-center justify-center text-center p-2 relative">
+                        <div class="h-20 w-full border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 group-hover:bg-brand-50 group-hover:border-brand-300 transition-colors flex flex-col items-center justify-center text-center p-2 relative">
                             <div id="photo-badge-counter" class="hidden absolute -top-2 -right-2 w-6 h-6 bg-brand-500 text-white rounded-full text-xs font-bold items-center justify-center shadow-md">0</div>
-                            <i data-lucide="image-plus" class="w-5 h-5 sm:w-6 sm:h-6 text-slate-400 group-hover:text-brand-500 mb-1.5 transition-colors"></i>
-                            <span class="text-[10px] font-semibold text-slate-500 group-hover:text-brand-600 text-balance leading-tight" id="photo-count-badge">Auto-Compress Foto</span>
+                            <i data-lucide="image-plus" class="w-5 h-5 text-slate-400 group-hover:text-brand-500 mb-1.5 transition-colors"></i>
+                            <span class="text-[10px] font-semibold text-slate-500 group-hover:text-brand-600">Auto-Compress Foto</span>
                         </div>
                     </div>
                     <div class="relative group">
                         <input type="file" id="docs" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                        <div class="h-20 sm:h-24 w-full border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 group-hover:bg-blue-50 group-hover:border-blue-300 transition-colors flex flex-col items-center justify-center text-center p-2 relative">
+                        <div class="h-20 w-full border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 group-hover:bg-blue-50 group-hover:border-blue-300 transition-colors flex flex-col items-center justify-center text-center p-2 relative">
                             <div id="doc-badge-counter" class="hidden absolute -top-2 -right-2 w-6 h-6 bg-blue-500 text-white rounded-full text-xs font-bold items-center justify-center shadow-md">0</div>
-                            <i data-lucide="file-plus" class="w-5 h-5 sm:w-6 sm:h-6 text-slate-400 group-hover:text-blue-500 mb-1.5 transition-colors"></i>
-                            <span class="text-[10px] font-semibold text-slate-500 group-hover:text-blue-600 text-balance leading-tight" id="doc-count-badge">Auto-Optimasi Dokumen</span>
+                            <i data-lucide="file-plus" class="w-5 h-5 text-slate-400 group-hover:text-blue-500 mb-1.5 transition-colors"></i>
+                            <span class="text-[10px] font-semibold text-slate-500 group-hover:text-blue-600">Auto-Optimasi Dokumen</span>
                         </div>
                     </div>
                 </div>
@@ -252,7 +253,7 @@
     <!-- Modal Edit -->
     <div id="edit-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeEditModal()"></div>
-        <div class="relative bg-white rounded-3xl shadow-xl w-full max-w-lg p-5 sm:p-8 transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="edit-modal-content">
+        <div class="relative bg-white rounded-3xl shadow-xl w-full max-w-lg p-5 sm:p-8 transform scale-95 transition-transform duration-300 overflow-hidden flex flex-col max-h-[90vh]" id="edit-modal-content">
             <div class="flex items-center justify-between mb-4 sm:mb-5">
                 <h3 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
                     <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center"><i data-lucide="edit-3" class="w-4 h-4"></i></div>
@@ -287,7 +288,7 @@
                         <div class="h-20 w-full border-2 border-dashed border-slate-200 rounded-xl bg-white group-hover:bg-amber-50 transition-colors flex flex-col items-center justify-center text-center p-2 relative">
                             <div id="edit-photo-badge" class="hidden absolute -top-2 -right-2 w-5 h-5 bg-amber-500 text-white rounded-full text-[10px] font-bold items-center justify-center shadow-md">0</div>
                             <i data-lucide="image-plus" class="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 group-hover:text-amber-500 mb-1"></i>
-                            <span class="text-[10px] font-medium text-slate-500" id="edit-photo-count">Auto-Compress Foto</span>
+                            <span class="text-[10px] font-medium text-slate-500">Auto-Compress Foto</span>
                         </div>
                     </div>
                     <div class="relative group">
@@ -295,7 +296,7 @@
                         <div class="h-20 w-full border-2 border-dashed border-slate-200 rounded-xl bg-white group-hover:bg-blue-50 transition-colors flex flex-col items-center justify-center text-center p-2 relative">
                             <div id="edit-doc-badge" class="hidden absolute -top-2 -right-2 w-5 h-5 bg-blue-500 text-white rounded-full text-[10px] font-bold items-center justify-center shadow-md">0</div>
                             <i data-lucide="file-plus" class="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 group-hover:text-blue-500 mb-1"></i>
-                            <span class="text-[10px] font-medium text-slate-500" id="edit-doc-count">Auto-Optimasi Dokumen</span>
+                            <span class="text-[10px] font-medium text-slate-500">Auto-Optimasi Dok</span>
                         </div>
                     </div>
                 </div>
@@ -310,7 +311,7 @@
     </div>
 
     <!-- Modal Konfirmasi Umum -->
-    <div id="confirm-modal" class="hidden fixed inset-0 z-[130] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
+    <div id="confirm-modal" class="hidden fixed inset-0 z-[160] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeConfirmModal()"></div>
         <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 transform scale-95 transition-transform duration-300" id="confirm-modal-content">
             <h3 class="text-lg font-bold text-slate-900 mb-2" id="confirm-title">Konfirmasi</h3>
@@ -348,10 +349,95 @@
         </div>
     </div>
 
+    <!-- Modal Password Berkas -->
+    <div id="password-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4 opacity-0 transition-all duration-300">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closePasswordModal()"></div>
+        <div class="relative bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 transform scale-95 transition-transform duration-300 text-center" id="password-modal-content">
+            <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="lock" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 mb-1">Akses Terkunci</h3>
+            <p class="text-xs text-slate-500 mb-5">Masukkan kata sandi untuk mengakses Folder Berkas.</p>
+            <form id="password-form" class="space-y-4">
+                <input type="password" id="berkas-password" placeholder="Kata Sandi" required class="w-full text-center px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-base focus:ring-2 focus:ring-slate-500/20 focus:border-slate-500 outline-none transition-all">
+                <p id="password-error" class="hidden text-xs font-semibold text-rose-500 text-center">Kata sandi salah!</p>
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-xl text-sm transition-all shadow-md">Buka Brankas</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Utama Folder Berkas -->
+    <div id="berkas-modal" class="hidden fixed inset-0 z-[130] flex items-center justify-center p-4 sm:p-6 opacity-0 transition-all duration-300">
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-md" onclick="closeBerkasModal()"></div>
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col transform scale-95 transition-transform duration-300 overflow-hidden" id="berkas-modal-content">
+            
+            <div class="flex items-center justify-between p-5 sm:p-6 border-b border-slate-100 bg-slate-50/50">
+                <h3 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shadow-sm"><i data-lucide="folder-lock" class="w-4 h-4"></i></div>
+                    Brankas Berkas
+                </h3>
+                <button onclick="closeBerkasModal()" class="p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            
+            <div class="flex flex-col flex-grow overflow-hidden bg-slate-50/30">
+                <!-- Upload Area -->
+                <div class="p-5 sm:p-6 shrink-0 border-b border-slate-100 bg-white">
+                    <div class="relative group">
+                        <input type="file" id="berkas-upload-input" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                        <div class="h-24 sm:h-28 w-full border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 group-hover:bg-brand-50 group-hover:border-brand-300 transition-all flex flex-col items-center justify-center text-center p-4 relative overflow-hidden">
+                            <i data-lucide="cloud-upload" class="w-6 h-6 sm:w-8 sm:h-8 text-slate-400 group-hover:text-brand-500 mb-2 transition-colors"></i>
+                            <h4 class="text-xs sm:text-sm font-bold text-slate-700 group-hover:text-brand-700">Pilih atau Tarik Berkas Kesini</h4>
+                            <p class="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium">PDF, Word, Excel, Gambar (Maks 700KB)</p>
+                            <div id="berkas-uploading-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-sm flex-col items-center justify-center z-20">
+                                <i data-lucide="loader-2" class="w-6 h-6 text-brand-600 animate-spin mb-1"></i>
+                                <span class="text-xs font-bold text-slate-700">Mengunggah...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File List Area -->
+                <div class="flex-grow overflow-y-auto custom-scrollbar p-5 sm:p-6">
+                    <div id="berkas-empty" class="hidden h-full flex-col items-center justify-center text-center opacity-60">
+                        <i data-lucide="folder-open" class="w-16 h-16 text-slate-300 mb-3"></i>
+                        <p class="text-sm font-bold text-slate-500">Brankas masih kosong</p>
+                    </div>
+                    <div id="berkas-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                        <!-- File cards injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Preview Berkas -->
+    <div id="preview-modal" class="hidden fixed inset-0 z-[150] flex flex-col p-2 sm:p-6 opacity-0 transition-all duration-300">
+        <div class="absolute inset-0 bg-slate-900/95 backdrop-blur-md" onclick="closePreviewModal()"></div>
+        <div class="relative w-full max-w-5xl mx-auto flex-grow flex flex-col" id="preview-modal-content">
+            <div class="flex justify-between items-center pb-4 mb-2 shrink-0">
+                <h3 class="text-white font-semibold flex items-center gap-2 truncate pr-4" id="preview-title">
+                    <i data-lucide="eye" class="w-4 h-4"></i> <span class="truncate">Pratinjau</span>
+                </h3>
+                <div class="flex items-center gap-2 shrink-0">
+                    <a id="preview-download-btn" href="#" download="" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Unduh</span>
+                    </a>
+                    <button onclick="closePreviewModal()" class="p-1.5 bg-white/10 hover:bg-rose-500/80 text-white rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex-grow bg-slate-800/50 rounded-2xl border border-slate-700 overflow-hidden flex items-center justify-center p-2 sm:p-4 shadow-2xl relative" id="preview-container">
+                <!-- Image or Iframe injected here -->
+            </div>
+        </div>
+    </div>
+
     <script>
         const pwaManifest = {
-            "name": "MILEST.",
-            "short_name": "MILEST.",
+            "name": "MILEWORKS",
+            "short_name": "MILEWORKS",
             "description": "Aplikasi tracker target untuk produktivitas tim.",
             "start_url": "./",
             "display": "standalone",
@@ -391,14 +477,13 @@
         lucide.createIcons();
 
         let milestones = [];
+        let globalFiles = []; // Array untuk menampung file dari Brankas Berkas
         let currentFilter = 'all';
         let currentSearch = '';
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'milestone-stm-app';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'mileworks-app-v4';
 
-        // =========================================================================
         // KONFIGURASI FIREBASE VERCEL
-        // =========================================================================
         const myFirebaseConfig = {
             apiKey: "AIzaSyD_r1cVxGygRJgYFp3rYLlGwUngN_AsnkU",
             authDomain: "milestone-app-7dc3e.firebaseapp.com",
@@ -407,17 +492,15 @@
             messagingSenderId: "535579558143",
             appId: "1:535579558143:web:7f961ff8bbe981b4384cca"
         };
-        // =========================================================================
 
         let firebaseConfig = null;
-        
         if (typeof myFirebaseConfig !== 'undefined') {
             firebaseConfig = myFirebaseConfig;
         } else if (typeof __firebase_config !== 'undefined') {
             firebaseConfig = JSON.parse(__firebase_config);
         }
 
-        let db, auth, userId, milestonesRef;
+        let db, auth, userId, milestonesRef, berkasRef;
         let usingFirebase = false;
 
         async function initApp() {
@@ -437,23 +520,29 @@
                     usingFirebase = true;
                     document.getElementById('cloud-indicator').style.display = 'flex';
                     
+                    // Public Paths for Global Sync
                     milestonesRef = collection(db, 'artifacts', appId, 'public', 'data', 'milestones');
+                    berkasRef = collection(db, 'artifacts', appId, 'public', 'data', 'berkas');
                     
                     onSnapshot(milestonesRef, (snapshot) => {
                         milestones = [];
-                        snapshot.forEach(docSnap => {
-                            milestones.push(docSnap.data());
-                        });
+                        snapshot.forEach(docSnap => milestones.push(docSnap.data()));
                         renderMilestones();
                         updateStats();
                     }, (error) => {
-                        console.error("Firestore error:", error);
+                        console.error("Firestore error (milestones):", error);
                         if (error.code === 'permission-denied') {
-                            customMessage("Akses Ditolak", "Database belum dalam mode Test/Publik.");
-                        } else {
-                            customMessage("Gagal Sinkronisasi", "Terjadi kesalahan saat memuat data cloud.");
+                            customMessage("Akses Ditolak", "Firebase belum dalam mode Test.");
                         }
                         fallbackToLocal();
+                    });
+
+                    onSnapshot(berkasRef, (snapshot) => {
+                        globalFiles = [];
+                        snapshot.forEach(docSnap => globalFiles.push(docSnap.data()));
+                        renderBerkas();
+                    }, (error) => {
+                        console.error("Firestore error (berkas):", error);
                     });
                     
                 } catch (e) {
@@ -466,49 +555,52 @@
         }
 
         function fallbackToLocal() {
-            const saved = localStorage.getItem('milestoneApp_v3');
-            if (saved) {
-                try {
-                    milestones = JSON.parse(saved);
-                } catch (e) {
-                    milestones = [];
-                }
-            }
+            const saved = localStorage.getItem('mileworks_v4');
+            const savedBerkas = localStorage.getItem('mileworks_berkas_v1');
+            if (saved) { try { milestones = JSON.parse(saved); } catch (e) { milestones = []; } }
+            if (savedBerkas) { try { globalFiles = JSON.parse(savedBerkas); } catch (e) { globalFiles = []; } }
             renderMilestones();
             updateStats();
+            renderBerkas();
         }
 
         async function saveToDB(milestoneData) {
-            if (usingFirebase) {
-                await setDoc(doc(milestonesRef, milestoneData.id), milestoneData);
-            } else {
-                saveMilestonesLocal();
-            }
+            if (usingFirebase) { await setDoc(doc(milestonesRef, milestoneData.id), milestoneData); } 
+            else { saveMilestonesLocal(); }
         }
 
         async function deleteFromDB(id) {
-            if (usingFirebase) {
-                await deleteDoc(doc(milestonesRef, id));
-            } else {
-                saveMilestonesLocal();
-            }
+            if (usingFirebase) { await deleteDoc(doc(milestonesRef, id)); } 
+            else { saveMilestonesLocal(); }
         }
 
         const saveMilestonesLocal = () => {
             try {
-                localStorage.setItem('milestoneApp_v3', JSON.stringify(milestones));
-                renderMilestones();
-                updateStats();
+                localStorage.setItem('mileworks_v4', JSON.stringify(milestones));
+                renderMilestones(); updateStats();
             } catch (e) {
-                if (e.name === 'QuotaExceededError') {
-                    customMessage("Penyimpanan Penuh", "Memori perangkat penuh! Hapus beberapa file atau gambar.");
-                }
+                if (e.name === 'QuotaExceededError') customMessage("Memori Penuh", "Hapus beberapa file lama.");
+            }
+        };
+
+        const saveBerkasLocal = () => {
+            try {
+                localStorage.setItem('mileworks_berkas_v1', JSON.stringify(globalFiles));
+                renderBerkas();
+            } catch (e) {
+                if (e.name === 'QuotaExceededError') customMessage("Memori Penuh", "Hapus file dari Brankas.");
             }
         };
 
         const CompressionSystem = {
             process: async (file) => {
                 return new Promise((resolve, reject) => {
+                    // Batas ukuran awal yang diizinkan untuk menghindari macetnya Base64 rendering (700KB)
+                    if (file.size > 700 * 1024 && !file.type.startsWith('image/')) {
+                        reject(new Error(`Sistem menolak dokumen "${file.name}" (Maksimal 700KB).`));
+                        return;
+                    }
+
                     if (file.type.startsWith('image/')) {
                         CompressionSystem.compressImage(file).then(resolve).catch(reject);
                     } else {
@@ -541,7 +633,7 @@
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0, width, height);
                             
-                            const compressedData = canvas.toDataURL('image/jpeg', 0.5);
+                            const compressedData = canvas.toDataURL('image/jpeg', 0.6);
                             resolve(compressedData); 
                         };
                         img.onerror = () => reject(new Error("Gagal memproses gambar otomatis"));
@@ -552,10 +644,6 @@
             },
             optimizeDocument: (file) => {
                 return new Promise((resolve, reject) => {
-                    if (file.size > 800 * 1024) {
-                        reject(new Error(`Sistem menolak dokumen "${file.name}" (Terlalu besar, maks 800KB).`));
-                        return;
-                    }
                     const reader = new FileReader();
                     reader.readAsDataURL(file);
                     reader.onload = () => resolve(reader.result);
@@ -566,22 +654,17 @@
 
         const formatDate = (dateString) => {
             if (!dateString) return '-';
-            const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            return new Date(dateString).toLocaleDateString('id-ID', options);
+            return new Date(dateString).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         };
 
         const isOverdue = (dueDate) => {
             if (!dueDate) return false;
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const targetDate = new Date(dueDate);
-            targetDate.setHours(0, 0, 0, 0);
-            return targetDate < today;
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const target = new Date(dueDate); target.setHours(0, 0, 0, 0);
+            return target < today;
         };
 
-        const getQuarter = (date) => {
-            return Math.floor(date.getMonth() / 3) + 1;
-        };
+        const getQuarter = (date) => Math.floor(date.getMonth() / 3) + 1;
 
         const renderMilestones = () => {
             const listContainer = document.getElementById('list-container');
@@ -595,10 +678,7 @@
 
             if (currentSearch) {
                 const s = currentSearch.toLowerCase();
-                filtered = filtered.filter(m => 
-                    m.title.toLowerCase().includes(s) || 
-                    (m.description && m.description.toLowerCase().includes(s))
-                );
+                filtered = filtered.filter(m => m.title.toLowerCase().includes(s) || (m.description && m.description.toLowerCase().includes(s)));
             }
 
             filtered.sort((a, b) => {
@@ -609,15 +689,12 @@
             });
 
             if (filtered.length === 0) {
-                listContainer.classList.add('hidden');
-                emptyState.classList.remove('hidden');
+                listContainer.classList.add('hidden'); emptyState.classList.remove('hidden');
                 document.getElementById('empty-title').textContent = currentSearch ? 'Pencarian Tidak Ditemukan' : currentFilter === 'all' ? 'Perjalanan Belum Dimulai' : 'Tidak ada target';
-                document.getElementById('empty-desc').textContent = currentSearch ? `Tidak ada hasil untuk "${currentSearch}"` : 'Tekan tombol Tambah Target untuk memulai.';
+                document.getElementById('empty-desc').textContent = currentSearch ? `Tidak ada hasil untuk "${currentSearch}"` : 'Tekan tombol Tambah Target di atas untuk memulai.';
                 document.getElementById('empty-icon').setAttribute('data-lucide', currentSearch ? 'search-x' : 'map');
             } else {
-                listContainer.classList.remove('hidden');
-                emptyState.classList.add('hidden');
-
+                listContainer.classList.remove('hidden'); emptyState.classList.add('hidden');
                 filtered.forEach(milestone => {
                     const isPastDue = isOverdue(milestone.dueDate) && !milestone.completed && !milestone.failed;
                     const statusColor = milestone.completed ? 'emerald' : milestone.failed ? 'slate' : isPastDue ? 'rose' : 'brand';
@@ -631,18 +708,13 @@
                     card.innerHTML = `
                         <div class="absolute left-[-5px] sm:left-1 top-6 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full ${nodeBg} border-[3px] ${nodeBorder} shadow-sm z-10 transition-colors"></div>
                         <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/60 hover:shadow-md hover:border-${statusColor}-200 transition-all flex flex-col sm:flex-row gap-3 sm:gap-4">
-                            
                             ${!milestone.failed ? `
-                            <button onclick="toggleStatus('${milestone.id}')" 
-                                class="hidden sm:flex mt-1 flex-shrink-0 w-8 h-8 rounded-full border-2 items-center justify-center transition-all ${milestone.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-200 hover:border-brand-500 text-transparent hover:text-brand-200'}">
+                            <button onclick="toggleStatus('${milestone.id}')" class="hidden sm:flex mt-1 flex-shrink-0 w-8 h-8 rounded-full border-2 items-center justify-center transition-all ${milestone.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-200 hover:border-brand-500 text-transparent hover:text-brand-200'}">
                                 <i data-lucide="check" class="w-4 h-4"></i>
-                            </button>
-                            ` : `
+                            </button>` : `
                             <div class="hidden sm:flex mt-1 flex-shrink-0 w-8 h-8 rounded-full border-2 border-slate-200 bg-slate-100 items-center justify-center text-slate-400">
                                 <i data-lucide="x" class="w-4 h-4"></i>
-                            </div>
-                            `}
-
+                            </div>`}
                             <div class="flex-grow min-w-0">
                                 <div class="flex flex-wrap items-center gap-2 mb-1">
                                     <h3 class="text-base sm:text-lg font-bold truncate ${titleClass}">${milestone.title}</h3>
@@ -650,47 +722,28 @@
                                     ${milestone.failed ? `<span class="px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-bold bg-slate-100 text-slate-600 uppercase tracking-wide">Dibatalkan</span>` : ''}
                                 </div>
                                 <div class="flex items-center text-[11px] sm:text-xs font-medium ${isPastDue && !milestone.completed && !milestone.failed ? 'text-rose-600' : 'text-slate-500'} mb-2">
-                                    <i data-lucide="calendar" class="w-3.5 h-3.5 mr-1.5"></i>
-                                    Tenggat: ${formatDate(milestone.dueDate)}
+                                    <i data-lucide="calendar" class="w-3.5 h-3.5 mr-1.5"></i> Tenggat: ${formatDate(milestone.dueDate)}
                                 </div>
                                 ${milestone.failed && milestone.failReason ? `
                                 <div class="mt-2 mb-2 bg-rose-50 border border-rose-100/60 rounded-xl p-3 text-[11px] sm:text-xs shadow-inner-light">
                                     <span class="font-bold text-rose-800 flex items-center gap-1.5 mb-1"><i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> Kendala:</span>
                                     <span class="text-slate-700 leading-relaxed">${milestone.failReason}</span>
-                                </div>
-                                ` : ''}
+                                </div>` : ''}
                                 <div class="flex flex-wrap gap-2 mt-3">
-                                    ${milestone.photos?.length ? `<div class="flex items-center text-[10px] sm:text-[11px] font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded-md"><i data-lucide="image" class="w-3.5 h-3.5 mr-1 sm:mr-1.5 text-brand-500"></i> ${milestone.photos.length} Foto</div>` : ''}
-                                    ${milestone.files?.length ? `<div class="flex items-center text-[10px] sm:text-[11px] font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded-md"><i data-lucide="file-text" class="w-3.5 h-3.5 mr-1 sm:mr-1.5 text-blue-500"></i> ${milestone.files.length} Dokumen</div>` : ''}
+                                    ${milestone.photos?.length ? `<div class="flex items-center text-[10px] sm:text-[11px] font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded-md"><i data-lucide="image" class="w-3.5 h-3.5 mr-1.5 text-brand-500"></i> ${milestone.photos.length} Foto</div>` : ''}
+                                    ${milestone.files?.length ? `<div class="flex items-center text-[10px] sm:text-[11px] font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded-md"><i data-lucide="file-text" class="w-3.5 h-3.5 mr-1.5 text-blue-500"></i> ${milestone.files.length} Dokumen</div>` : ''}
                                 </div>
                             </div>
-                            
                             <div class="flex flex-row sm:flex-col justify-end gap-2 border-t sm:border-t-0 sm:border-l border-slate-100 pt-3 sm:pt-0 sm:pl-4 mt-2 sm:mt-0 shrink-0">
                                 ${!milestone.failed ? `
                                 <button onclick="toggleStatus('${milestone.id}')" class="sm:hidden flex-1 px-3 py-2 rounded-xl text-xs font-bold border transition-colors flex items-center justify-center gap-1.5 ${milestone.completed ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-50 text-slate-600 border-slate-200'}">
-                                    <i data-lucide="${milestone.completed ? 'rotate-ccw' : 'check'}" class="w-3.5 h-3.5"></i> ${milestone.completed ? 'Batal Selesai' : 'Selesai'}
-                                </button>
-                                ` : ''}
-                                
+                                    <i data-lucide="${milestone.completed ? 'rotate-ccw' : 'check'}" class="w-3.5 h-3.5"></i> ${milestone.completed ? 'Batal' : 'Selesai'}
+                                </button>` : ''}
                                 <div class="flex flex-1 sm:flex-none justify-end sm:justify-start gap-1.5">
-                                    ${milestone.failed ? `
-                                    <button onclick="restoreMilestone('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center flex-1 sm:flex-none border border-slate-200" title="Pulihkan">
-                                        <i data-lucide="refresh-ccw" class="w-4 h-4"></i> <span class="sm:hidden text-xs font-bold ml-1.5">Pulihkan</span>
-                                    </button>
-                                    ` : !milestone.completed ? `
-                                    <button onclick="openFailModal('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-500 rounded-xl flex items-center justify-center flex-none" title="Tandai Gagal">
-                                        <i data-lucide="x-octagon" class="w-4 h-4"></i>
-                                    </button>
-                                    ` : ''}
-                                    <button onclick="openModal('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center flex-none" title="Detail">
-                                        <i data-lucide="expand" class="w-4 h-4"></i>
-                                    </button>
-                                    <button onclick="openEditModal('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-500 rounded-xl flex items-center justify-center flex-none" title="Edit">
-                                        <i data-lucide="edit-2" class="w-4 h-4"></i>
-                                    </button>
-                                    <button onclick="deleteMilestone('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center flex-none" title="Hapus">
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                    </button>
+                                    ${milestone.failed ? `<button onclick="restoreMilestone('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-600 rounded-xl border border-slate-200" title="Pulihkan"><i data-lucide="refresh-ccw" class="w-4 h-4"></i></button>` : !milestone.completed ? `<button onclick="openFailModal('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-500 rounded-xl" title="Tandai Gagal"><i data-lucide="x-octagon" class="w-4 h-4"></i></button>` : ''}
+                                    <button onclick="openModal('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-600 rounded-xl" title="Detail"><i data-lucide="expand" class="w-4 h-4"></i></button>
+                                    <button onclick="openEditModal('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-500 rounded-xl" title="Edit"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                    <button onclick="deleteMilestone('${milestone.id}')" class="p-2 sm:p-2.5 bg-slate-50 text-slate-400 rounded-xl" title="Hapus"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -705,18 +758,10 @@
             document.getElementById('total-count').textContent = milestones.length;
             document.getElementById('completed-count').textContent = milestones.filter(m => m.completed).length;
 
-            const today = new Date();
-            const currentYear = today.getFullYear();
-            const currentQuarter = getQuarter(today);
-
+            const today = new Date(); const currentYear = today.getFullYear(); const currentQuarter = getQuarter(today);
             document.getElementById('q-title').textContent = `Q${currentQuarter} ${currentYear}`;
 
-            const qMilestones = milestones.filter(m => {
-                if (!m.dueDate) return false;
-                const d = new Date(m.dueDate);
-                return d.getFullYear() === currentYear && getQuarter(d) === currentQuarter;
-            });
-
+            const qMilestones = milestones.filter(m => m.dueDate && new Date(m.dueDate).getFullYear() === currentYear && getQuarter(new Date(m.dueDate)) === currentQuarter);
             const qTotalCount = qMilestones.length;
             const qCompletedCount = qMilestones.filter(m => m.completed).length;
             let qProg = qTotalCount === 0 ? 0 : Math.round((qCompletedCount / qTotalCount) * 100);
@@ -726,9 +771,7 @@
             
             setTimeout(() => {
                 document.getElementById('q-progress-bar').style.width = `${qProg}%`;
-                let barColor = "bg-rose-400";
-                if(qProg > 40) barColor = "bg-amber-400";
-                if(qProg > 80) barColor = "bg-emerald-400";
+                let barColor = qProg > 80 ? "bg-emerald-400" : qProg > 40 ? "bg-amber-400" : "bg-rose-400";
                 document.getElementById('q-progress-bar').className = `${barColor} h-full rounded-full transition-all duration-1000 shadow-inner-light`;
             }, 100);
 
@@ -743,291 +786,109 @@
             const evalMsg = document.getElementById('evaluation-message');
 
             if (pastDueQuarterMilestones.length > 0) {
-                evalAlert.classList.remove('hidden');
-                evalMsg.textContent = `${pastDueQuarterMilestones.length} tugas dari kuartal lalu terlewat.`;
+                evalAlert.classList.remove('hidden'); evalMsg.textContent = `${pastDueQuarterMilestones.length} tugas dari kuartal lalu terlewat.`;
             } else if (isLastMonthOfQuarter && qProg < 100 && qTotalCount > 0) {
-                evalAlert.classList.remove('hidden');
-                evalMsg.textContent = "Bulan terakhir di kuartal ini, target belum 100%.";
+                evalAlert.classList.remove('hidden'); evalMsg.textContent = "Bulan terakhir di kuartal ini, target belum 100%.";
             } else {
                 evalAlert.classList.add('hidden');
             }
 
-            const failedThisQuarter = milestones.filter(m => {
-                if (!m.failed || !m.dueDate) return false;
-                const d = new Date(m.dueDate);
-                return d.getFullYear() === currentYear && getQuarter(d) === currentQuarter;
-            });
-
+            const failedThisQuarter = milestones.filter(m => m.failed && m.dueDate && new Date(m.dueDate).getFullYear() === currentYear && getQuarter(new Date(m.dueDate)) === currentQuarter);
             const issuesBox = document.getElementById('issues-box');
             if (failedThisQuarter.length > 0) {
                 issuesBox.classList.remove('hidden');
                 document.getElementById('issues-list').innerHTML = failedThisQuarter.map(m => `
                     <li class="bg-white/60 rounded-xl p-3 text-xs border border-rose-100/50 shadow-sm relative pl-8">
                         <div class="absolute left-3 top-3.5 w-1.5 h-1.5 rounded-full bg-rose-500"></div>
-                        <span class="font-bold text-slate-800 block mb-0.5 truncate" title="${m.title}">${m.title}</span>
+                        <span class="font-bold text-slate-800 block mb-0.5 truncate">${m.title}</span>
                         <span class="text-rose-700 leading-relaxed block">${m.failReason}</span>
                     </li>
                 `).join('');
-            } else {
-                issuesBox.classList.add('hidden');
-            }
+            } else issuesBox.classList.add('hidden');
         };
 
-        document.getElementById('search-input').addEventListener('input', (e) => {
-            currentSearch = e.target.value;
+        document.getElementById('search-input').addEventListener('input', (e) => { currentSearch = e.target.value; renderMilestones(); });
+
+        window.filterMilestones = (filter) => {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = btn.id.includes('mob') ? "filter-btn shrink-0 px-5 py-2 text-sm font-medium rounded-full bg-white border border-slate-200 text-slate-600 transition-all" : "filter-btn px-4 py-1.5 text-sm font-medium rounded-full text-slate-500 hover:text-slate-800 transition-all";
+            });
+            document.getElementById(`filter-${filter}`).className = "filter-btn active px-4 py-1.5 text-sm font-semibold rounded-full bg-white text-slate-800 shadow-sm transition-all";
+            if(document.getElementById(`filter-${filter}-mob`)) document.getElementById(`filter-${filter}-mob`).className = "filter-btn active shrink-0 px-5 py-2 text-sm font-semibold rounded-full bg-slate-800 text-white transition-all";
             renderMilestones();
-        });
+        };
 
-        // Variabel penampung file akumulatif untuk form Tambah
-        let pendingAddPhotos = [];
-        let pendingAddDocs = [];
+        window.toggleStatus = async (id) => {
+            const milestone = milestones.find(m => m.id === id);
+            if (milestone) { milestone.completed = !milestone.completed; if(milestone.completed) milestone.failed = false; await saveToDB(milestone); }
+        };
 
-        // Handler Add Modal
+        window.deleteMilestone = (id) => {
+            customMessage("Hapus Target", "Data yang dihapus tidak dapat dikembalikan.", async () => {
+                if(!usingFirebase) milestones = milestones.filter(m => m.id !== id); await deleteFromDB(id);
+            });
+        };
+
+        window.restoreMilestone = async (id) => {
+            const m = milestones.find(x => x.id === id);
+            if(m) { m.failed = false; m.failReason = ""; await saveToDB(m); }
+        };
+
+        let pendingAddPhotos = []; let pendingAddDocs = [];
         window.openAddModal = () => {
-            document.getElementById('add-form').reset();
-            pendingAddPhotos = []; // Bersihkan keranjang saat form dibuka
-            pendingAddDocs = [];
-            document.getElementById('photo-badge-counter').classList.replace('flex', 'hidden');
-            document.getElementById('doc-badge-counter').classList.replace('flex', 'hidden');
-            
+            document.getElementById('add-form').reset(); pendingAddPhotos = []; pendingAddDocs = [];
+            document.getElementById('photo-badge-counter').classList.replace('flex', 'hidden'); document.getElementById('doc-badge-counter').classList.replace('flex', 'hidden');
             const modal = document.getElementById('add-modal');
             modal.classList.remove('hidden'); void modal.offsetWidth; modal.classList.remove('opacity-0');
             document.getElementById('add-modal-content').classList.remove('scale-95');
         };
-
         window.closeAddModal = () => {
             const modal = document.getElementById('add-modal');
             modal.classList.add('opacity-0'); document.getElementById('add-modal-content').classList.add('scale-95');
             setTimeout(() => modal.classList.add('hidden'), 300);
         };
 
-        // Handler Upload Bages (Akumulatif)
         document.getElementById('photos').addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                pendingAddPhotos.push(...Array.from(e.target.files)); // Tambahkan ke keranjang
-            }
-            const count = pendingAddPhotos.length;
+            if(e.target.files.length) pendingAddPhotos.push(...Array.from(e.target.files));
             const badge = document.getElementById('photo-badge-counter');
-            if (count > 0) { badge.textContent = count; badge.classList.replace('hidden', 'flex'); }
-            else { badge.classList.replace('flex', 'hidden'); }
-            e.target.value = ''; // Reset input asli agar bisa diklik lagi
+            if (pendingAddPhotos.length > 0) { badge.textContent = pendingAddPhotos.length; badge.classList.replace('hidden', 'flex'); }
+            e.target.value = '';
         });
 
         document.getElementById('docs').addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                pendingAddDocs.push(...Array.from(e.target.files)); // Tambahkan ke keranjang
-            }
-            const count = pendingAddDocs.length;
+            if(e.target.files.length) pendingAddDocs.push(...Array.from(e.target.files));
             const badge = document.getElementById('doc-badge-counter');
-            if (count > 0) { badge.textContent = count; badge.classList.replace('hidden', 'flex'); }
-            else { badge.classList.replace('flex', 'hidden'); }
-            e.target.value = ''; // Reset input asli agar bisa diklik lagi
-        });
-
-        document.getElementById('edit-photos').addEventListener('change', async (e) => {
-            const files = Array.from(e.target.files);
-            if (files.length === 0) return;
-            
-            // Tampilkan loading sebentar
-            const b = document.getElementById('edit-photo-badge');
-            b.innerHTML = `<i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i>`;
-            b.classList.replace('hidden', 'flex');
-            
-            try {
-                const b64s = await Promise.all(files.map(CompressionSystem.process));
-                files.forEach((f, i) => {
-                    tempEditPhotos.push({ name: f.name, data: b64s[i] }); // Langsung proses & munculkan
-                });
-                renderEditAttachments(); // Tampilkan langsung di form edit
-            } catch(err) {
-                console.error(err);
-                customMessage("Gagal Memproses", "Gagal memproses beberapa foto.");
-            } finally {
-                b.classList.replace('flex', 'hidden');
-                e.target.value = ''; // Reset input asli
-                lucide.createIcons();
-            }
-        });
-
-        document.getElementById('edit-docs').addEventListener('change', async (e) => {
-            const files = Array.from(e.target.files);
-            if (files.length === 0) return;
-            
-            const b = document.getElementById('edit-doc-badge');
-            b.innerHTML = `<i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i>`;
-            b.classList.replace('hidden', 'flex');
-            
-            try {
-                const b64s = await Promise.all(files.map(CompressionSystem.process));
-                files.forEach((f, i) => {
-                    tempEditFiles.push({ name: f.name, data: b64s[i] }); // Langsung proses & munculkan
-                });
-                renderEditAttachments();
-            } catch(err) {
-                console.error(err);
-                customMessage("Gagal Memproses", "Dokumen terlalu besar.");
-            } finally {
-                b.classList.replace('flex', 'hidden');
-                e.target.value = ''; // Reset input asli
-                lucide.createIcons();
-            }
+            if (pendingAddDocs.length > 0) { badge.textContent = pendingAddDocs.length; badge.classList.replace('hidden', 'flex'); }
+            e.target.value = '';
         });
 
         document.getElementById('add-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const submitBtn = document.getElementById('submit-btn');
-            const originalBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Memproses...`;
-            submitBtn.disabled = true;
+            const submitBtn = document.getElementById('submit-btn'); const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Memproses...`; submitBtn.disabled = true;
 
             try {
-                // Ambil dari keranjang pending, bukan dari input DOM langsung
                 const base64Photos = pendingAddPhotos.length > 0 ? await Promise.all(pendingAddPhotos.map(CompressionSystem.process)) : [];
                 const base64Docs = pendingAddDocs.length > 0 ? await Promise.all(pendingAddDocs.map(CompressionSystem.process)) : [];
-
-                const totalSize = [...base64Photos, ...base64Docs].reduce((acc, curr) => acc + curr.length, 0);
-                if (totalSize > 900000) { 
-                    throw new Error("Total ukuran lampiran melebihi kapasitas sistem. Kurangi jumlah file.");
-                }
-
-                const photosData = pendingAddPhotos.map((f, i) => ({ name: f.name, data: base64Photos[i] }));
-                const docsData = pendingAddDocs.map((f, i) => ({ name: f.name, data: base64Docs[i] }));
-
+                
+                if ([...base64Photos, ...base64Docs].reduce((a, b) => a + b.length, 0) > 900000) throw new Error("Total lampiran melebihi 900KB.");
+                
                 const newMilestone = {
-                    id: Date.now().toString(),
-                    title: document.getElementById('title').value.trim(),
-                    dueDate: document.getElementById('dueDate').value,
-                    description: document.getElementById('description').value.trim(),
-                    completed: false, failed: false, failReason: "",
+                    id: Date.now().toString(), title: document.getElementById('title').value.trim(), dueDate: document.getElementById('dueDate').value,
+                    description: document.getElementById('description').value.trim(), completed: false, failed: false, failReason: "",
                     createdAt: new Date().toISOString(),
-                    photos: photosData, files: docsData
+                    photos: pendingAddPhotos.map((f, i) => ({ name: f.name, data: base64Photos[i] })),
+                    files: pendingAddDocs.map((f, i) => ({ name: f.name, data: base64Docs[i] }))
                 };
-
                 if (!usingFirebase) { milestones.unshift(newMilestone); }
-                await saveToDB(newMilestone);
-
-                e.target.reset();
-                pendingAddPhotos = []; // Kosongkan keranjang setelah sukses
-                pendingAddDocs = [];
-                document.getElementById('photo-badge-counter').classList.replace('flex', 'hidden');
-                document.getElementById('doc-badge-counter').classList.replace('flex', 'hidden');
-                window.closeAddModal();
-            } catch (error) {
-                console.error(error);
-                customMessage("Gagal Upload", error.message || "File terlalu besar atau koneksi terputus.");
-            } finally {
-                submitBtn.innerHTML = originalBtnText;
-                submitBtn.disabled = false;
-                lucide.createIcons();
-            }
-        });
-
-        window.filterMilestones = (filter) => {
-            currentFilter = filter;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.className = btn.id.includes('mob') ? 
-                    "filter-btn shrink-0 px-5 py-2 text-sm font-medium rounded-full bg-white border border-slate-200 text-slate-600 transition-all" : 
-                    "filter-btn px-4 py-1.5 text-sm font-medium rounded-full text-slate-500 hover:text-slate-800 transition-all";
-            });
-            document.getElementById(`filter-${filter}`).className = "filter-btn active px-4 py-1.5 text-sm font-semibold rounded-full bg-white text-slate-800 shadow-sm transition-all";
-            if(document.getElementById(`filter-${filter}-mob`)) {
-                document.getElementById(`filter-${filter}-mob`).className = "filter-btn active shrink-0 px-5 py-2 text-sm font-semibold rounded-full bg-slate-800 text-white transition-all";
-            }
-            renderMilestones();
-        };
-
-        window.toggleStatus = async (id) => {
-            const milestone = milestones.find(m => m.id === id);
-            if (milestone) {
-                milestone.completed = !milestone.completed;
-                if(milestone.completed) milestone.failed = false;
-                await saveToDB(milestone);
-            }
-        };
-
-        window.deleteMilestone = (id) => {
-            customMessage("Hapus Target", "Data yang dihapus tidak dapat dikembalikan.", async () => {
-                if(!usingFirebase) milestones = milestones.filter(m => m.id !== id);
-                await deleteFromDB(id);
-            });
-        };
-
-        window.restoreMilestone = async (id) => {
-            const m = milestones.find(x => x.id === id);
-            if(m) {
-                m.failed = false;
-                m.failReason = "";
-                await saveToDB(m);
-            }
-        };
-
-        let confirmAction = null;
-        const customMessage = (title, desc, action = null) => {
-            document.getElementById('confirm-title').textContent = title;
-            document.getElementById('confirm-desc').textContent = desc;
-            confirmAction = action;
-            const cancelBtn = document.getElementById('confirm-cancel-btn');
-            const actionBtn = document.getElementById('confirm-action-btn');
-            if (!action) {
-                cancelBtn.classList.add('hidden');
-                actionBtn.textContent = 'Tutup';
-                actionBtn.className = "px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-semibold transition-all";
-            } else {
-                cancelBtn.classList.remove('hidden');
-                actionBtn.textContent = 'Ya, Lanjutkan';
-                actionBtn.className = "px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-semibold transition-all";
-            }
-            const m = document.getElementById('confirm-modal');
-            m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0');
-            document.getElementById('confirm-modal-content').classList.remove('scale-95');
-        };
-
-        window.closeConfirmModal = () => {
-            const m = document.getElementById('confirm-modal');
-            m.classList.add('opacity-0'); document.getElementById('confirm-modal-content').classList.add('scale-95');
-            setTimeout(() => m.classList.add('hidden'), 300);
-        };
-
-        document.getElementById('confirm-action-btn').addEventListener('click', () => {
-            if(confirmAction) confirmAction();
-            window.closeConfirmModal();
-        });
-
-        let currentFailId = null;
-        window.openFailModal = (id) => {
-            currentFailId = id;
-            document.getElementById('fail-reason').value = '';
-            const m = document.getElementById('fail-modal');
-            m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0');
-            document.getElementById('fail-modal-content').classList.remove('scale-95');
-        };
-
-        window.closeFailModal = () => {
-            const m = document.getElementById('fail-modal');
-            m.classList.add('opacity-0'); document.getElementById('fail-modal-content').classList.add('scale-95');
-            setTimeout(() => m.classList.add('hidden'), 300);
-        };
-
-        document.getElementById('fail-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('fail-submit-btn');
-            const og = btn.innerHTML;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>...`;
-            btn.disabled = true;
-            
-            const reason = document.getElementById('fail-reason').value.trim();
-            const m = milestones.find(x => x.id === currentFailId);
-            if(m) {
-                m.failed = true; m.completed = false; m.failReason = reason;
-                await saveToDB(m);
-            }
-            window.closeFailModal();
-            btn.innerHTML = og; btn.disabled = false; lucide.createIcons();
+                await saveToDB(newMilestone); closeAddModal();
+            } catch (err) { customMessage("Gagal Upload", err.message); } 
+            finally { submitBtn.innerHTML = originalBtnText; submitBtn.disabled = false; lucide.createIcons(); }
         });
 
         window.openModal = (id) => {
-            const m = milestones.find(m => m.id === id);
-            if (!m) return;
+            const m = milestones.find(m => m.id === id); if (!m) return;
             document.getElementById('modal-title').textContent = m.title;
             document.getElementById('modal-date').textContent = "Tenggat Waktu: " + formatDate(m.dueDate);
             document.getElementById('modal-desc').textContent = m.description || "Tidak ada deskripsi.";
@@ -1038,142 +899,251 @@
             iconContainer.innerHTML = `<i data-lucide="${m.completed ? 'check-circle-2' : m.failed ? 'x-octagon' : isPastDue ? 'alert-triangle' : 'flag'}" class="w-5 h-5 sm:w-6 sm:h-6"></i>`;
 
             const gallery = document.getElementById('photo-gallery');
-            if (m.photos && m.photos.length > 0) {
+            if (m.photos?.length) {
                 gallery.classList.remove('hidden');
                 document.getElementById('photo-grid').innerHTML = m.photos.map((p) => `
                     <div class="relative group aspect-square rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
                         <img src="${p.data}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
                         <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <a href="${p.data}" download="${p.name}" class="p-2 bg-white/90 rounded-full text-slate-900 hover:scale-110 transition-transform shadow-sm">
-                                <i data-lucide="download" class="w-4 h-4"></i>
-                            </a>
+                            <a href="${p.data}" download="${p.name}" class="p-2 bg-white/90 rounded-full text-slate-900 hover:scale-110 transition-transform shadow-sm"><i data-lucide="download" class="w-4 h-4"></i></a>
                         </div>
-                    </div>
-                `).join('');
+                    </div>`).join('');
             } else gallery.classList.add('hidden');
 
             const fileList = document.getElementById('file-list');
-            if (m.files && m.files.length > 0) {
+            if (m.files?.length) {
                 fileList.classList.remove('hidden');
                 document.getElementById('document-list').innerHTML = m.files.map((f) => `
                     <div class="flex items-center justify-between p-2.5 sm:p-3 bg-slate-50 border border-slate-100 rounded-xl">
                         <div class="flex items-center gap-2.5 sm:gap-3 overflow-hidden">
-                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
-                                <i data-lucide="file-text" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
-                            </div>
+                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0"><i data-lucide="file-text" class="w-3.5 h-3.5"></i></div>
                             <span class="text-xs sm:text-sm font-medium text-slate-700 truncate">${f.name}</span>
                         </div>
-                        <a href="${f.data}" download="${f.name}" class="ml-2 shrink-0 p-1.5 bg-white border border-slate-200 text-slate-600 hover:text-brand-600 hover:border-brand-200 rounded-md transition-colors shadow-sm">
-                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                        </a>
-                    </div>
-                `).join('');
+                        <a href="${f.data}" download="${f.name}" class="ml-2 shrink-0 p-1.5 bg-white border border-slate-200 text-slate-600 hover:text-brand-600 hover:border-brand-200 rounded-md transition-colors shadow-sm"><i data-lucide="download" class="w-3.5 h-3.5"></i></a>
+                    </div>`).join('');
             } else fileList.classList.add('hidden');
 
             lucide.createIcons();
-            const modal = document.getElementById('detail-modal');
-            modal.classList.remove('hidden'); void modal.offsetWidth; modal.classList.remove('opacity-0');
-            document.getElementById('detail-modal-content').classList.remove('scale-95');
+            const modal = document.getElementById('detail-modal'); modal.classList.remove('hidden'); void modal.offsetWidth; modal.classList.remove('opacity-0'); document.getElementById('detail-modal-content').classList.remove('scale-95');
         };
+        window.closeModal = () => { const m = document.getElementById('detail-modal'); m.classList.add('opacity-0'); document.getElementById('detail-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); };
 
-        window.closeModal = () => {
-            const modal = document.getElementById('detail-modal');
-            modal.classList.add('opacity-0'); document.getElementById('detail-modal-content').classList.add('scale-95');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        };
-
-        let currentEditId = null;
-        let tempEditPhotos = []; let tempEditFiles = [];
-
+        let currentEditId = null; let tempEditPhotos = []; let tempEditFiles = [];
         window.openEditModal = (id) => {
-            const m = milestones.find(m => m.id === id);
-            if (!m) return;
-            currentEditId = id;
-            document.getElementById('edit-title').value = m.title;
-            document.getElementById('edit-date').value = m.dueDate;
-            document.getElementById('edit-desc').value = m.description || "";
-            document.getElementById('edit-photos').value = "";
-            document.getElementById('edit-docs').value = "";
-            document.getElementById('edit-photo-badge').classList.replace('flex','hidden');
-            document.getElementById('edit-doc-badge').classList.replace('flex','hidden');
-
-            tempEditPhotos = m.photos ? [...m.photos] : [];
-            tempEditFiles = m.files ? [...m.files] : [];
+            const m = milestones.find(m => m.id === id); if (!m) return; currentEditId = id;
+            document.getElementById('edit-title').value = m.title; document.getElementById('edit-date').value = m.dueDate; document.getElementById('edit-desc').value = m.description || "";
+            document.getElementById('edit-photos').value = ""; document.getElementById('edit-docs').value = "";
+            document.getElementById('edit-photo-badge').classList.replace('flex','hidden'); document.getElementById('edit-doc-badge').classList.replace('flex','hidden');
+            tempEditPhotos = m.photos ? [...m.photos] : []; tempEditFiles = m.files ? [...m.files] : [];
             renderEditAttachments();
-
-            const eModal = document.getElementById('edit-modal');
-            eModal.classList.remove('hidden'); void eModal.offsetWidth; eModal.classList.remove('opacity-0');
-            document.getElementById('edit-modal-content').classList.remove('scale-95');
+            const eModal = document.getElementById('edit-modal'); eModal.classList.remove('hidden'); void eModal.offsetWidth; eModal.classList.remove('opacity-0'); document.getElementById('edit-modal-content').classList.remove('scale-95');
         };
-
-        window.closeEditModal = () => {
-            const eModal = document.getElementById('edit-modal');
-            eModal.classList.add('opacity-0'); document.getElementById('edit-modal-content').classList.add('scale-95');
-            setTimeout(() => eModal.classList.add('hidden'), 300);
-            currentEditId = null;
-        };
+        window.closeEditModal = () => { const eModal = document.getElementById('edit-modal'); eModal.classList.add('opacity-0'); document.getElementById('edit-modal-content').classList.add('scale-95'); setTimeout(() => eModal.classList.add('hidden'), 300); currentEditId = null; };
 
         const renderEditAttachments = () => {
             document.getElementById('edit-old-photos').innerHTML = tempEditPhotos.map((p, i) => `
                 <div class="relative group aspect-square rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
                     <img src="${p.data}" class="w-full h-full object-cover">
-                    <button type="button" onclick="removeEditPhoto(${i})" class="absolute top-1 right-1 w-6 h-6 bg-white/90 hover:bg-rose-50 rounded-full text-rose-500 flex items-center justify-center shadow-sm transition-colors">
-                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
-                    </button>
-                </div>
-            `).join('');
+                    <button type="button" onclick="removeEditPhoto(${i})" class="absolute top-1 right-1 w-6 h-6 bg-white/90 hover:bg-rose-50 rounded-full text-rose-500 flex items-center justify-center shadow-sm"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                </div>`).join('');
             document.getElementById('edit-old-files').innerHTML = tempEditFiles.map((f, i) => `
                 <div class="flex items-center justify-between p-2 bg-slate-50 border border-slate-100 rounded-lg mb-1.5">
                     <span class="text-[10px] sm:text-xs font-medium text-slate-600 truncate mr-2">${f.name}</span>
-                    <button type="button" onclick="removeEditFile(${i})" class="text-slate-400 hover:text-rose-500 transition-colors"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
-                </div>
-            `).join('');
+                    <button type="button" onclick="removeEditFile(${i})" class="text-slate-400 hover:text-rose-500"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                </div>`).join('');
             lucide.createIcons();
         };
 
         window.removeEditPhoto = (idx) => { tempEditPhotos.splice(idx, 1); renderEditAttachments(); };
         window.removeEditFile = (idx) => { tempEditFiles.splice(idx, 1); renderEditAttachments(); };
 
-        document.getElementById('edit-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const m = milestones.find(x => x.id === currentEditId);
-            if(!m) return;
+        document.getElementById('edit-photos').addEventListener('change', async (e) => {
+            if(!e.target.files.length) return;
+            try {
+                const b64s = await Promise.all(Array.from(e.target.files).map(CompressionSystem.process));
+                Array.from(e.target.files).forEach((f, i) => tempEditPhotos.push({ name: f.name, data: b64s[i] })); renderEditAttachments();
+            } catch(err) { customMessage("Gagal Upload", err.message); } e.target.value = '';
+        });
+        document.getElementById('edit-docs').addEventListener('change', async (e) => {
+            if(!e.target.files.length) return;
+            try {
+                const b64s = await Promise.all(Array.from(e.target.files).map(CompressionSystem.process));
+                Array.from(e.target.files).forEach((f, i) => tempEditFiles.push({ name: f.name, data: b64s[i] })); renderEditAttachments();
+            } catch(err) { customMessage("Gagal Upload", err.message); } e.target.value = '';
+        });
 
-            const submitBtn = document.getElementById('edit-submit-btn');
-            const originalBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Proses...`;
-            submitBtn.disabled = true;
+        document.getElementById('edit-form').addEventListener('submit', async (e) => {
+            e.preventDefault(); const m = milestones.find(x => x.id === currentEditId); if(!m) return;
+            const submitBtn = document.getElementById('edit-submit-btn'); const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Proses...`; submitBtn.disabled = true;
 
             try {
-                // Semua file baru dan lama sudah terakumulasi otomatis di tempEditPhotos dan tempEditFiles
-                const allPhotos = [...tempEditPhotos];
-                const allFiles = [...tempEditFiles];
-                const totalSize = [...allPhotos, ...allFiles].reduce((acc, curr) => acc + (curr.data ? curr.data.length : 0), 0);
-                
-                if (totalSize > 900000) { 
-                    throw new Error("Kapasitas total lampiran melebihi batas. Hapus beberapa file lama.");
-                }
-
-                const updatedMilestone = {
-                    ...m,
-                    title: document.getElementById('edit-title').value.trim(),
-                    dueDate: document.getElementById('edit-date').value,
-                    description: document.getElementById('edit-desc').value.trim(),
-                    photos: allPhotos,
-                    files: allFiles
-                };
-
-                await saveToDB(updatedMilestone);
+                if ([...tempEditPhotos, ...tempEditFiles].reduce((acc, curr) => acc + (curr.data ? curr.data.length : 0), 0) > 900000) throw new Error("Total lampiran melebihi kapasitas.");
+                await saveToDB({ ...m, title: document.getElementById('edit-title').value.trim(), dueDate: document.getElementById('edit-date').value, description: document.getElementById('edit-desc').value.trim(), photos: tempEditPhotos, files: tempEditFiles });
                 window.closeEditModal();
-            } catch (error) {
-                console.error(error);
-                customMessage("Gagal Edit", error.message || "Batas memori terganggu.");
-            } finally {
-                submitBtn.innerHTML = originalBtnText;
-                submitBtn.disabled = false;
-                lucide.createIcons();
+            } catch (err) { customMessage("Gagal Edit", err.message); } 
+            finally { submitBtn.innerHTML = originalBtnText; submitBtn.disabled = false; lucide.createIcons(); }
+        });
+
+        let confirmAction = null; let currentFailId = null;
+        const customMessage = (title, desc, action = null) => {
+            document.getElementById('confirm-title').textContent = title; document.getElementById('confirm-desc').textContent = desc; confirmAction = action;
+            const cancelBtn = document.getElementById('confirm-cancel-btn'); const actionBtn = document.getElementById('confirm-action-btn');
+            if (!action) { cancelBtn.classList.add('hidden'); actionBtn.textContent = 'Tutup'; actionBtn.className = "px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-semibold transition-all"; } 
+            else { cancelBtn.classList.remove('hidden'); actionBtn.textContent = 'Ya, Lanjutkan'; actionBtn.className = "px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-semibold transition-all"; }
+            const m = document.getElementById('confirm-modal'); m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0'); document.getElementById('confirm-modal-content').classList.remove('scale-95');
+        };
+        window.closeConfirmModal = () => { const m = document.getElementById('confirm-modal'); m.classList.add('opacity-0'); document.getElementById('confirm-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); };
+        document.getElementById('confirm-action-btn').addEventListener('click', () => { if(confirmAction) confirmAction(); window.closeConfirmModal(); });
+
+        window.openFailModal = (id) => { currentFailId = id; document.getElementById('fail-reason').value = ''; const m = document.getElementById('fail-modal'); m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0'); document.getElementById('fail-modal-content').classList.remove('scale-95'); };
+        window.closeFailModal = () => { const m = document.getElementById('fail-modal'); m.classList.add('opacity-0'); document.getElementById('fail-modal-content').classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); };
+        document.getElementById('fail-form').addEventListener('submit', async (e) => {
+            e.preventDefault(); const reason = document.getElementById('fail-reason').value.trim(); const m = milestones.find(x => x.id === currentFailId);
+            if(m) { m.failed = true; m.completed = false; m.failReason = reason; await saveToDB(m); } window.closeFailModal();
+        });
+
+        window.openPasswordModal = () => {
+            document.getElementById('berkas-password').value = '';
+            document.getElementById('password-error').classList.add('hidden');
+            const m = document.getElementById('password-modal');
+            m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0');
+            document.getElementById('password-modal-content').classList.remove('scale-95');
+        };
+
+        window.closePasswordModal = () => {
+            const m = document.getElementById('password-modal');
+            m.classList.add('opacity-0'); document.getElementById('password-modal-content').classList.add('scale-95');
+            setTimeout(() => m.classList.add('hidden'), 300);
+        };
+
+        document.getElementById('password-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const pw = document.getElementById('berkas-password').value;
+            if (pw === 'STM123') {
+                closePasswordModal();
+                setTimeout(() => openBerkasModal(), 300);
+            } else {
+                document.getElementById('password-error').classList.remove('hidden');
             }
         });
+
+        window.openBerkasModal = () => {
+            renderBerkas();
+            const m = document.getElementById('berkas-modal');
+            m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0');
+            document.getElementById('berkas-modal-content').classList.remove('scale-95');
+        };
+
+        window.closeBerkasModal = () => {
+            const m = document.getElementById('berkas-modal');
+            m.classList.add('opacity-0'); document.getElementById('berkas-modal-content').classList.add('scale-95');
+            setTimeout(() => m.classList.add('hidden'), 300);
+        };
+
+        const renderBerkas = () => {
+            const grid = document.getElementById('berkas-grid');
+            const empty = document.getElementById('berkas-empty');
+            grid.innerHTML = '';
+            
+            if (globalFiles.length === 0) {
+                grid.classList.add('hidden'); empty.classList.replace('hidden', 'flex');
+            } else {
+                grid.classList.remove('hidden'); empty.classList.replace('flex', 'hidden');
+                
+                globalFiles.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(f => {
+                    const isImg = f.type.startsWith('image/');
+                    const isPdf = f.type === 'application/pdf' || f.name.endsWith('.pdf');
+                    const canPreview = isImg || isPdf;
+                    
+                    let icon = 'file-text'; let iconColor = 'text-blue-500'; let bg = 'bg-blue-50';
+                    if (isImg) { icon = 'image'; iconColor = 'text-brand-500'; bg = 'bg-brand-50'; }
+                    else if (isPdf) { icon = 'file-check-2'; iconColor = 'text-rose-500'; bg = 'bg-rose-50'; }
+                    else if (f.name.includes('.xls')) { icon = 'sheet'; iconColor = 'text-emerald-500'; bg = 'bg-emerald-50'; }
+
+                    const card = document.createElement('div');
+                    card.className = "bg-white border border-slate-200 rounded-2xl p-4 flex flex-col gap-3 shadow-sm hover:shadow-md hover:border-slate-300 transition-all";
+                    card.innerHTML = `
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 rounded-xl ${bg} ${iconColor} flex items-center justify-center shrink-0">
+                                <i data-lucide="${icon}" class="w-5 h-5"></i>
+                            </div>
+                            <div class="min-w-0 flex-grow">
+                                <h4 class="text-sm font-bold text-slate-800 truncate" title="${f.name}">${f.name}</h4>
+                                <p class="text-[10px] text-slate-400 font-medium mt-0.5">${formatDate(f.createdAt)}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-end gap-1.5 mt-auto pt-2 border-t border-slate-100">
+                            ${canPreview ? `<button onclick="previewBerkas('${f.id}')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"><i data-lucide="eye" class="w-3.5 h-3.5"></i> Lihat</button>` : `<a href="${f.data}" download="${f.name}" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"><i data-lucide="download" class="w-3.5 h-3.5"></i> Unduh</a>`}
+                            <button onclick="deleteBerkas('${f.id}')" class="p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-500 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+            lucide.createIcons();
+        };
+
+        document.getElementById('berkas-upload-input').addEventListener('change', async (e) => {
+            if(!e.target.files.length) return;
+            const overlay = document.getElementById('berkas-uploading-overlay');
+            overlay.classList.replace('hidden', 'flex');
+            
+            try {
+                const filesArr = Array.from(e.target.files);
+                const b64s = await Promise.all(filesArr.map(CompressionSystem.process));
+                
+                for (let i = 0; i < filesArr.length; i++) {
+                    const newFile = {
+                        id: 'berkas_' + Date.now() + '_' + i,
+                        name: filesArr[i].name,
+                        type: filesArr[i].type || (filesArr[i].name.endsWith('.pdf') ? 'application/pdf' : 'unknown'),
+                        data: b64s[i],
+                        createdAt: new Date().toISOString()
+                    };
+                    if (newFile.data.length > 950000) throw new Error(`File ${newFile.name} terlalu besar setelah diproses.`);
+                    
+                    if (!usingFirebase) { globalFiles.push(newFile); saveBerkasLocal(); } 
+                    else { await setDoc(doc(berkasRef, newFile.id), newFile); }
+                }
+            } catch(err) {
+                customMessage("Gagal Upload", err.message);
+            } finally {
+                overlay.classList.replace('flex', 'hidden');
+                e.target.value = '';
+            }
+        });
+
+        window.deleteBerkas = (id) => {
+            customMessage("Hapus Berkas", "Berkas yang dihapus tidak dapat dikembalikan.", async () => {
+                if(!usingFirebase) { globalFiles = globalFiles.filter(f => f.id !== id); saveBerkasLocal(); }
+                else { await deleteDoc(doc(berkasRef, id)); }
+            });
+        };
+
+        window.previewBerkas = (id) => {
+            const f = globalFiles.find(x => x.id === id); if (!f) return;
+            const container = document.getElementById('preview-container');
+            document.getElementById('preview-title').innerHTML = `<i data-lucide="eye" class="w-4 h-4"></i> <span class="truncate pr-4">${f.name}</span>`;
+            document.getElementById('preview-download-btn').href = f.data;
+            document.getElementById('preview-download-btn').download = f.name;
+
+            if (f.type.startsWith('image/')) {
+                container.innerHTML = `<img src="${f.data}" class="max-w-full max-h-full object-contain rounded-lg shadow-lg">`;
+            } else if (f.type === 'application/pdf' || f.name.endsWith('.pdf')) {
+                container.innerHTML = `<iframe src="${f.data}" class="w-full h-full min-h-[60vh] rounded-xl border-0 bg-white"></iframe>`;
+            }
+            
+            lucide.createIcons();
+            const m = document.getElementById('preview-modal');
+            m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0');
+        };
+
+        window.closePreviewModal = () => {
+            const m = document.getElementById('preview-modal');
+            m.classList.add('opacity-0'); 
+            setTimeout(() => { m.classList.add('hidden'); document.getElementById('preview-container').innerHTML = ''; }, 300);
+        };
 
         initApp();
     </script>
